@@ -123,9 +123,11 @@ class Analyzer:
             if token[0].isdigit():
                 out.append(token)
                 continue
-            if self.stem:
-                token = self._stemmer.stemWord(token)
-            out.append(fold_accents(token) if self.fold else token)
+            # fold before stemming so unaccented user typing ("fiscalizacao") and the
+            # accented document form ("fiscalização") reach the same stem
+            if self.fold:
+                token = fold_accents(token)
+            out.append(self._stemmer.stemWord(token) if self.stem else token)
         return out
 
 
