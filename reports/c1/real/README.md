@@ -31,7 +31,7 @@ M5 usa bloqueio por coleção+número e parâmetros Fellegi–Sunter estimados e
 - Os testes foram sequenciais em máquina compartilhada; não há isolamento de CPU nem carga concorrente controlada. QPS serial não representa capacidade em produção. Cache frio não foi controlado.
 - Preparo não é uma comparação homogênea de construção completa: M1 já possui índices da importação; M3 inclui construção GiST na primeira rodada; M2/M4 carregam dados; M5 exporta, materializa e treina.
 - RSS é apenas do processo Python; servidor PostgreSQL e cache do sistema ficam de fora. Tamanho dos índices e plano KNN real estão em `audit.json`.
-- ICs bootstrap por conjunto de identidade, 10.000 reamostragens, semente 42: `statistics.json`. São incertezas deste lote selecionado; 100% observado não demonstra perfeição universal.
+- ICs bootstrap por conjunto de identidade, 10.000 reamostragens, semente 42: `statistics.json`. São incertezas deste lote selecionado; 100% observado não demonstra perfeição universal. Bootstrap degenera em [1,1] quando não há erros observados; o arquivo também traz Wilson 95% para Hit@1, com a ressalva de que a seleção das consultas não é uma amostra aleatória de usuários.
 - Precisão@20 divide por 20 mesmo quando C1 tem apenas uma identidade relevante; portanto 5% pode ser compatível com resposta correta e completa. Hit@1 e Recall são mais interpretáveis aqui.
 - Recall@20 = fração das identidades corretas conhecidas encontrada nas primeiras 20 posições. Não é acurácia global nem precisão da lista.
 - Custo de API: US$ 0; chamadas: 0. Custo monetário local, consumo elétrico, SLA de atualização, taxa de falsa aceitação de inexistentes e tolerância a erros: não medidos, não presumidos nulos.

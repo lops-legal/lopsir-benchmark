@@ -184,5 +184,27 @@
       ]
     ]
   },
+  "hit_at_1_wilson_95": [
+    [
+      0.9875617126166847,
+      1
+    ],
+    [
+      0.9714849488293831,
+      0.9966493202604161
+    ],
+    [
+      0.9667700275785158,
+      0.9948884270023215
+    ],
+    [
+      0.981664901788899,
+      0.9994209963188239
+    ],
+    [
+      0.9875617126166847,
+      1
+    ]
+  ],
   "interpretation": "Intervals describe this selected clean-identity cohort, not representativeness of user traffic."
 }
