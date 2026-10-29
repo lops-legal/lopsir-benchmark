@@ -61,7 +61,8 @@ class Linkage:
         # Use SQL LIMIT before materializing Python records; include linkage time in search.
         rows=self.duck.execute(f'''SELECT entity_id_l,entity_id_r,match_probability
             FROM "{predictions.physical_name}" ORDER BY match_probability DESC,entity_id_l,entity_id_r LIMIT ?''',[k]).fetchall()
-        total=self.duck.execute(f'SELECT count(*) FROM "{predictions.physical_name}"').fetchone()[0]
+        # DuckDB 2 requires exhausting the result before Splink drops its table.
+        total=self.duck.execute(f'SELECT count(*) FROM "{predictions.physical_name}"').fetchall()[0][0]
         hits=[]
         for left,right,score in rows:
             target=right if str(left).startswith("query:") else left
