@@ -1,0 +1,12 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "lopsir-c2"
+version = "0.1.0"
+description = "LopsIR Benchmark - C2 (expressao juridica): cinco metodologias publicadas e modulo de resultados"
+requires-python = ">=3.11"
+
+[tool.setuptools.packages.find]
+where = ["src"]
