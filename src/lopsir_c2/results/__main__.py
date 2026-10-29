@@ -8,6 +8,7 @@ from datetime import datetime, timezone
 from ..common import REPORTS, write_json
 from ..harness import code_commit
 from .charts import render_all
+from .errors import write_errors
 from .stats import MAIN, load_results, summarize
 
 ADVANTAGE = {"m1_bm25": "mais barata", "m2_query2doc": "expansão por LLM", "m2_rm3_ablation": "expansão sem LLM",
@@ -115,6 +116,10 @@ Itálico = ablação ou referência, não conta entre as cinco metodologias.
 
 ![Deltas por consulta](charts/per_query_delta.png)
 
+## Análise de erros
+
+Desacordo lexical × denso, maiores ganhos e perdas contra o BM25 e a tabela consulta × método: [ERRORS.md](ERRORS.md).
+
 ## Fichas resumidas
 
 {cards(summary)}
@@ -130,6 +135,7 @@ def main():
     write_json(REPORTS / "summary.json", summary)
     charts = render_all(summary, load_results(args.dataset), REPORTS / "charts")
     write_report(summary, charts, REPORTS)
+    write_errors(args.dataset, REPORTS)
     for _, r in sorted(summary["methods"].items(), key=lambda x: -x[1]["test"]["ndcg_linear@10"]):
         line = f"{r['name']:<28} nDCG@10 {r['test']['ndcg_linear@10']:.4f}"
         if r["delta_vs_bm25"]:
