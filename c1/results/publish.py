@@ -2,6 +2,7 @@
 import argparse
 import html
 import json
+import math
 from pathlib import Path
 import matplotlib
 matplotlib.use('Agg')
@@ -41,8 +42,15 @@ def publish(root):
         means=sums[:,samples].sum(axis=2)/denom
         cis[metric]=np.quantile(means,[.025,.975],axis=1).T.tolist()
         paired[metric]=np.quantile(means-means[0],[.025,.975],axis=1).T.tolist()
+    wilson=[]
+    for rows in runs:
+        n=len(rows);p=sum(r['metrics']['hit@1'] for r in rows)/n;z=1.959963984540054
+        center=(p+z*z/(2*n))/(1+z*z/n)
+        margin=z*math.sqrt(p*(1-p)/n+z*z/(4*n*n))/(1+z*z/n)
+        wilson.append([max(0,center-margin),min(1,center+margin)])
     output={'query_count':len(ids),'identity_clusters':len(clusters),'bootstrap_seed':42,
         'bootstrap_samples':10000,'confidence_level':.95,'intervals':cis,'paired_difference_vs_m1':paired,
+        'hit_at_1_wilson_95':wilson,
         'interpretation':'Intervals describe this selected clean-identity cohort, not representativeness of user traffic.'}
     (root/'statistics.json').write_text(json.dumps(output,indent=2)+'\n',encoding='utf-8')
     plt.rcParams.update({'font.size':10,'axes.spines.top':False,'axes.spines.right':False})
@@ -120,7 +128,9 @@ def publish(root):
         '- RSS é apenas do processo Python; servidor PostgreSQL e cache do sistema ficam de fora. '
         'Tamanho dos índices e plano KNN real estão em `audit.json`.',
         '- ICs bootstrap por conjunto de identidade, 10.000 reamostragens, semente 42: `statistics.json`. '
-        'São incertezas deste lote selecionado; 100% observado não demonstra perfeição universal.',
+        'São incertezas deste lote selecionado; 100% observado não demonstra perfeição universal. '
+        'Bootstrap degenera em [1,1] quando não há erros observados; o arquivo também traz Wilson 95% para Hit@1, '
+        'com a ressalva de que a seleção das consultas não é uma amostra aleatória de usuários.',
         '- Precisão@20 divide por 20 mesmo quando C1 tem apenas uma identidade relevante; '
         'portanto 5% pode ser compatível com resposta correta e completa. Hit@1 e Recall são mais interpretáveis aqui.',
         '- Recall@20 = fração das identidades corretas conhecidas encontrada nas primeiras 20 posições. '

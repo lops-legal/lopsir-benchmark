@@ -68,7 +68,7 @@ def inspect_study(config, root):
         "verified_record_count": data.get("verified_record_count"),
         "methods": [m["id"] for m in methods], "issues": issues,
         "research_metrics": None,
-        "notes": ["No corpus download, inference, database provisioning or research run performed.",
+        "notes": ["This preflight command does not download a corpus, provision a database or execute a research run; see measured reports separately.",
                   "Passing config checks does not certify data quality or legal relevance."]
     }
 
