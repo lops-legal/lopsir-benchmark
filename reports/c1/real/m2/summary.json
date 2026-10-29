@@ -1,0 +1,182 @@
+{
+  "kind": "real_c1_retrieval_measurement",
+  "method_id": "C1-M2",
+  "name": "BM25S Lucene variant over real identity references",
+  "input_mode": "structured_identity_reference",
+  "query_parsing_included": false,
+  "split": "test",
+  "origin_filter": "all",
+  "top_k": 100,
+  "repetitions": 3,
+  "prepare_seconds": 11.431526400000166,
+  "elapsed_seconds": 17.699806799999806,
+  "peak_python_rss_bytes": 266833920,
+  "database": {
+    "server": "PostgreSQL 18.0 on x86_64-windows, compiled by msvc-19.44.35215, 64-bit",
+    "records_by_collection": [
+      {
+        "collection": "dispositivos",
+        "rows": 347195
+      },
+      {
+        "collection": "precedentes",
+        "rows": 11253
+      }
+    ],
+    "entities_by_collection": [
+      {
+        "collection": "dispositivos",
+        "rows": 330574
+      },
+      {
+        "collection": "precedentes",
+        "rows": 11253
+      }
+    ],
+    "database_bytes": 562902719,
+    "entities_bytes": 169017344
+  },
+  "parameters": {
+    "engine": "bm25s",
+    "variant": "lucene",
+    "k1": 1.2,
+    "b": 0.75,
+    "stemming": false,
+    "stopwords": [],
+    "implementation_paper": "https://arxiv.org/abs/2407.03618",
+    "code": "https://github.com/xhluca/bm25s"
+  },
+  "overall": {
+    "queries": 305,
+    "failures": 0,
+    "quality": {
+      "hit@1": 0.9901639344262295,
+      "mrr@10": 0.9950819672131147,
+      "recall@10": 1.0,
+      "precision@10": 0.10032786885245902,
+      "recall@20": 1.0,
+      "precision@20": 0.05016393442622951,
+      "recall@100": 1.0,
+      "precision@100": 0.010032786885245901,
+      "ndcg@10": 0.9961065903274182
+    },
+    "latency_ms": {
+      "p50": 5.12990000015634,
+      "p95": 14.055300000063651,
+      "p99": 18.075042000073157
+    },
+    "measured_successful_calls": 915,
+    "serial_lookup_qps": 202.4935027803137
+  },
+  "groups": {
+    "derived_real_identity_lookup/dispositivos": {
+      "queries": 152,
+      "failures": 0,
+      "quality": {
+        "hit@1": 0.9802631578947368,
+        "mrr@10": 0.9901315789473685,
+        "recall@10": 1.0,
+        "precision@10": 0.1,
+        "recall@20": 1.0,
+        "precision@20": 0.05,
+        "recall@100": 1.0,
+        "precision@100": 0.01,
+        "ndcg@10": 0.9927157188204893
+      },
+      "latency_ms": {
+        "p50": 7.69599999989623,
+        "p95": 15.486050000049545,
+        "p99": 20.484774999977162
+      },
+      "measured_successful_calls": 456,
+      "serial_lookup_qps": 114.52458271425611
+    },
+    "derived_real_identity_lookup/precedentes": {
+      "queries": 146,
+      "failures": 0,
+      "quality": {
+        "hit@1": 1.0,
+        "mrr@10": 1.0,
+        "recall@10": 1.0,
+        "precision@10": 0.1,
+        "recall@20": 1.0,
+        "precision@20": 0.05,
+        "recall@100": 1.0,
+        "precision@100": 0.01,
+        "ndcg@10": 1.0
+      },
+      "latency_ms": {
+        "p50": 0.9033999999701336,
+        "p95": 1.4260050003485956,
+        "p99": 1.6723559999672941
+      },
+      "measured_successful_calls": 438,
+      "serial_lookup_qps": 1050.1209796964554
+    },
+    "existing_reference_test/dispositivos": {
+      "queries": 4,
+      "failures": 0,
+      "quality": {
+        "hit@1": 1.0,
+        "mrr@10": 1.0,
+        "recall@10": 1.0,
+        "precision@10": 0.1,
+        "recall@20": 1.0,
+        "precision@20": 0.05,
+        "recall@100": 1.0,
+        "precision@100": 0.01,
+        "ndcg@10": 1.0
+      },
+      "latency_ms": {
+        "p50": 7.718399999930625,
+        "p95": 14.045169999872087,
+        "p99": 14.111433999814835
+      },
+      "measured_successful_calls": 12,
+      "serial_lookup_qps": 109.24723194794215
+    },
+    "existing_reference_test/precedentes": {
+      "queries": 3,
+      "failures": 0,
+      "quality": {
+        "hit@1": 1.0,
+        "mrr@10": 1.0,
+        "recall@10": 1.0,
+        "precision@10": 0.13333333333333333,
+        "recall@20": 1.0,
+        "precision@20": 0.06666666666666667,
+        "recall@100": 1.0,
+        "precision@100": 0.013333333333333334,
+        "ndcg@10": 0.9732402630493958
+      },
+      "latency_ms": {
+        "p50": 1.01070000027903,
+        "p95": 1.725220000025729,
+        "p99": 1.7876840001008532
+      },
+      "measured_successful_calls": 9,
+      "serial_lookup_qps": 895.6828088790272
+    }
+  },
+  "api_calls": 0,
+  "api_cost_usd": 0,
+  "local_monetary_cost": null,
+  "absent_queries": 0,
+  "artificial_typo_queries": 0,
+  "limitations": [
+    "Existing reference tests plus explicitly labeled clean real-identity lookups, not user search logs.",
+    "No absent-target or typo robustness claims; corpus is legislation plus precedents, not general case law.",
+    "Latency is in-process lookup including database calls; structured query preparation is excluded.",
+    "Python RSS excludes PostgreSQL server and operating-system caches."
+  ],
+  "code_commit": "574ad32e653056c403aea6412e6980cc1303d05b",
+  "versions": {
+    "psycopg": "3.3.6",
+    "bm25s": "0.3.16",
+    "rapidfuzz": "3.14.6",
+    "splink": "5.0.0",
+    "duckdb": "2.0.0",
+    "pyarrow": "26.0.0",
+    "numpy": "2.5.4"
+  }
+}
