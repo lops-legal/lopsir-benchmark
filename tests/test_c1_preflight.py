@@ -14,11 +14,11 @@ class C1PreflightTests(unittest.TestCase):
     def setUp(self):
         self.config = json.loads((ROOT / "configs/c1.methods.json").read_text(encoding="utf-8"))
 
-    def test_current_study_does_not_claim_results(self):
+    def test_preflight_is_not_the_measured_leaderboard(self):
         report = inspect_study(self.config, ROOT)
-        self.assertEqual(report["status"], "blocked")
         self.assertIsNone(report["research_metrics"])
-        self.assertIsNone(report["verified_record_count"])
+        self.assertEqual(report["verified_record_count"], 358448)
+        self.assertNotIn('ADAPTER_NOT_READY',[i['code'] for i in report['issues']])
 
     def test_five_methods_have_sources_and_no_api_key(self):
         self.assertEqual(len(self.config["methods"]), 5)

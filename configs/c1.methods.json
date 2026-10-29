@@ -1,5 +1,5 @@
 {
-  "schema_version": "0.1",
+  "schema_version": "0.2",
   "case_type": "C1",
   "task": "resolve_referenced_identity",
   "policy": {
@@ -10,31 +10,76 @@
     "run_c2_after_c1_review": true
   },
   "data": {
-    "source_repository": "https://github.com/lops-legal/lopsir-benchmark",
+    "source_repository": "https://github.com/lops-legal/leis-mcp",
     "expected_count_reported_by_user": 370000,
-    "verified_record_count": null,
-    "corpus_path": null,
-    "connection_ref": null,
-    "queries_path": null,
-    "qrels_path": null,
-    "snapshot_sha256": null,
-    "identity_mapping": null,
-    "status": "repository_supplied_corpus_location_unresolved"
+    "verified_record_count": 358448,
+    "corpus_path": "env:LEIS_MCP_ROOT",
+    "connection_ref": "env:LOPSIR_C1_DSN",
+    "queries_path": "artifacts/c1/queries.jsonl",
+    "qrels_path": "artifacts/c1/queries.jsonl",
+    "snapshot_sha256": {
+      "precedentes.jsonl": "0b7a53680bceb5dbbdd096269a94be9ecb9ce8d624844c879aa3b050bdcf9ee4",
+      "dispositivos.jsonl": "1073f84440b85a254367f07c648427d6e9d8f493e92ebd4bfcc0517c99b58f23"
+    },
+    "identity_mapping": {
+      "precedentes": "precedent:original_chave",
+      "dispositivos": "provision:original_urn#article"
+    },
+    "status": "real_first_round_evaluated",
+    "verified_entity_count": 341827,
+    "qrels_format": "gold field embedded in each query"
   },
   "evaluation": {
-    "ranking_cutoffs": [1, 10, 20, 100],
-    "ranking_metrics": ["hit", "mrr", "ndcg", "precision", "recall"],
+    "ranking_cutoffs": [
+      1,
+      10,
+      20,
+      100
+    ],
+    "ranking_metrics": [
+      "hit",
+      "mrr",
+      "ndcg",
+      "precision",
+      "recall"
+    ],
     "identity_metrics": [
-      "automatic_identity_precision", "automatic_coverage",
-      "ambiguous_set_precision", "ambiguous_set_recall", "exact_set_match",
-      "absent_snapshot_false_accept_rate", "abstention_rate"
+      "automatic_identity_precision",
+      "automatic_coverage",
+      "ambiguous_set_precision",
+      "ambiguous_set_recall",
+      "exact_set_match",
+      "absent_snapshot_false_accept_rate",
+      "abstention_rate"
     ],
     "undefined_metrics": "null_with_reason",
-    "latency_percentiles": [50, 95, 99],
-    "timed_stages": ["parse", "candidate_generation", "score", "decision", "total"],
-    "concurrency_to_validate_in_dev": [1, 2, 4],
-    "resources": ["peak_rss_bytes", "index_bytes", "build_seconds", "update_seconds"],
-    "confidence_interval": {"method": "paired_bootstrap_by_identity", "level": 0.95}
+    "latency_percentiles": [
+      50,
+      95,
+      99
+    ],
+    "timed_stages": [
+      "parse",
+      "candidate_generation",
+      "score",
+      "decision",
+      "total"
+    ],
+    "concurrency_to_validate_in_dev": [
+      1,
+      2,
+      4
+    ],
+    "resources": [
+      "peak_rss_bytes",
+      "index_bytes",
+      "build_seconds",
+      "update_seconds"
+    ],
+    "confidence_interval": {
+      "method": "paired_bootstrap_by_identity",
+      "level": 0.95
+    }
   },
   "methods": [
     {
@@ -44,33 +89,80 @@
       "code": "https://github.com/postgres/postgres",
       "source_inspection_revision": "27c844034f827b3910bc8a358780c6609ba87a41",
       "implementation": "PostgreSQL B-tree equality predicates",
-      "dependencies": ["PostgreSQL stable release to pin", "psycopg to pin"],
+      "dependencies": [
+        "PostgreSQL 18.0",
+        "psycopg 3.3.6"
+      ],
       "model": null,
       "api_key_required": false,
       "gpu_required": false,
-      "runtime_lock": null,
-      "implementation_state": "not_implemented",
+      "runtime_lock": "requirements-c1.lock.txt",
+      "implementation_state": "ready",
       "adaption": "Reference parsing, verified aliases and identity-field mapping",
-      "dev_parameters": ["index_columns", "normalization_policy", "collation", "timeout"],
-      "report": null
+      "dev_parameters": [
+        "index_columns",
+        "normalization_policy",
+        "collation",
+        "timeout"
+      ],
+      "report": "reports/c1/real/m1/summary.json",
+      "executed_versions": {
+        "psycopg": "3.3.6",
+        "bm25s": "0.3.16",
+        "rapidfuzz": "3.14.6",
+        "splink": "5.0.0",
+        "duckdb": "2.0.0",
+        "pyarrow": "26.0.0",
+        "numpy": "2.5.4"
+      }
     },
     {
       "id": "C1-M2",
       "name": "BM25 lexical retrieval over identity references",
-      "paper": "https://arxiv.org/abs/2102.10073",
+      "paper": "https://arxiv.org/abs/2407.03618",
       "additional_paper": "https://doi.org/10.1561/1500000019",
-      "code": "https://github.com/castorini/pyserini",
-      "source_inspection_revision": "b492f8b82c3a626a02227834ff6ea5d7a5daface",
-      "implementation": "Pyserini/Anserini/Lucene BM25",
-      "dependencies": ["Python 3.12 for inspected upstream", "Java 21", "Pyserini version to pin", "PyJNIus and resolved transitive dependencies"],
+      "code": "https://github.com/xhluca/bm25s",
+      "source_inspection_revision": "e63e1e263e3059c3059b4c5870f0184ac29bf225",
+      "implementation": "BM25S 0.3.16 lucene variant, numpy backend",
+      "dependencies": [
+        "bm25s 0.3.16",
+        "numpy 2.5.4",
+        "scipy: requirements-c1.lock.txt"
+      ],
       "model": null,
       "api_key_required": false,
       "gpu_required": false,
-      "runtime_lock": null,
-      "implementation_state": "not_implemented",
+      "runtime_lock": "requirements-c1.lock.txt",
+      "implementation_state": "ready",
       "adaption": "Index only identity reference fields; preserve numeric tokens",
-      "proposed_dev_grid": {"k1": [0.6, 1.2, 1.8], "b": [0.2, 0.75, 1.0], "top_k": [10, 20, 100]},
-      "report": null
+      "proposed_dev_grid": {
+        "k1": [
+          0.6,
+          1.2,
+          1.8
+        ],
+        "b": [
+          0.2,
+          0.75,
+          1.0
+        ],
+        "top_k": [
+          10,
+          20,
+          100
+        ]
+      },
+      "report": "reports/c1/real/m2/summary.json",
+      "executed_versions": {
+        "psycopg": "3.3.6",
+        "bm25s": "0.3.16",
+        "rapidfuzz": "3.14.6",
+        "splink": "5.0.0",
+        "duckdb": "2.0.0",
+        "pyarrow": "26.0.0",
+        "numpy": "2.5.4"
+      },
+      "implementation_change": "Initial Pyserini proposal replaced before execution with published BM25S to avoid Java/neural dependencies on 8GB machine"
     },
     {
       "id": "C1-M3",
@@ -80,15 +172,40 @@
       "implementation_spec": "https://www.postgresql.org/docs/18/pgtrgm.html",
       "source_inspection_revision": "27c844034f827b3910bc8a358780c6609ba87a41",
       "implementation": "pg_trgm with an explicitly selected index/query plan",
-      "dependencies": ["PostgreSQL stable release to pin", "pg_trgm bundled with selected PostgreSQL", "psycopg to pin"],
+      "dependencies": [
+        "PostgreSQL stable release to pin",
+        "pg_trgm bundled with selected PostgreSQL",
+        "psycopg to pin"
+      ],
       "model": null,
       "api_key_required": false,
       "gpu_required": false,
-      "runtime_lock": null,
-      "implementation_state": "not_implemented",
+      "runtime_lock": "requirements-c1.lock.txt",
+      "implementation_state": "ready",
       "adaption": "The q-gram paper is a family foundation, not a claim pg_trgm reproduces its algorithm",
-      "proposed_dev_grid": {"similarity_threshold": [0.3, 0.5, 0.7, 0.9], "top_k": [10, 20, 100]},
-      "report": null
+      "proposed_dev_grid": {
+        "similarity_threshold": [
+          0.3,
+          0.5,
+          0.7,
+          0.9
+        ],
+        "top_k": [
+          10,
+          20,
+          100
+        ]
+      },
+      "report": "reports/c1/real/m3/summary.json",
+      "executed_versions": {
+        "psycopg": "3.3.6",
+        "bm25s": "0.3.16",
+        "rapidfuzz": "3.14.6",
+        "splink": "5.0.0",
+        "duckdb": "2.0.0",
+        "pyarrow": "26.0.0",
+        "numpy": "2.5.4"
+      }
     },
     {
       "id": "C1-M4",
@@ -98,15 +215,43 @@
       "implementation_spec": "https://rapidfuzz.github.io/RapidFuzz/Usage/distance/Levenshtein.html",
       "source_inspection_revision": "09328422916b13181238660cd3b23a71905d1ec9",
       "implementation": "rapidfuzz.distance.Levenshtein",
-      "dependencies": ["Python release supported by pinned RapidFuzz", "RapidFuzz version/wheel to pin"],
+      "dependencies": [
+        "Python release supported by pinned RapidFuzz",
+        "RapidFuzz version/wheel to pin"
+      ],
       "model": null,
       "api_key_required": false,
       "gpu_required": false,
-      "runtime_lock": null,
-      "implementation_state": "not_implemented",
+      "runtime_lock": "requirements-c1.lock.txt",
+      "implementation_state": "ready",
       "adaption": "Canonical identity references; full-scan control and measured blocking when used",
-      "proposed_dev_grid": {"weights": [1, 1, 1], "max_edits": [0, 1, 2], "top_k": [10, 20, 100]},
-      "report": null
+      "proposed_dev_grid": {
+        "weights": [
+          1,
+          1,
+          1
+        ],
+        "max_edits": [
+          0,
+          1,
+          2
+        ],
+        "top_k": [
+          10,
+          20,
+          100
+        ]
+      },
+      "report": "reports/c1/real/m4/summary.json",
+      "executed_versions": {
+        "psycopg": "3.3.6",
+        "bm25s": "0.3.16",
+        "rapidfuzz": "3.14.6",
+        "splink": "5.0.0",
+        "duckdb": "2.0.0",
+        "pyarrow": "26.0.0",
+        "numpy": "2.5.4"
+      }
     },
     {
       "id": "C1-M5",
@@ -116,15 +261,54 @@
       "code": "https://github.com/moj-analytical-services/splink",
       "source_inspection_revision": "5b719296d62bc48d55c1a63322fd60c0bfba4c2e",
       "implementation": "Splink link_only with DuckDB",
-      "dependencies": ["Python >=3.10 for inspected pyproject", "Splink version to pin", "DuckDB", "PyArrow", "SQLGlot"],
+      "dependencies": [
+        "Python >=3.10 for inspected pyproject",
+        "Splink version to pin",
+        "DuckDB",
+        "PyArrow",
+        "SQLGlot"
+      ],
       "model": "Locally estimated statistical linkage parameters; not a neural embedding model",
       "api_key_required": false,
       "gpu_required": false,
-      "runtime_lock": null,
-      "implementation_state": "not_implemented",
+      "runtime_lock": "requirements-c1.lock.txt",
+      "implementation_state": "ready",
       "adaption": "Query as a partial identity record; field comparisons, blocking and calibration on permitted training data",
-      "dev_parameters": ["blocking_rules", "comparison_levels", "null_policy", "m_u_prior_estimation", "decision_thresholds"],
-      "report": null
+      "dev_parameters": [
+        "blocking_rules",
+        "comparison_levels",
+        "null_policy",
+        "m_u_prior_estimation",
+        "decision_thresholds"
+      ],
+      "report": "reports/c1/real/m5/summary.json",
+      "executed_versions": {
+        "psycopg": "3.3.6",
+        "bm25s": "0.3.16",
+        "rapidfuzz": "3.14.6",
+        "splink": "5.0.0",
+        "duckdb": "2.0.0",
+        "pyarrow": "26.0.0",
+        "numpy": "2.5.4"
+      }
     }
-  ]
+  ],
+  "execution": {
+    "status": "evaluated",
+    "test_queries": 305,
+    "training_queries": 95,
+    "development_queries": 107,
+    "repetitions": 3,
+    "no_paid_or_free_model_api_calls": true,
+    "measured_stages": [
+      "local_lookup"
+    ],
+    "unmeasured_stages": [
+      "free_text_parsing",
+      "production_http",
+      "concurrent_load",
+      "production_updates"
+    ],
+    "results": "reports/c1/real/README.md"
+  }
 }

@@ -1,6 +1,7 @@
 """Check C1 study readiness without downloading data or executing a benchmark."""
 import argparse
 import json
+import os
 import re
 from pathlib import Path
 
@@ -26,7 +27,15 @@ def inspect_study(config, root):
             else:
                 issues.append({"code": "REAL_INPUT_NOT_CONFIGURED", "field": field})
             continue
-        path = Path(value)
+        if value.startswith('env:'):
+            env_name=value[4:]
+            resolved=os.environ.get(env_name)
+            if not resolved:
+                issues.append({'code':'INPUT_ENV_NOT_SET','field':field,'environment_variable':env_name})
+                continue
+            path=Path(resolved)
+        else:
+            path = Path(value)
         if not path.is_absolute():
             path = root / path
         if not path.exists():

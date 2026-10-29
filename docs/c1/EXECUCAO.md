@@ -113,9 +113,9 @@ Hipóteses desta rodada:
 | Hipótese | Evidência inicial | Próximo teste legítimo |
 |---|---|---|
 | C1-H1: igualdade é suficiente e econômica para referências completas | M1 tem 100% Hit@1 no lote e menor p95 observado | Repetir em logs reais independentes, carga e versões de norma |
-| C1-H2: métodos aproximados ajudam referências incompletas/divergentes | Não estabelecido; conjunto majoritariamente íntegro | Coletar consultas reais com divergência e anotação de identidade |
-| C1-H3: serialização pode confundir papel dos números | Erros reais M2/M3 entre reedição e artigo | Ablação em dev preservando papéis, sem reusar teste como dev |
-| C1-H4: vinculação de campos melhora casos incompletos | M5 resolve o lote, mas sem ganho observado sobre M1 e com maior latência | Pares reais divergentes, avaliação de bloqueio e calibração |
-| C1-H5: resultados agregados ocultam diferenças de coleção | Subgrupos e gráfico publicados separadamente | Ampliar amostra de precedentes e tipos raros com consultas reais |
+| C1-H2: BM25 ajuda expressão textual menos regular | Não estabelecido; consultas majoritariamente íntegras; três erros de ordem entre números | Consultas reais menos regulares; ablação em dev preservando papéis |
+| C1-H3: trigramas ajudam variações reais sem varredura completa | Plano KNN confirmado; vantagem de robustez não estabelecida | Consultas reais com variações e vizinhos de identificador |
+| C1-H4: distância de edição corrige erros de forma controlável | Sem erros reais de digitação neste lote; houve falha na referência curta STJ 385 | Referências divergentes reais e decisão com limiar em dev |
+| C1-H5: vinculação combina evidências incompletas | M5 resolve o lote, mas sem ganho observado sobre M1 e com maior latência | Pares reais divergentes, avaliação de bloqueio e calibração |
 
 As conclusões são restritas ao lote. Um novo teste que altere consultas, representação, regras ou parâmetros recebe nova identificação e novo relatório, preservando esta rodada no Git.
