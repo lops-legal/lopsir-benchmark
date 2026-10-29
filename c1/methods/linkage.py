@@ -23,6 +23,7 @@ class Linkage:
     def __init__(self,conn,training_queries=None,work_dir="work/c1-linkage",**kwargs):
         self.conn=conn;self.training_queries=[q for q in (training_queries or []) if len(q.gold)==1]
         self.root=Path(work_dir);self.root.mkdir(parents=True,exist_ok=True)
+        self.calls=0
 
     def prepare(self):
         if not self.training_queries:raise ValueError("No real training identity lookups; refusing fabricated weights")
@@ -55,7 +56,9 @@ class Linkage:
                 "limitations":"Training lookups are clean. Unobserved disagreement levels may retain library defaults; inspect trained model."}
 
     def search(self,query,k=20):
-        name="query_"+hashlib.sha256(query.query_id.encode()).hexdigest()[:16]
+        # Splink v5 retains registered names even after dropping their tables.
+        self.calls+=1
+        name="query_"+hashlib.sha256(query.query_id.encode()).hexdigest()[:16]+f"_{self.calls}"
         table=self.api.register(pa.Table.from_pylist([to_record("query:"+query.query_id,query.fields)],schema=ARROW_SCHEMA),table_name=name,dataset_display_name=name)
         predictions=self.linker.inference.predict_between(self.corpus,table,warning_mode="auto")
         # Use SQL LIMIT before materializing Python records; include linkage time in search.
