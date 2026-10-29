@@ -55,6 +55,42 @@ def origin_table(summary):
     return "\n".join(lines)
 
 
+def ci_text(delta):
+    return "—" if not delta else f"{delta['mean']:+.3f} [{delta['ci95'][0]:+.3f}, {delta['ci95'][1]:+.3f}]"
+
+
+def hypotheses(summary):
+    """Rule-based verdicts for the SDD hypotheses that C2 can test; wording stays conservative."""
+    rows = summary["methods"]
+    get = rows.get
+    out = ["| Hipótese (SDD §8) | Evidência no teste | Leitura |", "|---|---|---|"]
+    challengers = [m for m in MAIN if m != "m1_bm25" and m in rows]
+    superior = [rows[m]["name"] for m in challengers if rows[m]["verdict_vs_bm25"] == "superior"]
+    inferior = [rows[m]["name"] for m in challengers if rows[m]["verdict_vs_bm25"] == "inferior"]
+    out.append("| H2 — BM25 ajustado é difícil de superar em C2 | " +
+               "; ".join(f"{rows[m]['name']} {ci_text(rows[m]['delta_vs_bm25'])}" for m in challengers) + " | " +
+               (f"rejeitada em parte: superam o BM25 {', '.join(superior)}" if superior else
+                "apoiada: nenhuma metodologia supera o BM25 com IC95 fora de zero") +
+               (f"; inferiores ao BM25: {', '.join(inferior)}" if inferior else "") + " |")
+    for key, label in (("m2_query2doc", "H5 — expansão controlada ajuda C2 (LLM)"), ("m2_rm3_ablation", "H5 — expansão sem LLM (RM3)")):
+        if get(key):
+            out.append(f"| {label} | Δ nDCG@10 {ci_text(rows[key]['delta_vs_bm25'])} | {rows[key]['verdict_vs_bm25']} contra o BM25 |")
+    if get("m3_splade"):
+        r = rows["m3_splade"]
+        out.append(f"| H7 — SPLADE entra na fronteira qualidade/custo | Δ nDCG@10 {ci_text(r['delta_vs_bm25'])}; "
+                   f"p50 {fmt((r['latency_end_to_end_first_pass'] or {}).get('p50_ms'), 1)} ms | {r['verdict_vs_bm25']} contra o BM25 |")
+    if get("m5_hybrid"):
+        r = rows["m5_hybrid"]
+        out.append(f"| H3 — híbrido aumenta cobertura | Δ R@100 {ci_text(r['delta_recall100_vs_bm25'])}; Δ nDCG@10 {ci_text(r['delta_vs_bm25'])} | "
+                   f"cobertura {r['verdict_recall100_vs_bm25']}, ranking {r['verdict_vs_bm25']} |")
+        grid = r["dev_grid_top"]
+        best = {kind: max((g["ndcg10"] for g in grid if g["label"].startswith(kind)), default=None) for kind in ("rrf", "convex")}
+        if all(v is not None for v in best.values()):
+            out.append(f"| H11 — fusão ajustada supera RRF | dev: melhor convexa {best['convex']:.3f} × melhor RRF {best['rrf']:.3f} | "
+                       f"exploratório (só dev, 30 consultas); configuração congelada `{r['config']}` |")
+    return "\n".join(out)
+
+
 def cards(summary):
     rows = summary["methods"]
     parts = []
@@ -89,6 +125,10 @@ Itálico = ablação ou referência, não conta entre as cinco metodologias.
 ## Quadro principal
 
 {table(summary)}
+
+## Hipóteses
+
+{hypotheses(summary)}
 
 ![nDCG@10 com IC95%](charts/ndcg10_ci.png)
 

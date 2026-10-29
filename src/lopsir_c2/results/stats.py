@@ -69,11 +69,14 @@ def summarize(dataset):
     queries = query_table(dataset)
     groups = {qid: q["group_id"] for qid, q in queries.items()}
     base = per_query(results["m1_bm25"], "ndcg_linear@10") if "m1_bm25" in results else None
+    base_recall = per_query(results["m1_bm25"], "recall@100") if "m1_bm25" in results else None
     rows = {}
     for method, result in results.items():
         overall = result["test"]["aggregate"]["overall"]["metrics"]
         ndcg = per_query(result, "ndcg_linear@10")
         delta = paired_bootstrap(ndcg, base, groups) if base and method != "m1_bm25" else None
+        delta_recall = (paired_bootstrap(per_query(result, "recall@100"), base_recall, groups)
+                        if base_recall and method != "m1_bm25" else None)
         wins = ties = losses = 0
         if base and method != "m1_bm25":
             for qid, value in ndcg.items():
@@ -102,6 +105,9 @@ def summarize(dataset):
             "test_queries": result["test"]["counts"]["eligible"],
             "ndcg10_ci": paired_bootstrap(ndcg, None, groups),
             "delta_vs_bm25": delta, "verdict_vs_bm25": verdict(delta) if delta else None,
+            "delta_recall100_vs_bm25": delta_recall,
+            "verdict_recall100_vs_bm25": verdict(delta_recall) if delta_recall else None,
+            "dev_grid_top": [{"label": row["label"], "ndcg10": row["dev"]["ndcg_linear@10"]} for row in (result.get("dev_grid") or [])],
             "wins_ties_losses_vs_bm25": [wins, ties, losses] if delta else None,
             "by_origin": {k: {"n": len(v), "ndcg10": float(np.mean(v))} for k, v in sorted(by_origin.items())},
             "by_label": {k: {"n": len(v), "ndcg10": float(np.mean(v))} for k, v in sorted(by_label.items())},
