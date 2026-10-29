@@ -64,23 +64,26 @@ def main():
 
     corpus = load_corpus(args.dataset)
     doc_ids, texts = [d["doc_id"] for d in corpus], [d["text"] for d in corpus]
-    tokenized, analyze_seconds = {}, {}
+    del corpus
+    label = lambda c: f"{c['analyzer']}-k1={c['k1']}-b={c['b']}"
+    rows, analyze_seconds, options_by_name = [], {}, {}
+    # one analyzer at a time: four tokenized corpora do not fit the machine's free RAM
     for options in ANALYZERS:
         analyzer = Analyzer(**options)
+        options_by_name[analyzer.name] = options
         started = time.perf_counter()
-        tokenized[analyzer.name] = (analyzer, [analyzer(t) for t in texts])
+        tokens = [analyzer(t) for t in texts]
         analyze_seconds[analyzer.name] = time.perf_counter() - started
         print(f"[{METHOD_ID}] tokenized corpus with {analyzer.name} in {analyze_seconds[analyzer.name]:.0f}s", flush=True)
-
-    def build(config):
-        analyzer, tokens = tokenized[config["analyzer"]]
-        return BM25Search(doc_ids, tokens, analyzer, config["k1"], config["b"])
-
-    grid = [{"analyzer": name, "k1": k1, "b": b} for name in tokenized for k1 in K1 for b in B]
-    grid.append({"analyzer": "fold=1-stem=1-stop=1", "k1": 0.9, "b": 0.4})  # Anserini default, kept for reference
-    rows = tune(build, grid, args.dataset, METHOD_ID, lambda c: f"{c['analyzer']}-k1={c['k1']}-b={c['b']}")
+        grid = [{"analyzer": analyzer.name, "k1": k1, "b": b} for k1 in K1 for b in B]
+        if analyzer.name == "fold=1-stem=1-stop=1":
+            grid.append({"analyzer": analyzer.name, "k1": 0.9, "b": 0.4})  # Anserini default, kept for reference
+        rows += tune(lambda c: BM25Search(doc_ids, tokens, analyzer, c["k1"], c["b"]), grid, args.dataset, METHOD_ID, label)
+        del tokens
+    rows.sort(key=lambda row: row["dev"]["ndcg_linear@10"], reverse=True)
     best = rows[0]["config"]
-    search = build(best)
+    analyzer = Analyzer(**options_by_name[best["analyzer"]])
+    search = BM25Search(doc_ids, [analyzer(t) for t in texts], analyzer, best["k1"], best["b"])
 
     index_dir = ARTIFACTS / "indexes" / args.dataset / METHOD_ID
     shutil.rmtree(index_dir, ignore_errors=True)
