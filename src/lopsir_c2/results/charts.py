@@ -114,7 +114,10 @@ def quality_vs_latency(summary, out):
     for m, x, y in points:
         color = SERIES[0] if rows[m]["role"] == "main" else ABLATION
         ax.plot(x, y, "o", color=color, markersize=10, markeredgecolor=SURFACE, markeredgewidth=2, zorder=3)
-        ax.annotate(rows[m]["name"], (x, y), xytext=(8, 4), textcoords="offset points", fontsize=9, color=INK)
+        # ablations cluster near the main methods: short codes keep labels apart (names are in the bar chart)
+        label = rows[m]["name"] if rows[m]["role"] == "main" else rows[m]["name"].split(" ")[0]
+        ax.annotate(label, (x, y), xytext=(8, 4), textcoords="offset points", fontsize=9,
+                    color=INK if rows[m]["role"] == "main" else INK2)
     frontier, best = [], -1
     for m, x, y in sorted(points, key=lambda p: p[1]):
         if y > best:
