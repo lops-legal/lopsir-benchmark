@@ -82,8 +82,9 @@ def summarize(dataset):
             for qid, value in ndcg.items():
                 d = value - base[qid]
                 wins, ties, losses = wins + (d > 1e-9), ties + (abs(d) <= 1e-9), losses + (d < -1e-9)
-        latency = result.get("latency_first_pass_test") or {}
         rounds = result.get("latency") or {}
+        # results written before the first-pass field existed are local methods, whose repeated rounds are end to end
+        latency = result.get("latency_first_pass_test") or rounds
         by_origin, by_label = {}, {}
         for qid, value in ndcg.items():
             q = queries[qid]
