@@ -1,6 +1,6 @@
 # C2 — resultados comparativos (gerado)
 
-Gerado em 2026-10-29 09:10 UTC a partir de `reports/c2/*/result.json`, commit `4ab4d7df8d`.
+Gerado em 2026-10-29 09:50 UTC a partir de `reports/c2/*/result.json`, commit `c54bfbe65d`.
 Conjunto: JurisTCU (EXCERTO, 16.045 documentos), **70 consultas C2 de teste** (35 reais + 35 sintéticas), qrels 0–3 originais.
 Configurações escolhidas só no dev (30 consultas) pela nDCG@10 e avaliadas uma vez no teste.
 IC95%: bootstrap pareado, 10,000 reamostragens de grupos de consulta, semente 42.
@@ -16,13 +16,14 @@ Itálico = ablação ou referência, não conta entre as cinco metodologias.
 | *M2a RM3 (ablação)* | expansão sem LLM | 0.348 [0.294, 0.401] | +0.007 [-0.007, +0.021] | inconclusivo | 0.290 | 0.341 | 0.604 | 0.612 | 6.2 | 762 | 0 |
 | M1 BM25 | mais barata | 0.341 [0.285, 0.396] | — | baseline | 0.280 | 0.342 | 0.591 | 0.614 | 0.2 | 802 | 0 |
 | M2 Query2doc | expansão por LLM | 0.306 [0.250, 0.361] | -0.035 [-0.060, -0.011] | inferior | 0.254 | 0.328 | 0.573 | 0.541 | 2197.0 | 762 | 26,249 |
+| M4 BGE-M3 | modelo único multilíngue | 0.283 [0.236, 0.332] | -0.058 [-0.112, -0.004] | inferior | 0.220 | 0.267 | 0.466 | 0.588 | 52.1 | 3,364 | 0 |
 | M3 SPLADE-PT-BR | esparso aprendido | 0.230 [0.183, 0.278] | -0.111 [-0.160, -0.062] | inferior | 0.197 | 0.255 | 0.476 | 0.423 | 23.3 | 2,787 | 0 |
 
 ## Hipóteses
 
 | Hipótese (SDD §8) | Evidência no teste | Leitura |
 |---|---|---|
-| H2 — BM25 ajustado é difícil de superar em C2 | M2 Query2doc -0.035 [-0.060, -0.011]; M3 SPLADE-PT-BR -0.111 [-0.160, -0.062]; M5 Híbrido +0.023 [+0.010, +0.036] | rejeitada em parte: superam o BM25 M5 Híbrido; inferiores ao BM25: M2 Query2doc, M3 SPLADE-PT-BR |
+| H2 — BM25 ajustado é difícil de superar em C2 | M2 Query2doc -0.035 [-0.060, -0.011]; M3 SPLADE-PT-BR -0.111 [-0.160, -0.062]; M4 BGE-M3 -0.058 [-0.112, -0.004]; M5 Híbrido +0.023 [+0.010, +0.036] | rejeitada em parte: superam o BM25 M5 Híbrido; inferiores ao BM25: M2 Query2doc, M3 SPLADE-PT-BR, M4 BGE-M3 |
 | H5 — expansão controlada ajuda C2 (LLM) | Δ nDCG@10 -0.035 [-0.060, -0.011] | inferior contra o BM25 |
 | H5 — expansão sem LLM (RM3) | Δ nDCG@10 +0.007 [-0.007, +0.021] | inconclusivo contra o BM25 |
 | H7 — SPLADE entra na fronteira qualidade/custo | Δ nDCG@10 -0.111 [-0.160, -0.062]; p50 23.3 ms | inferior contra o BM25 |
@@ -50,6 +51,7 @@ Itálico = ablação ou referência, não conta entre as cinco metodologias.
 | M2a RM3 (ablação) | 0.213 (35) | 0.484 (35) |
 | M1 BM25 | 0.195 (35) | 0.487 (35) |
 | M2 Query2doc | 0.156 (35) | 0.456 (35) |
+| M4 BGE-M3 | 0.202 (35) | 0.365 (35) |
 | M3 SPLADE-PT-BR | 0.172 (35) | 0.288 (35) |
 
 ![Por origem](charts/by_origin.png)
@@ -97,6 +99,16 @@ Desacordo lexical × denso, maiores ganhos e perdas contra o BM25 e a tabela con
 - **Teste:** nDCG@10 0.230, nDCG@20 0.273, P@20 0.154, Hit@1 0.257, Judged@10 0.197
 - **Latência p50 por etapa (1º passe, ms):** encode_query 12.4, score 10.0, rank 0.4
 - **Recursos:** pico RAM 2,787 MiB; índice 160 MiB; VRAM 915 MiB; requisições API 0; custo faturado US$ 0.00
+
+### M4 BGE-M3
+
+- **Método:** BGE-M3 unificado (denso + pesos lexicais aprendidos, combinação no dev)
+- **Hipótese de vantagem:** modelo único multilíngue: sinal lexical e semântico numa só passada, local e sem chave
+- **Artigo:** https://arxiv.org/abs/2402.03216 · **Código:** https://github.com/FlagOpen/FlagEmbedding
+- **Configuração congelada no dev:** `{'mode': 'dense+sparse', 'w_sparse': 0.5}` (7 configurações testadas; dev nDCG@10 0.256)
+- **Teste:** nDCG@10 0.283, nDCG@20 0.317, P@20 0.161, Hit@1 0.457, Judged@10 0.220
+- **Latência p50 por etapa (1º passe, ms):** encode_query 47.8, score 4.2, rank 0.2
+- **Recursos:** pico RAM 3,364 MiB; índice 75 MiB; VRAM 2,179 MiB; requisições API 0; custo faturado US$ 0.00
 
 ### M5 Híbrido
 
