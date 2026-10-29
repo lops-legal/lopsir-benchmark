@@ -1,6 +1,6 @@
 # C2 — resultados comparativos (gerado)
 
-Gerado em 2026-10-29 10:05 UTC a partir de `reports/c2/*/result.json`, commit `438faf9469`.
+Gerado em 2026-10-29 10:25 UTC a partir de `reports/c2/*/result.json`, commit `a704f8b7c1`.
 Conjunto: JurisTCU (EXCERTO, 16.045 documentos), **70 consultas C2 de teste** (35 reais + 35 sintéticas), qrels 0–3 originais.
 Configurações escolhidas só no dev (30 consultas) pela nDCG@10 e avaliadas uma vez no teste.
 IC95%: bootstrap pareado, 10,000 reamostragens de grupos de consulta, semente 42.
@@ -13,7 +13,9 @@ Itálico = ablação ou referência, não conta entre as cinco metodologias.
 |---|---|---|---|---|---|---|---|---|---|---|---|
 | *M5r Nemotron denso (ref.)* | ramo denso isolado | 0.386 [0.334, 0.437] | +0.044 [+0.002, +0.085] | superior | 0.326 | 0.364 | 0.643 | 0.674 | 868.3 | 1,020 | 2,088 |
 | M5 Híbrido | junta tudo | 0.364 [0.308, 0.418] | +0.023 [+0.010, +0.036] | superior | 0.296 | 0.369 | 0.630 | 0.648 | 923.7 | 1,020 | 2,088 |
+| *M5b Híbrido c/ Nemotron 1B (ablação)* | encoder 8x menor | 0.357 [0.301, 0.410] | +0.015 [+0.007, +0.024] | superior | 0.291 | 0.358 | 0.606 | 0.652 | 737.9 | 770 | 2,088 |
 | *M2a RM3 (ablação)* | expansão sem LLM | 0.348 [0.294, 0.401] | +0.007 [-0.007, +0.021] | inconclusivo | 0.290 | 0.341 | 0.604 | 0.612 | 6.2 | 762 | 0 |
+| *M5br Nemotron 1B denso (ref.)* | ramo denso 1B isolado | 0.348 [0.297, 0.399] | +0.007 [-0.043, +0.053] | inconclusivo | 0.290 | 0.335 | 0.597 | 0.629 | 742.6 | 770 | 2,088 |
 | M1 BM25 | mais barata | 0.341 [0.285, 0.396] | — | baseline | 0.280 | 0.342 | 0.591 | 0.614 | 0.2 | 802 | 0 |
 | M2 Query2doc | expansão por LLM | 0.306 [0.250, 0.361] | -0.035 [-0.060, -0.011] | inferior | 0.254 | 0.328 | 0.573 | 0.541 | 2197.0 | 762 | 26,249 |
 | M4 BGE-M3 | modelo único multilíngue | 0.283 [0.236, 0.332] | -0.058 [-0.112, -0.004] | inferior | 0.220 | 0.267 | 0.466 | 0.588 | 52.1 | 3,364 | 0 |
@@ -48,7 +50,9 @@ Itálico = ablação ou referência, não conta entre as cinco metodologias.
 |---|---|---|
 | M5r Nemotron denso (ref.) | 0.248 (35) | 0.523 (35) |
 | M5 Híbrido | 0.213 (35) | 0.515 (35) |
+| M5b Híbrido c/ Nemotron 1B (ablação) | 0.212 (35) | 0.502 (35) |
 | M2a RM3 (ablação) | 0.213 (35) | 0.484 (35) |
+| M5br Nemotron 1B denso (ref.) | 0.217 (35) | 0.479 (35) |
 | M1 BM25 | 0.195 (35) | 0.487 (35) |
 | M2 Query2doc | 0.156 (35) | 0.456 (35) |
 | M4 BGE-M3 | 0.202 (35) | 0.365 (35) |
@@ -158,4 +162,24 @@ Desacordo lexical × denso, maiores ganhos e perdas contra o BM25 e a tabela con
 - **Teste:** nDCG@10 0.386, nDCG@20 0.420, P@20 0.221, Hit@1 0.557, Judged@10 0.326
 - **Latência p50 por etapa (1º passe, ms):** lexical 0.0, encode_query 848.7, dense 19.2, fuse 0.0
 - **Recursos:** pico RAM 1,020 MiB; índice — MiB; VRAM — MiB; requisições API 200; custo faturado US$ 0.00
+
+### M5b Híbrido c/ Nemotron 1B (ablação)
+
+- **Método:** Ablação de M5: híbrido BM25 + Nemotron 3.5 Embed 1B (encoder 8x menor)
+- **Hipótese de vantagem:** custo menor de embedding mantendo o ganho do híbrido
+- **Artigo:** https://arxiv.org/abs/2210.11934 · **Código:** https://github.com/AmenRa/ranx
+- **Configuração congelada no dev:** `{'fusion': 'convex', 'depth': 1000, 'param': 0.1}` (15 configurações testadas; dev nDCG@10 0.404)
+- **Teste:** nDCG@10 0.357, nDCG@20 0.407, P@20 0.214, Hit@1 0.529, Judged@10 0.291
+- **Latência p50 por etapa (1º passe, ms):** lexical 0.9, encode_query 725.8, dense 8.8, fuse 2.2
+- **Recursos:** pico RAM 770 MiB; índice — MiB; VRAM — MiB; requisições API 200; custo faturado US$ 0.00
+
+### M5br Nemotron 1B denso (ref.)
+
+- **Método:** Referência: denso Nemotron 3.5 Embed 1B puro
+- **Hipótese de vantagem:** controle: mede o ramo semântico isolado para atribuir o ganho da fusão
+- **Artigo:** https://arxiv.org/abs/2210.11934 · **Código:** https://github.com/AmenRa/ranx
+- **Configuração congelada no dev:** `{'fusion': 'dense_only', 'depth': 100, 'param': None}` (0 configurações testadas; dev nDCG@10 0.360)
+- **Teste:** nDCG@10 0.348, nDCG@20 0.384, P@20 0.204, Hit@1 0.500, Judged@10 0.290
+- **Latência p50 por etapa (1º passe, ms):** lexical 0.0, encode_query 734.0, dense 8.5, fuse 0.0
+- **Recursos:** pico RAM 770 MiB; índice — MiB; VRAM — MiB; requisições API 200; custo faturado US$ 0.00
 

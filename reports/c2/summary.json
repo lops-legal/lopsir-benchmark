@@ -1811,6 +1811,397 @@
       "api_prompt_tokens": 2088,
       "api_requests": 200,
       "billed_usd": 0.0
+    },
+    "m5_hybrid_1b_ablation": {
+      "name": "M5b Híbrido c/ Nemotron 1B (ablação)",
+      "role": "ablation",
+      "method_name": "Ablação de M5: híbrido BM25 + Nemotron 3.5 Embed 1B (encoder 8x menor)",
+      "advantage_hypothesis": "custo menor de embedding mantendo o ganho do híbrido",
+      "paper": "https://arxiv.org/abs/2210.11934",
+      "code": "https://github.com/AmenRa/ranx",
+      "config": {
+        "fusion": "convex",
+        "depth": 1000,
+        "param": 0.1
+      },
+      "configs_tried": 15,
+      "dev_ndcg10": 0.40377134946033444,
+      "test": {
+        "ndcg_linear@10": 0.356643911351689,
+        "ndcg_linear@20": 0.4074210568040862,
+        "precision@10": 0.2914285714285714,
+        "precision@20": 0.21428571428571427,
+        "recall@1": 0.04493776065204636,
+        "recall@10": 0.2441186591186591,
+        "recall@20": 0.3575792461506747,
+        "recall@100": 0.6064686900401186,
+        "mrr@10": 0.6517233560090703,
+        "hit@1": 0.5285714285714286,
+        "judged_fraction@10": 0.2914285714285714
+      },
+      "test_queries": 70,
+      "ndcg10_ci": {
+        "mean": 0.356643911351689,
+        "ci95": [
+          0.3012210316515729,
+          0.41003910924991277
+        ],
+        "n": 70,
+        "groups": 69,
+        "resamples": 10000
+      },
+      "delta_vs_bm25": {
+        "mean": 0.015492044952286057,
+        "ci95": [
+          0.006776158228332418,
+          0.024467386459046156
+        ],
+        "n": 70,
+        "groups": 69,
+        "resamples": 10000
+      },
+      "verdict_vs_bm25": "superior",
+      "delta_recall100_vs_bm25": {
+        "mean": 0.015152704438418721,
+        "ci95": [
+          0.006243207275815972,
+          0.02452139527139527
+        ],
+        "n": 70,
+        "groups": 69,
+        "resamples": 10000
+      },
+      "verdict_recall100_vs_bm25": "superior",
+      "dev_grid_top": [
+        {
+          "label": "convex-depth=1000-p=0.1",
+          "ndcg10": 0.40377134946033444
+        },
+        {
+          "label": "convex-depth=1000-p=0.3",
+          "ndcg10": 0.4003974613843611
+        },
+        {
+          "label": "convex-depth=1000-p=0.2",
+          "ndcg10": 0.3984414550371586
+        },
+        {
+          "label": "convex-depth=1000-p=0.4",
+          "ndcg10": 0.3967778749482401
+        },
+        {
+          "label": "rrf-depth=1000-p=10",
+          "ndcg10": 0.3898811843012092
+        },
+        {
+          "label": "rrf-depth=100-p=10",
+          "ndcg10": 0.3897220858860358
+        },
+        {
+          "label": "convex-depth=1000-p=0.5",
+          "ndcg10": 0.38844025481089034
+        },
+        {
+          "label": "convex-depth=1000-p=0.6",
+          "ndcg10": 0.3834413854638787
+        },
+        {
+          "label": "rrf-depth=1000-p=60",
+          "ndcg10": 0.38147681895347785
+        },
+        {
+          "label": "convex-depth=1000-p=0.7",
+          "ndcg10": 0.3802203850790788
+        },
+        {
+          "label": "convex-depth=1000-p=0.8",
+          "ndcg10": 0.37971831569047326
+        },
+        {
+          "label": "rrf-depth=100-p=60",
+          "ndcg10": 0.37906944562298445
+        },
+        {
+          "label": "rrf-depth=1000-p=100",
+          "ndcg10": 0.3774330740297828
+        },
+        {
+          "label": "rrf-depth=100-p=100",
+          "ndcg10": 0.3750021777526824
+        },
+        {
+          "label": "convex-depth=1000-p=0.9",
+          "ndcg10": 0.366616202014721
+        }
+      ],
+      "wins_ties_losses_vs_bm25": [
+        32,
+        20,
+        18
+      ],
+      "by_origin": {
+        "real_keyword": {
+          "n": 35,
+          "ndcg10": 0.21173199121336028
+        },
+        "synthetic_keyword": {
+          "n": 35,
+          "ndcg10": 0.5015558314900178
+        }
+      },
+      "by_label": {
+        "cited_reference": {
+          "n": 1,
+          "ndcg10": 0.22156532175481156
+        },
+        "length_long": {
+          "n": 9,
+          "ndcg10": 0.5266187173267631
+        },
+        "length_medium": {
+          "n": 37,
+          "ndcg10": 0.40295804197116486
+        },
+        "length_short": {
+          "n": 24,
+          "ndcg10": 0.22150240773934426
+        },
+        "multi_concept_e": {
+          "n": 24,
+          "ndcg10": 0.28743484587317925
+        },
+        "unaccented_typing": {
+          "n": 3,
+          "ndcg10": 0.19309770112014876
+        }
+      },
+      "latency_end_to_end_first_pass": {
+        "n": 70,
+        "mean_ms": 753.6810085715842,
+        "p50_ms": 737.9441500006578,
+        "p95_ms": 872.6074999994124,
+        "p99_ms": 916.9652489990041
+      },
+      "latency_stages_first_pass": {
+        "lexical": {
+          "n": 70,
+          "mean_ms": 0.9292828571363186,
+          "p50_ms": 0.8870500005286885,
+          "p95_ms": 1.2373599992315576,
+          "p99_ms": 1.3730490002308222
+        },
+        "encode_query": {
+          "n": 70,
+          "mean_ms": 741.5733842856623,
+          "p50_ms": 725.8257999992566,
+          "p95_ms": 860.6688050004776,
+          "p99_ms": 904.155566000136
+        },
+        "dense": {
+          "n": 70,
+          "mean_ms": 8.848974285813581,
+          "p50_ms": 8.80935000077443,
+          "p95_ms": 9.153394999157172,
+          "p99_ms": 9.392057999993995
+        },
+        "fuse": {
+          "n": 70,
+          "mean_ms": 2.2471357143201334,
+          "p50_ms": 2.2237500006667688,
+          "p95_ms": 2.6025149993984082,
+          "p99_ms": 3.208607000451595
+        }
+      },
+      "latency_repeated": {
+        "n": 70,
+        "mean_ms": 771.0275771428963,
+        "p50_ms": 760.9057500003473,
+        "p95_ms": 912.1432899996762,
+        "p99_ms": 922.9779229989435
+      },
+      "qps_sequential": 1.296970471154325,
+      "resources": {
+        "peak_rss_bytes": 807395328,
+        "index_build_seconds": 23.96008620000066,
+        "bm25_frozen_from_m1": {
+          "analyzer": "fold=1-stem=0-stop=1",
+          "k1": 1.2,
+          "b": 0.75
+        },
+        "dense_matrix_bytes": 131440640,
+        "dense_shape": [
+          16045,
+          2048
+        ]
+      },
+      "api_prompt_tokens": 2088,
+      "api_requests": 200,
+      "billed_usd": 0.0
+    },
+    "m5_dense_1b_reference": {
+      "name": "M5br Nemotron 1B denso (ref.)",
+      "role": "ablation",
+      "method_name": "Referência: denso Nemotron 3.5 Embed 1B puro",
+      "advantage_hypothesis": "controle: mede o ramo semântico isolado para atribuir o ganho da fusão",
+      "paper": "https://arxiv.org/abs/2210.11934",
+      "code": "https://github.com/AmenRa/ranx",
+      "config": {
+        "fusion": "dense_only",
+        "depth": 100,
+        "param": null
+      },
+      "configs_tried": 0,
+      "dev_ndcg10": 0.360334567871385,
+      "test": {
+        "ndcg_linear@10": 0.3479266145125485,
+        "ndcg_linear@20": 0.38408102152487433,
+        "precision@10": 0.29000000000000004,
+        "precision@20": 0.20357142857142857,
+        "recall@1": 0.040775018632161486,
+        "recall@10": 0.23891291248434107,
+        "recall@20": 0.3354243375671947,
+        "recall@100": 0.5967645846217275,
+        "mrr@10": 0.6293707482993197,
+        "hit@1": 0.5,
+        "judged_fraction@10": 0.29000000000000004
+      },
+      "test_queries": 70,
+      "ndcg10_ci": {
+        "mean": 0.3479266145125485,
+        "ci95": [
+          0.29672469466885043,
+          0.3986732253055572
+        ],
+        "n": 70,
+        "groups": 69,
+        "resamples": 10000
+      },
+      "delta_vs_bm25": {
+        "mean": 0.006774748113145576,
+        "ci95": [
+          -0.04271704696726891,
+          0.052772169880512594
+        ],
+        "n": 70,
+        "groups": 69,
+        "resamples": 10000
+      },
+      "verdict_vs_bm25": "inconclusivo",
+      "delta_recall100_vs_bm25": {
+        "mean": 0.005448599020027592,
+        "ci95": [
+          -0.03318725171542074,
+          0.04309347546717418
+        ],
+        "n": 70,
+        "groups": 69,
+        "resamples": 10000
+      },
+      "verdict_recall100_vs_bm25": "inconclusivo",
+      "dev_grid_top": [],
+      "wins_ties_losses_vs_bm25": [
+        38,
+        3,
+        29
+      ],
+      "by_origin": {
+        "real_keyword": {
+          "n": 35,
+          "ndcg10": 0.2172149669853206
+        },
+        "synthetic_keyword": {
+          "n": 35,
+          "ndcg10": 0.47863826203977655
+        }
+      },
+      "by_label": {
+        "cited_reference": {
+          "n": 1,
+          "ndcg10": 0.0
+        },
+        "length_long": {
+          "n": 9,
+          "ndcg10": 0.49041882289158534
+        },
+        "length_medium": {
+          "n": 37,
+          "ndcg10": 0.35651470775134125
+        },
+        "length_short": {
+          "n": 24,
+          "ndcg10": 0.28125205929393776
+        },
+        "multi_concept_e": {
+          "n": 24,
+          "ndcg10": 0.25614514504011837
+        },
+        "unaccented_typing": {
+          "n": 3,
+          "ndcg10": 0.2004860739453903
+        }
+      },
+      "latency_end_to_end_first_pass": {
+        "n": 70,
+        "mean_ms": 770.4840571429356,
+        "p50_ms": 742.5670000002356,
+        "p95_ms": 872.6893699997162,
+        "p99_ms": 958.4395020000557
+      },
+      "latency_stages_first_pass": {
+        "lexical": {
+          "n": 70,
+          "mean_ms": 0.000568571496322485,
+          "p50_ms": 0.0005000001692678779,
+          "p95_ms": 0.0007549992915301115,
+          "p99_ms": 0.0009550006870995287
+        },
+        "encode_query": {
+          "n": 70,
+          "mean_ms": 761.9594442857176,
+          "p50_ms": 734.03375000089,
+          "p95_ms": 864.0864549998695,
+          "p99_ms": 949.7386249993178
+        },
+        "dense": {
+          "n": 70,
+          "mean_ms": 8.502365714204123,
+          "p50_ms": 8.479150000312075,
+          "p95_ms": 8.741984999505803,
+          "p99_ms": 8.829158999633364
+        },
+        "fuse": {
+          "n": 70,
+          "mean_ms": 0.0017442857435006382,
+          "p50_ms": 0.0017000002117129043,
+          "p95_ms": 0.002254999799333745,
+          "p99_ms": 0.002716999551921619
+        }
+      },
+      "latency_repeated": {
+        "n": 70,
+        "mean_ms": 785.7963285713465,
+        "p50_ms": 778.6988999996538,
+        "p95_ms": 903.3808450003562,
+        "p99_ms": 1003.0750589992753
+      },
+      "qps_sequential": 1.272594390734933,
+      "resources": {
+        "peak_rss_bytes": 807395328,
+        "index_build_seconds": 23.96008620000066,
+        "bm25_frozen_from_m1": {
+          "analyzer": "fold=1-stem=0-stop=1",
+          "k1": 1.2,
+          "b": 0.75
+        },
+        "dense_matrix_bytes": 131440640,
+        "dense_shape": [
+          16045,
+          2048
+        ]
+      },
+      "api_prompt_tokens": 2088,
+      "api_requests": 200,
+      "billed_usd": 0.0
     }
   }
 }
