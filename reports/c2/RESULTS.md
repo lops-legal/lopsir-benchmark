@@ -1,0 +1,130 @@
+# C2 — resultados comparativos (gerado)
+
+Gerado em 2026-10-29 09:10 UTC a partir de `reports/c2/*/result.json`, commit `4ab4d7df8d`.
+Conjunto: JurisTCU (EXCERTO, 16.045 documentos), **70 consultas C2 de teste** (35 reais + 35 sintéticas), qrels 0–3 originais.
+Configurações escolhidas só no dev (30 consultas) pela nDCG@10 e avaliadas uma vez no teste.
+IC95%: bootstrap pareado, 10,000 reamostragens de grupos de consulta, semente 42.
+Veredito contra o BM25: *superior/inferior* só quando o IC95% da diferença exclui zero; caso contrário *inconclusivo*.
+Itálico = ablação ou referência, não conta entre as cinco metodologias.
+
+## Quadro principal
+
+| Metodologia | Vantagem testada | nDCG@10 [IC95] | Δ vs BM25 [IC95] | Veredito | P@10 | R@20 | R@100 | MRR@10 | p50 ponta a ponta (ms) | RAM pico (MiB) | Tokens API |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| *M5r Nemotron denso (ref.)* | ramo denso isolado | 0.385 [0.333, 0.436] | +0.044 [+0.002, +0.085] | superior | 0.326 | 0.364 | 0.643 | 0.674 | 1984.4 | 1,020 | 2,088 |
+| M5 Híbrido | junta tudo | 0.364 [0.308, 0.418] | +0.023 [+0.010, +0.036] | superior | 0.296 | 0.369 | 0.630 | 0.648 | 2713.1 | 1,020 | 2,088 |
+| *M2a RM3 (ablação)* | expansão sem LLM | 0.348 [0.294, 0.401] | +0.007 [-0.007, +0.021] | inconclusivo | 0.290 | 0.341 | 0.604 | 0.612 | 6.2 | 762 | 0 |
+| M1 BM25 | mais barata | 0.341 [0.285, 0.396] | — | baseline | 0.280 | 0.342 | 0.591 | 0.614 | 0.2 | 802 | 0 |
+| M2 Query2doc | expansão por LLM | 0.306 [0.250, 0.361] | -0.035 [-0.060, -0.011] | inferior | 0.254 | 0.328 | 0.573 | 0.541 | 2197.0 | 762 | 26,249 |
+| M3 SPLADE-PT-BR | esparso aprendido | 0.230 [0.183, 0.278] | -0.111 [-0.160, -0.062] | inferior | 0.197 | 0.255 | 0.476 | 0.423 | 23.3 | 2,787 | 0 |
+
+## Hipóteses
+
+| Hipótese (SDD §8) | Evidência no teste | Leitura |
+|---|---|---|
+| H2 — BM25 ajustado é difícil de superar em C2 | M2 Query2doc -0.035 [-0.060, -0.011]; M3 SPLADE-PT-BR -0.111 [-0.160, -0.062]; M5 Híbrido +0.023 [+0.010, +0.036] | rejeitada em parte: superam o BM25 M5 Híbrido; inferiores ao BM25: M2 Query2doc, M3 SPLADE-PT-BR |
+| H5 — expansão controlada ajuda C2 (LLM) | Δ nDCG@10 -0.035 [-0.060, -0.011] | inferior contra o BM25 |
+| H5 — expansão sem LLM (RM3) | Δ nDCG@10 +0.007 [-0.007, +0.021] | inconclusivo contra o BM25 |
+| H7 — SPLADE entra na fronteira qualidade/custo | Δ nDCG@10 -0.111 [-0.160, -0.062]; p50 23.3 ms | inferior contra o BM25 |
+| H3 — híbrido aumenta cobertura | Δ R@100 +0.039 [+0.026, +0.054]; Δ nDCG@10 +0.023 [+0.010, +0.036] | cobertura superior, ranking superior |
+| H11 — fusão ajustada supera RRF | dev: melhor convexa 0.396 × melhor RRF 0.395 | exploratório (só dev, 30 consultas); configuração congelada `{'fusion': 'convex', 'depth': 1000, 'param': 0.2}` |
+
+![nDCG@10 com IC95%](charts/ndcg10_ci.png)
+
+![Diferença contra o BM25](charts/delta_vs_bm25.png)
+
+## Qualidade × latência
+
+![Qualidade × latência](charts/quality_vs_latency.png)
+
+## Cobertura
+
+![Recall por corte](charts/recall_curve.png)
+
+## Consultas reais × sintéticas
+
+| Metodologia | Reais (n) | Sintéticas (n) |
+|---|---|---|
+| M5r Nemotron denso (ref.) | 0.248 (35) | 0.522 (35) |
+| M5 Híbrido | 0.213 (35) | 0.515 (35) |
+| M2a RM3 (ablação) | 0.213 (35) | 0.484 (35) |
+| M1 BM25 | 0.195 (35) | 0.487 (35) |
+| M2 Query2doc | 0.156 (35) | 0.456 (35) |
+| M3 SPLADE-PT-BR | 0.172 (35) | 0.288 (35) |
+
+![Por origem](charts/by_origin.png)
+
+## Por tipo de consulta
+
+![Por etiqueta](charts/by_label.png)
+
+## Consulta a consulta
+
+![Deltas por consulta](charts/per_query_delta.png)
+
+## Análise de erros
+
+Desacordo lexical × denso, maiores ganhos e perdas contra o BM25 e a tabela consulta × método: [ERRORS.md](ERRORS.md).
+
+## Fichas resumidas
+
+### M1 BM25
+
+- **Método:** BM25 ajustado (analisador PT + k1/b no dev)
+- **Hipótese de vantagem:** mais barata: CPU, sem modelo, sem chave; baseline dificil de superar em C2 (H2)
+- **Artigo:** https://doi.org/10.1561/1500000019 · **Código:** https://github.com/xhluca/bm25s
+- **Configuração congelada no dev:** `{'analyzer': 'fold=1-stem=0-stop=1', 'k1': 1.2, 'b': 0.75}` (121 configurações testadas; dev nDCG@10 0.394)
+- **Teste:** nDCG@10 0.341, nDCG@20 0.389, P@20 0.205, Hit@1 0.500, Judged@10 0.280
+- **Latência p50 por etapa (1º passe, ms):** analyze 0.0, score 0.1, rank 0.1
+- **Recursos:** pico RAM 802 MiB; índice 35 MiB; VRAM — MiB; requisições API 0; custo faturado US$ 0.00
+
+### M2 Query2doc
+
+- **Método:** Query2doc: expansão por pseudodocumento gerado por LLM + BM25
+- **Hipótese de vantagem:** recall barato: reduz desencontro de vocabulário com ~1 chamada de LLM gratuita por consulta (H5)
+- **Artigo:** https://arxiv.org/abs/2303.07678 · **Código:** sem repositório oficial (ver ficha)
+- **Configuração congelada no dev:** `{'prompt': 'few4', 'repeat': 5}` (4 configurações testadas; dev nDCG@10 0.333)
+- **Teste:** nDCG@10 0.306, nDCG@20 0.357, P@20 0.195, Hit@1 0.414, Judged@10 0.254
+- **Latência p50 por etapa (1º passe, ms):** llm_generate 2195.4, analyze 0.3, score 1.1, rank 0.2
+- **Recursos:** pico RAM 762 MiB; índice — MiB; VRAM — MiB; requisições API 60; custo faturado US$ 0.00
+
+### M3 SPLADE-PT-BR
+
+- **Método:** SPLADE esparso aprendido (SPLADE-PT-BR, passagens + agregação no dev)
+- **Hipótese de vantagem:** mais precisa no paradigma lexical: pesos e expansão aprendidos, ainda em índice invertido (H7)
+- **Artigo:** https://arxiv.org/abs/2109.10086 · **Código:** https://github.com/naver/splade
+- **Configuração congelada no dev:** `{'aggregation': 'maxp'}` (2 configurações testadas; dev nDCG@10 0.229)
+- **Teste:** nDCG@10 0.230, nDCG@20 0.273, P@20 0.154, Hit@1 0.257, Judged@10 0.197
+- **Latência p50 por etapa (1º passe, ms):** encode_query 12.4, score 10.0, rank 0.4
+- **Recursos:** pico RAM 2,787 MiB; índice 160 MiB; VRAM 915 MiB; requisições API 0; custo faturado US$ 0.00
+
+### M5 Híbrido
+
+- **Método:** Híbrido BM25 + denso Nemotron 8B com fusão ajustada no dev (RRF ou convexa)
+- **Hipótese de vantagem:** junta tudo: precisão lexical do BM25 com cobertura semântica do embedding (H3/H11)
+- **Artigo:** https://arxiv.org/abs/2210.11934 · **Código:** https://github.com/AmenRa/ranx
+- **Configuração congelada no dev:** `{'fusion': 'convex', 'depth': 1000, 'param': 0.2}` (15 configurações testadas; dev nDCG@10 0.396)
+- **Teste:** nDCG@10 0.364, nDCG@20 0.417, P@20 0.221, Hit@1 0.529, Judged@10 0.296
+- **Latência p50 por etapa (1º passe, ms):** lexical 0.9, encode_query 2690.2, dense 19.9, fuse 2.1
+- **Recursos:** pico RAM 1,020 MiB; índice — MiB; VRAM — MiB; requisições API 200; custo faturado US$ 0.00
+
+### M2a RM3 (ablação)
+
+- **Método:** RM3 (ablação de M2): realimentação por pseudo-relevância sobre BM25
+- **Hipótese de vantagem:** expansão sem LLM, sem chave e sem rede; controle do ganho atribuível ao LLM
+- **Artigo:** https://ciir.cs.umass.edu/pubfiles/ir-338.pdf · **Código:** https://github.com/castorini/anserini
+- **Configuração congelada no dev:** `{'fb_docs': 20, 'fb_terms': 10, 'original_weight': 0.7}` (27 configurações testadas; dev nDCG@10 0.389)
+- **Teste:** nDCG@10 0.348, nDCG@20 0.389, P@20 0.204, Hit@1 0.500, Judged@10 0.290
+- **Latência p50 por etapa (1º passe, ms):** analyze 0.0, first_pass 0.3, feedback 4.9, score 0.7, rank 0.2
+- **Recursos:** pico RAM 762 MiB; índice — MiB; VRAM — MiB; requisições API 0; custo faturado US$ 0.00
+
+### M5r Nemotron denso (ref.)
+
+- **Método:** Referência: denso Nemotron 8B puro (ramo denso do M5)
+- **Hipótese de vantagem:** controle: mede o ramo semântico isolado para atribuir o ganho da fusão
+- **Artigo:** https://arxiv.org/abs/2210.11934 · **Código:** https://github.com/AmenRa/ranx
+- **Configuração congelada no dev:** `{'fusion': 'dense_only', 'depth': 100, 'param': None}` (0 configurações testadas; dev nDCG@10 0.375)
+- **Teste:** nDCG@10 0.385, nDCG@20 0.419, P@20 0.221, Hit@1 0.557, Judged@10 0.326
+- **Latência p50 por etapa (1º passe, ms):** lexical 0.0, encode_query 1964.7, dense 19.5, fuse 0.0
+- **Recursos:** pico RAM 1,020 MiB; índice — MiB; VRAM — MiB; requisições API 200; custo faturado US$ 0.00
+
