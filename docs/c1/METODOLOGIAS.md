@@ -1,6 +1,6 @@
 # C1 — cinco metodologias, referências e protocolo de execução
 
-Versão 0.1 — 29/10/2026. Este documento detalha C1 no nível de método e experimento. Nenhum resultado de busca é alegado. O corpus deve ser o acervo real do projeto indicado pelo usuário, sem dados fictícios nem outra coleção. A fonte informada é [lops-legal/lopsir-benchmark](https://github.com/lops-legal/lopsir-benchmark).
+Versão 0.2 — 29/10/2026. Os cinco métodos foram implementados e executados no acervo real de [leis-mcp](https://github.com/lops-legal/leis-mcp). [Protocolo realmente executado](EXECUCAO.md) e [resultados medidos](../../reports/c1/real/README.md) distinguem parâmetros fixos usados nesta rodada das grades de desenvolvimento ainda propostas abaixo. Nenhum dado fictício ou outra coleção foi usado.
 
 ## 1. Escopo da tarefa
 
@@ -42,15 +42,15 @@ As cinco famílias existem na literatura. O uso em referências jurídicas é a 
 
 ## 4. Ficha C1-M2 — BM25 lexical
 
-**Fundamento e ambiente reprodutível:** Lin et al., *Pyserini: An Easy-to-Use Python Toolkit to Support Replicable IR Research with Sparse and Dense Representations*, 2021. [arXiv:2102.10073](https://arxiv.org/abs/2102.10073). Para a formulação BM25: Robertson e Zaragoza, *The Probabilistic Relevance Framework: BM25 and Beyond*, [DOI](https://doi.org/10.1561/1500000019).
+**Fundamento e implementação desta rodada:** Lù, *BM25S: Orders of magnitude faster lexical search via eager sparse scoring*, 2024. [arXiv:2407.03618](https://arxiv.org/abs/2407.03618). Para a formulação BM25: Robertson e Zaragoza, *The Probabilistic Relevance Framework: BM25 and Beyond*, [DOI](https://doi.org/10.1561/1500000019).
 
-**Implementação pública:** [castorini/pyserini](https://github.com/castorini/pyserini), apoiado em Anserini/Lucene. A primeira execução deverá seguir uma versão fixada dessa implementação; Manticore é uma comparação de implementação posterior, não outro método inventado.
+**Implementação pública executada:** [xhluca/bm25s](https://github.com/xhluca/bm25s), versão 0.3.16, variante `lucene`, backend NumPy. A proposta inicial era [Pyserini](https://github.com/castorini/pyserini), [artigo](https://arxiv.org/abs/2102.10073). A troca foi registrada para evitar Java e dependências neurais desnecessárias nesta máquina de 8 GB; continua sendo BM25, com implementação diferente explicitamente identificada. Não alegar ter executado Pyserini/Lucene.
 
 **Arquitetura:** consulta de referência → tokenização controlada → índice invertido de referências → BM25 → candidatos de identidade. O texto indexado é a serialização determinística dos campos permitidos. Não indexar temas ou excertos e depois alegar que o ganho é resolução de identidade.
 
 **Adaptação:** preservar grupos numéricos e termos de órgão/tipo; sem stemming de identificadores; documentar segmentação de pontuação. Comparar entrada original com entrada normalizada como ablação, mantendo o mesmo pipeline de parsing quando aplicável. A referência a outro documento dentro de um excerto não se torna identidade do excerto.
 
-**Dependências verificadas na fonte inspecionada:** Python 3.12 e Java 21 no README atual; o projeto declara PyJNIus e bibliotecas como NumPy, SciPy e dependências de modelos. Isso não significa que BM25 use modelo neural. Não instalar toda a pilha pesada sem avaliar memória e alternativa oficial de execução Java do mesmo índice. Mudança de frontend precisa ser registrada.
+**Dependências executadas:** BM25S, NumPy e SciPy, com versões em `requirements-c1.lock.txt`. Não usa Java, PyJNIus, modelo neural ou API. Nesta rodada: k1=1,2; b=0,75; sem stemming/stopwords; um thread de recuperação; top-100. A grade abaixo permanece uma hipótese futura, não foi ajustada olhando o teste.
 
 **Modelos/chaves:** nenhum embedding, nenhuma chave. A presença de cliente de API nas dependências do toolkit não implica chamada remota de BM25.
 
