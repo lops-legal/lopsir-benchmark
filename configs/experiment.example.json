@@ -1,0 +1,77 @@
+{
+  "schema_version": "0.1",
+  "experiment_id": "juris-tcu-hybrid-dev-example",
+  "status": "planned",
+  "track": "C_full_pipeline",
+  "hypotheses": ["H3", "H11"],
+  "code_commit": null,
+  "dataset": {
+    "id": "ufca-llms/juris-tcu",
+    "revision": null,
+    "snapshot_sha256": null,
+    "split": "dev",
+    "split_policy": "official_when_available_else_grouped_and_frozen_before_tuning",
+    "document_view": "EXCERTO_only_for_native_reproduction",
+    "case_types": ["C2", "C3"],
+    "query_labels_revision": null,
+    "qrels_revision": null,
+    "parent_aggregation": "max_score_before_document_cutoff"
+  },
+  "seed": 42,
+  "encoder": {
+    "execution": "local_or_openrouter_to_be_selected",
+    "model_id": null,
+    "model_revision": null,
+    "provider": null,
+    "dimensions": null,
+    "dtype": "float32",
+    "normalize": true,
+    "query_instruction": null,
+    "document_instruction": null,
+    "batch_size": 1,
+    "max_tokens": 512
+  },
+  "retrieval": {
+    "lexical": {
+      "engine": "reference_bm25_to_be_implemented",
+      "engine_version": null,
+      "analyzer": null,
+      "k1": 1.2,
+      "b": 0.75,
+      "top_k": 100
+    },
+    "dense": {
+      "engine": "exact_then_pgvector_or_faiss",
+      "engine_version": null,
+      "distance": "cosine",
+      "index": "exact",
+      "top_k": 100
+    },
+    "fusion": {"method": "rrf", "rank_constant": 60},
+    "reranking": {"method": "none", "depth": 0}
+  },
+  "evaluation": {
+    "cutoffs": [10, 20, 100],
+    "binary_relevance_threshold": 1,
+    "ndcg_gain": "linear",
+    "unjudged_policy": "zero_with_judged_at_k_reported",
+    "missing_run_query_policy": "zero_when_positive_qrel_exists",
+    "no_positive_query_policy": "exclude_and_count",
+    "group_by": ["dataset", "case_type"],
+    "quality_library": null,
+    "warmup_queries": 50,
+    "timing_rounds": 5,
+    "concurrency": [1, 2, 4, 8],
+    "result_cache": false,
+    "bootstrap_samples": 10000
+  },
+  "budget": {
+    "max_api_usd": 0,
+    "network_inference_enabled": false,
+    "max_peak_vram_mib": 3000,
+    "max_disk_gib": 20,
+    "max_ram_gib": 2,
+    "notes": "Safety budgets are planned limits; no adapter currently enforces this example."
+  },
+  "outputs": {"run": null, "timings": null, "metrics": null}
+}
