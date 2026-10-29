@@ -122,10 +122,11 @@ def quality_vs_latency(summary, out):
         ax.plot(*zip(*frontier), color=INK2, linewidth=1.2, linestyle="--", zorder=2, label="fronteira de Pareto")
         ax.legend(loc="lower right")
     ax.set_xscale("log")
-    ax.set_xlabel("Latência p50 ponta a ponta por consulta, 1º passe (ms, escala log)")
+    ax.set_xlabel("Latência p50 ponta a ponta por consulta (ms, escala log)")
     ax.set_ylabel("nDCG@10 (teste)")
     ax.set_title("C2 — qualidade × latência")
-    footnote(fig, "Inclui chamada de API (embedding ou LLM) no 1º passe; CPU/GPU local da máquina de 4 GB.")
+    footnote(fig, "Métodos com API: 1º passe, incluindo a chamada (embedding ou LLM). Métodos locais: rodadas aquecidas. "
+                  "Máquina com GPU de 4 GB.")
     return save(fig, out / "quality_vs_latency.png")
 
 
