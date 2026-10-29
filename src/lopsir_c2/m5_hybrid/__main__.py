@@ -52,17 +52,33 @@ def normalize_rows(matrix):
 
 
 class DenseIndex:
-    def __init__(self, dataset):
-        self.doc_ids, matrix = EmbeddingStore(dataset, EMBEDDER, "corpus").load()
+    def __init__(self, dataset, embedder=EMBEDDER):
+        self.embedder = embedder
+        self.doc_ids, matrix = EmbeddingStore(dataset, embedder, "corpus").load()
         self.matrix = normalize_rows(matrix)
-        q_ids, q_matrix = EmbeddingStore(dataset, EMBEDDER, "queries-C2").load()
+        q_ids, q_matrix = EmbeddingStore(dataset, embedder, "queries-C2").load()
         texts = {q["query_id"]: q["text"] for q in load_queries(dataset, "C2")}
         self.query_vectors = {texts[qid]: vec for qid, vec in zip(q_ids, normalize_rows(q_matrix))}
 
     def query_vector(self, text, live):
         if live or text not in self.query_vectors:
-            return normalize_rows(embed_batch(EMBEDDER, [text], "query"))[0]
+            return normalize_rows(embed_batch(self.embedder, [text], "query"))[0]
         return self.query_vectors[text]
+
+
+# Identified ablation: the same M5 protocol with the 8x smaller encoder of the same family.
+SMALL = {"embedder": "nemotron-3.5-embed-1b", "hybrid_id": "m5_hybrid_1b_ablation", "dense_id": "m5_dense_1b_reference"}
+
+
+def cards_for(embedder):
+    if embedder == EMBEDDER:
+        return METHOD_ID, CARD, "m5_dense_reference", DENSE_CARD
+    hybrid = {**CARD, "method_name": "Ablação de M5: híbrido BM25 + Nemotron 3.5 Embed 1B (encoder 8x menor)",
+              "advantage_hypothesis": "custo menor de embedding mantendo o ganho do híbrido",
+              "models": {"dense": EMBEDDERS[embedder], "lexical": "frozen M1 BM25"}, "ablation_of": METHOD_ID}
+    dense = {**DENSE_CARD, "method_name": "Referência: denso Nemotron 3.5 Embed 1B puro",
+             "models": {"dense": EMBEDDERS[embedder]}, "ablation_of": SMALL["hybrid_id"]}
+    return SMALL["hybrid_id"], hybrid, SMALL["dense_id"], dense
 
 
 def top_k(doc_ids, scores, k):
@@ -121,10 +137,12 @@ class HybridSearch:
 def main():
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--dataset", default="juristcu")
+    parser.add_argument("--embedder", default=EMBEDDER, choices=[EMBEDDER, SMALL["embedder"]])
     args = parser.parse_args()
+    method_id, card, dense_id, dense_card = cards_for(args.embedder)
     started = time.perf_counter()
     bm25, _, frozen = load_frozen(args.dataset)
-    dense = DenseIndex(args.dataset)
+    dense = DenseIndex(args.dataset, args.embedder)
     if [str(d) for d in bm25.doc_ids] != list(dense.doc_ids):
         raise ValueError("BM25 and dense indexes must share document order")
     build_info = {"index_build_seconds": time.perf_counter() - started, "bm25_frozen_from_m1": frozen,
@@ -134,17 +152,17 @@ def main():
     grid += [{"fusion": "convex", "depth": 1000, "param": a} for a in (0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9)]
     label = lambda c: f"{c['fusion']}-depth={c['depth']}-p={c['param']}"
     build = lambda c: HybridSearch(bm25, dense, c["fusion"], c["depth"], c["param"])
-    rows = tune(build, grid, args.dataset, METHOD_ID, label)
+    rows = tune(build, grid, args.dataset, method_id, label)
     best = rows[0]["config"]
     usage = lambda: {"ledger": LEDGER.snapshot(), "billed_usd": 0.0,
                      "note": "corpus/query vectors from the free NVIDIA endpoint; tuning reused stored query vectors, "
                              "the timed passes call the API for every query"}
-    finalize(METHOD_ID, CARD, args.dataset, HybridSearch(bm25, dense, best["fusion"], best["depth"], best["param"], live=True),
+    finalize(method_id, card, args.dataset, HybridSearch(bm25, dense, best["fusion"], best["depth"], best["param"], live=True),
              best, dev_grid=rows, build_info=build_info, latency_rounds=1, usage=usage)
 
     reference = {"fusion": "dense_only", "depth": 100, "param": None}
     LEDGER.reset()  # the reference reports only its own API calls
-    finalize("m5_dense_reference", DENSE_CARD, args.dataset, HybridSearch(bm25, dense, "dense_only", 100, None, live=True),
+    finalize(dense_id, dense_card, args.dataset, HybridSearch(bm25, dense, "dense_only", 100, None, live=True),
              reference, build_info=build_info, latency_rounds=1, usage=usage)
 
 
