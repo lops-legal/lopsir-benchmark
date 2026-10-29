@@ -135,11 +135,11 @@ def main():
                      "note": "corpus/query vectors from the free NVIDIA endpoint; tuning reused stored query vectors, "
                              "the timed passes call the API for every query"}
     finalize(METHOD_ID, CARD, args.dataset, HybridSearch(bm25, dense, best["fusion"], best["depth"], best["param"], live=True),
-             best, dev_grid=rows, build_info=build_info, latency_rounds=1, usage=usage())
+             best, dev_grid=rows, build_info=build_info, latency_rounds=1, usage=usage)
 
     reference = {"fusion": "dense_only", "depth": 100, "param": None}
     finalize("m5_dense_reference", DENSE_CARD, args.dataset, HybridSearch(bm25, dense, "dense_only", 100, None, live=True),
-             reference, build_info=build_info, latency_rounds=1, usage=usage())
+             reference, build_info=build_info, latency_rounds=1, usage=usage)
 
 
 if __name__ == "__main__":

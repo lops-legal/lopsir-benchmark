@@ -158,8 +158,8 @@ def main():
         best = rows[0]["config"]
         finalize("m2_query2doc", Q2D_CARD, args.dataset, Query2doc(bm25, best["prompt"], best["repeat"], examples, cache),
                  best, dev_grid=rows, build_info=build_info, latency_rounds=1,
-                 usage={"ledger": LEDGER.snapshot(), "billed_usd": 0.0,
-                        "note": "free model; latency rounds after the first pass reuse cached expansions"},
+                 usage=lambda: {"ledger": LEDGER.snapshot(), "billed_usd": 0.0,
+                                "note": "free model; latency rounds after the first pass reuse cached expansions"},
                  extra={"few_shot_exemplar_query_ids": [e[0] for e in examples], "instruction": INSTRUCTION})
 
 

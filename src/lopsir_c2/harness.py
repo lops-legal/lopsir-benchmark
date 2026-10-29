@@ -84,6 +84,8 @@ def finalize(method_id, card, dataset, search, config, *, dev_grid=None, build_i
             # for API-backed methods this is the only pass that pays the remote call (later passes hit caches)
             first_pass = timer.summary()
     latency = measure_latency(search, dataset, latency_rounds) if latency_rounds else None
+    if callable(usage):
+        usage = usage()  # API ledgers must be read after the test and latency passes
     payload = {
         "kind": "c2_method_result", "method_id": method_id, **card,
         "dataset": dataset, "created_at_utc": datetime.now(timezone.utc).isoformat(),
