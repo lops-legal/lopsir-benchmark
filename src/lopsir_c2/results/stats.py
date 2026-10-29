@@ -10,8 +10,8 @@ ABLATIONS = ["m2_rm3_ablation", "m5_dense_reference"]
 SHORT = {"m1_bm25": "M1 BM25", "m2_query2doc": "M2 Query2doc", "m2_rm3_ablation": "M2a RM3 (ablação)",
          "m3_splade": "M3 SPLADE-PT-BR", "m4_bgem3": "M4 BGE-M3", "m5_hybrid": "M5 Híbrido",
          "m5_dense_reference": "M5r Nemotron denso (ref.)"}
-METRICS = ["ndcg_linear@10", "ndcg_linear@20", "precision@10", "precision@20", "recall@20", "recall@100",
-           "mrr@10", "hit@1", "judged_fraction@10"]
+METRICS = ["ndcg_linear@10", "ndcg_linear@20", "precision@10", "precision@20", "recall@1", "recall@10", "recall@20",
+           "recall@100", "mrr@10", "hit@1", "judged_fraction@10"]
 BOOTSTRAP = 10_000
 SEED = 42
 
