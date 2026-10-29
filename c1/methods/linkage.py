@@ -68,5 +68,6 @@ class Linkage:
             target=right if str(left).startswith("query:") else left
             hits.append(Hit(target,float(score)))
         predictions.drop_table_from_database_and_remove_from_cache()
-        table.drop_table_from_database_and_remove_from_cache()
+        # This Arrow table is created by this adapter, outside Splink's prefix.
+        table.drop_table_from_database_and_remove_from_cache(force_non_splink_table=True)
         return SearchResult(hits,total)
