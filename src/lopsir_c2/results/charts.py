@@ -4,6 +4,8 @@ Identity rule: methods are named on the axis or by direct labels, so bar charts 
 for the five main methods and muted gray for ablations/references; multi-series charts use
 the categorical slots in fixed order, always with a legend and direct labels.
 """
+import json
+
 import matplotlib
 
 matplotlib.use("Agg")
@@ -226,4 +228,29 @@ def render_all(summary, results, out):
             recall_curve(summary, out), label_heatmap(summary, out)]
     if any(r["delta_vs_bm25"] for r in summary["methods"].values()):
         made += [delta_vs_bm25(summary, out), per_query_deltas(summary, results, out)]
+    sensitivity = out.parent / "m5_hybrid" / "fusion_sensitivity.json"
+    if sensitivity.exists():
+        made.append(fusion_sensitivity(json.loads(sensitivity.read_text(encoding="utf-8")), out))
     return made
+
+
+def fusion_sensitivity(payload, out):
+    rows = payload["rows"]
+    alphas = [r["alpha"] for r in rows]
+    fig, ax = plt.subplots(figsize=(8, 4.6))
+    for k, (split, label) in enumerate((("dev", "dev (30 consultas)"), ("test", "teste (70 consultas)"))):
+        values = [r[split] for r in rows]
+        ax.plot(alphas, values, "-o", color=SERIES[k], linewidth=2, markersize=7, markeredgecolor=SURFACE,
+                markeredgewidth=2, label=label)
+        ax.annotate(label, (alphas[-1], values[-1]), xytext=(8, 0), textcoords="offset points", va="center", fontsize=8.5, color=INK)
+    frozen = payload["frozen_config"]["param"]
+    ax.axvline(frozen, color=MUTED, linestyle="--", linewidth=1)
+    ax.text(frozen, ax.get_ylim()[1], f" α congelado no dev = {frozen}", va="top", fontsize=8.5, color=INK2)
+    ax.set_xticks(alphas)
+    ax.set_xlim(-0.03, 1.25)
+    ax.set_xlabel("α = peso do ramo denso (0 = só BM25, 1 = só Nemotron denso)")
+    ax.set_ylabel("nDCG@10")
+    ax.set_title("C2 — sensibilidade da fusão convexa (diagnóstico pós-hoc)")
+    ax.legend(loc="lower right")
+    footnote(fig, "Não usado na seleção: o M5 fica congelado no α escolhido no dev. Mostra se o dev tinha sinal para escolher α.")
+    return save(fig, out / "fusion_sensitivity.png")

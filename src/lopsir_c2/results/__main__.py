@@ -153,6 +153,12 @@ Itálico = ablação ou referência, não conta entre as cinco metodologias.
 
 ![Por etiqueta](charts/by_label.png)
 
+## Sensibilidade da fusão (diagnóstico pós-hoc)
+
+Curva da fusão convexa do M5 de α=0 (só BM25) a α=1 (só denso), no dev e no teste. Não entra na seleção; mostra se o dev de 30 consultas tinha sinal para escolher α. Dados: [m5_hybrid/fusion_sensitivity.json](m5_hybrid/fusion_sensitivity.json).
+
+![Sensibilidade da fusão](charts/fusion_sensitivity.png)
+
 ## Consulta a consulta
 
 ![Deltas por consulta](charts/per_query_delta.png)
