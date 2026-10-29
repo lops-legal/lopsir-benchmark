@@ -45,6 +45,11 @@ class Ledger:
         with self.lock:
             return json.loads(json.dumps(self.rows))
 
+    def reset(self):
+        """Start a fresh account, e.g. between two methods evaluated in one process."""
+        with self.lock:
+            self.rows = {}
+
 
 LEDGER = Ledger()
 
