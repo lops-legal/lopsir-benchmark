@@ -59,6 +59,15 @@ class FusionTests(unittest.TestCase):
         self.assertAlmostEqual(fused["a"], 1 / 61)
         self.assertEqual(max(fused, key=fused.get), "b")
 
+    def test_ties_are_broken_by_doc_id(self):
+        lexical = [(f"d{i}", 1.0) for i in (5, 3, 9, 1)]
+        dense = [("d7", 0.4), ("d2", 0.4)]
+        for alpha in (0.0, 0.5):
+            ids = [d for d, _ in convex(lexical, dense, alpha)]
+            tied = [d for d, s in convex(lexical, dense, alpha) if s == max(dict(convex(lexical, dense, alpha)).values())]
+            self.assertEqual(tied, sorted(tied))
+            self.assertEqual(ids, [d for d, _ in convex(list(reversed(lexical)), list(reversed(dense)), alpha)])
+
     def test_convex_minmax_and_missing_branch(self):
         fused = dict(convex([("a", 10), ("b", 5)], [("b", 0.9), ("c", 0.5)], alpha=0.5))
         self.assertAlmostEqual(fused["a"], 0.5)   # lexical max, absent from dense

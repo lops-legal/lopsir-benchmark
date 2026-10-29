@@ -77,7 +77,12 @@ def rrf(lists, k):
     for hits in lists:
         for rank, (doc_id, _) in enumerate(hits, 1):
             fused[doc_id] = fused.get(doc_id, 0.0) + 1.0 / (k + rank)
-    return sorted(fused.items(), key=lambda item: -item[1])
+    return ranked(fused)
+
+
+def ranked(fused):
+    """Best first; ties broken by doc id so runs do not depend on Python's per-process hash seed."""
+    return sorted(fused.items(), key=lambda item: (-item[1], item[0]))
 
 
 def convex(lexical, dense, alpha):
@@ -91,7 +96,7 @@ def convex(lexical, dense, alpha):
         return {d: (s - low) / (high - low) if high > low else 1.0 for d, s in hits}
     lex, den = minmax(lexical), minmax(dense)
     fused = {d: alpha * den.get(d, 0.0) + (1 - alpha) * lex.get(d, 0.0) for d in set(lex) | set(den)}
-    return sorted(fused.items(), key=lambda item: -item[1])
+    return ranked(fused)
 
 
 class HybridSearch:
