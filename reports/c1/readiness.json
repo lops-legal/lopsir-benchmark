@@ -1,10 +1,10 @@
 {
   "kind": "study_readiness_not_a_benchmark",
   "case_type": "C1",
-  "status": "blocked",
-  "source_repository": "https://github.com/lops-legal/lopsir-benchmark",
+  "status": "preflight_checks_passed",
+  "source_repository": "https://github.com/lops-legal/leis-mcp",
   "user_reported_count": 370000,
-  "verified_record_count": null,
+  "verified_record_count": 358448,
   "methods": [
     "C1-M1",
     "C1-M2",
@@ -12,72 +12,7 @@
     "C1-M4",
     "C1-M5"
   ],
-  "issues": [
-    {
-      "code": "REAL_INPUT_NOT_CONFIGURED",
-      "field": "corpus_path"
-    },
-    {
-      "code": "REAL_INPUT_NOT_CONFIGURED",
-      "field": "queries_path"
-    },
-    {
-      "code": "REAL_INPUT_NOT_CONFIGURED",
-      "field": "qrels_path"
-    },
-    {
-      "code": "DATA_AUDIT_PENDING",
-      "field": "identity_mapping"
-    },
-    {
-      "code": "DATA_AUDIT_PENDING",
-      "field": "snapshot_sha256"
-    },
-    {
-      "code": "DATA_AUDIT_PENDING",
-      "field": "verified_record_count"
-    },
-    {
-      "code": "ADAPTER_NOT_READY",
-      "method": "C1-M1"
-    },
-    {
-      "code": "RUNTIME_NOT_LOCKED",
-      "method": "C1-M1"
-    },
-    {
-      "code": "ADAPTER_NOT_READY",
-      "method": "C1-M2"
-    },
-    {
-      "code": "RUNTIME_NOT_LOCKED",
-      "method": "C1-M2"
-    },
-    {
-      "code": "ADAPTER_NOT_READY",
-      "method": "C1-M3"
-    },
-    {
-      "code": "RUNTIME_NOT_LOCKED",
-      "method": "C1-M3"
-    },
-    {
-      "code": "ADAPTER_NOT_READY",
-      "method": "C1-M4"
-    },
-    {
-      "code": "RUNTIME_NOT_LOCKED",
-      "method": "C1-M4"
-    },
-    {
-      "code": "ADAPTER_NOT_READY",
-      "method": "C1-M5"
-    },
-    {
-      "code": "RUNTIME_NOT_LOCKED",
-      "method": "C1-M5"
-    }
-  ],
+  "issues": [],
   "research_metrics": null,
   "notes": [
     "No corpus download, inference, database provisioning or research run performed.",
