@@ -113,7 +113,7 @@ def summarize(dataset):
             "by_origin": {k: {"n": len(v), "ndcg10": float(np.mean(v))} for k, v in sorted(by_origin.items())},
             "by_label": {k: {"n": len(v), "ndcg10": float(np.mean(v))} for k, v in sorted(by_label.items())},
             "latency_end_to_end_first_pass": latency.get("total"),
-            "latency_stages_first_pass": {k: v for k, v in latency.items() if k != "total"},
+            "latency_stages_first_pass": {k: v for k, v in latency.items() if k != "total" and isinstance(v, dict)},
             "latency_repeated": rounds.get("total") if rounds else None,
             "qps_sequential": rounds.get("qps_sequential") if rounds else None,
             "resources": result.get("resources"), "api_prompt_tokens": tokens,
