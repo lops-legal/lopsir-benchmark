@@ -66,7 +66,7 @@ Latência p50 ponta a ponta: 1º passe para métodos com API (varia com a fila d
 
 1. **O BM25 ajustado é um baseline duro, mas superável em C2 (H2 rejeitada em parte).** Só o híbrido com o embedding Nemotron 3.5 Embed 8B o supera com IC95 fora de zero; três das quatro alternativas ficam significativamente abaixo. Ajustar o BM25 importou: sem stemmer, k1=1,2 e b=0,75, o dev subiu de 0,336 (default do Anserini) para 0,394.
 2. **O sinal semântico de um embedding forte ajuda até em consultas de expressão jurídica.** O ramo denso puro (referência) foi o melhor no teste (0,386), e o híbrido aumentou a cobertura (R@100 +0,039, IC fora de zero; H3 apoiada). Na matriz de desacordo, o denso vence o BM25 em 33% das consultas e perde em 20%; o BM25 ganha em referências exatas e termos técnicos (`decreto-lei 4.657/1942`, `patrimônio líquido mínimo`, `mera participação e epp`).
-3. **O dev de 30 consultas não tem sinal para escolher o peso da fusão.** Na curva pós-hoc, o dev fica plano (0,375–0,396) de α=0 a α=1, enquanto o teste cresce até α≈0,8 (0,395). A escolha α=0,2 seguiu o protocolo, mas é frágil; o próximo ciclo deve usar validação cruzada no conjunto inteiro ou mais consultas de dev antes de congelar a fusão (H11 continua exploratória: convexa 0,396 × RRF 0,395 no dev).
+3. **O dev de 30 consultas não tem sinal para escolher o peso da fusão.** Na curva pós-hoc, o dev fica plano (0,375–0,396) de α=0 a α=1, enquanto o teste cresce até α≈0,8 (0,395). A escolha α=0,2 seguiu o protocolo, mas é frágil. Uma validação cruzada exploratória (5 folds × 10 sementes, as 100 consultas) escolhe **α=0,8 em 38 de 50 folds** e dá **0,385 ± 0,005 contra 0,357 do BM25** e 0,382 do denso puro nas mesmas consultas, com IC95 contra o BM25 acima de zero em 7 de 10 repetições. Isso usa consultas de teste dentro da validação e não substitui o resultado congelado; é a configuração a congelar no próximo ciclo (H11 continua exploratória: convexa 0,396 × RRF 0,395 no dev).
 4. **Expansão por LLM atrapalha C2 (H5 rejeitada para Query2doc).** O pseudodocumento gerado pelo Nemotron Lightning dilui os termos exatos: −0,035, com perdas maiores nas consultas reais e curtas. O RM3, sem LLM, fica neutro. Em C2 a expressão do usuário deve ser preservada.
 5. **Os checkpoints esparsos/multilíngues testados não servem para C2 neste corpus sem adaptação (H7 rejeitada).** O SPLADE-PT-BR (domínio geral, mMARCO) dá peso a pontuação e stopwords e perde 0,11; o BGE-M3, truncado em 512 tokens pela GPU de 4 GB, perde 0,06. As duas falhas são, em parte, da configuração possível nesta máquina (checkpoint não jurídico; truncamento), não necessariamente dos métodos.
 6. **Consultas reais são o caso difícil.** Em todos os métodos as palavras-chave reais de usuários rendem cerca de metade das sintéticas (BM25 0,19 × 0,49), porque as sintéticas foram geradas dos resumos e herdam o vocabulário dos documentos. Resultados só em consultas sintéticas superestimam a qualidade em produção.
@@ -76,12 +76,12 @@ Latência p50 ponta a ponta: 1º passe para métodos com API (varia com a fila d
 | Perfil | Escolha | Por quê |
 |---|---|---|
 | econômico | M1 BM25 ajustado | 0,341 em 0,25 ms por consulta, CPU, sem modelo nem chave |
-| qualidade | M5 híbrido BM25 + Nemotron 8B, com α revisto por validação cruzada | único superior ao BM25 com IC fora de zero; custo dominado por um embedding de consulta por API (gratuito nesta rodada) |
+| qualidade | M5 híbrido BM25 + Nemotron 8B com α≈0,8 (indicado pela validação cruzada) | único superior ao BM25 com IC fora de zero; custo dominado por um embedding de consulta por API (gratuito nesta rodada) |
 | a evitar em C2 | Query2doc, SPLADE-PT-BR, BGE-M3 truncado | inferiores ao BM25 com IC fora de zero |
 
 ### Próximos passos sugeridos
 
-- Validação cruzada da fusão (e do roteamento por tipo de consulta, H12) usando as 100 consultas, antes de abrir um novo teste.
+- Congelar α=0,8 e confirmar em consultas C2 novas (o teste atual já foi visto pela validação cruzada); testar o roteamento por tipo de consulta (H12), já que o BM25 vence nas referências exatas.
 - Repetir no acervo de 370 mil jurisprudências quando ele tiver local: mesmos cinco módulos, formato canônico.
 - Testar Nemotron 3.5 Embed 1B (mais barato) no ramo denso e BGE-M3 com documentos inteiros em passagens.
 - Coletar mais consultas reais C2 com julgamento jurídico; o teste com 35 reais ainda dá intervalos largos.
