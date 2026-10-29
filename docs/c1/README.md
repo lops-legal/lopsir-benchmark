@@ -32,4 +32,14 @@ Todos os métodos devem fornecer latência por estágio e ponta a ponta, memóri
 
 Conectar o caminho/banco real indicado pelo usuário, mapear os campos de identidade e localizar as consultas/qrels existentes. Derivações de metadados só serão feitas com autorização específica, preservando sua origem. Não tratar consultas derivadas como logs reais de busca.
 
-Consultar o [pipeline comum](../PIPELINE.md). Fichas detalhadas, contratos e parâmetros de C1 serão adicionados na branch `c1`.
+Consultar o [pipeline comum](../PIPELINE.md) e as [cinco fichas detalhadas de C1](METODOLOGIAS.md), com dependências, fontes, parâmetros, contratos de dados e avaliação por condição. O [registro de métodos](../../configs/c1.methods.json) distingue fontes conferidas de implementações ainda pendentes.
+
+## Conferir prontidão
+
+Na raiz do repositório:
+
+```powershell
+python scripts/c1_preflight.py --config configs/c1.methods.json --output reports/c1/readiness.json
+```
+
+O comando não baixa dados nem executa métodos. O código de saída **2** significa que faltam entradas/adaptadores/versões; o relatório enumera os bloqueios e mantém métricas de pesquisa nulas. O código **1** significa configuração inválida. O código **0** significa apenas que as verificações de configuração passaram, não que a pesquisa foi executada.
