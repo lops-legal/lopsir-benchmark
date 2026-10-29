@@ -11,3 +11,4 @@ cache/
 reports/local-*
 work/
 *.zip
+*.egg-info/

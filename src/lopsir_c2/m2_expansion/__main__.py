@@ -3,8 +3,8 @@
 Main line: Query2doc (Wang, Yang & Wei, arXiv:2303.07678). An LLM writes a pseudo-document
 for the query; for sparse retrieval the query is repeated n times and concatenated with the
 pseudo-document (paper section 3). No official code was released; the method is implemented
-from the paper on top of bm25s. LLM: nvidia/nemotron-3.5-lightning:free via OpenRouter,
-reasoning disabled, temperature 0 (deterministic; the paper samples), 128 new tokens as in
+from the paper on top of bm25s. LLM: nvidia/nemotron-3.5-lightning-30b-a3b on the free NVIDIA
+API Catalog (the OpenRouter :free mirror hit its 50 requests/day cap), thinking disabled, temperature 0 (deterministic; the paper samples), 128 new tokens as in
 the paper. Prompt and few-shot policy are tuned on dev only.
 
 Identified ablation: RM3 pseudo-relevance feedback (Abdul-Jaleel et al., UMass at TREC 2004;
@@ -23,7 +23,7 @@ from ..harness import finalize, tune
 from ..m1_bm25.bm25 import load_frozen
 from ..providers import LEDGER, ChatCache, chat
 
-LLM = "nemotron-3.5-lightning@openrouter"
+LLM = "nemotron-3.5-lightning"
 MAX_NEW_TOKENS = 128
 INSTRUCTION = ("Escreva um trecho de jurisprudência do Tribunal de Contas da União (TCU) que trate da consulta, "
                "usando a terminologia jurídica que costuma aparecer nessas decisões. Responda apenas com o trecho, "
@@ -35,11 +35,13 @@ Q2D_CARD = {
     "paper": "https://arxiv.org/abs/2303.07678",
     "code": None,
     "code_note": "no official repository; implemented from the paper over github.com/xhluca/bm25s (frozen M1 configuration)",
-    "implementation": "bm25s lucene (M1 frozen) + OpenRouter chat completions",
-    "models": {"llm": "nvidia/nemotron-3.5-lightning:free", "provider": "OpenRouter", "reasoning": "disabled",
+    "implementation": "bm25s lucene (M1 frozen) + NVIDIA API Catalog chat completions",
+    "models": {"llm": "nvidia/nemotron-3.5-lightning-30b-a3b", "provider": "NVIDIA API Catalog", "reasoning": "disabled",
                "temperature": 0, "max_new_tokens": MAX_NEW_TOKENS},
-    "api": {"provider": "OpenRouter", "endpoint": "POST /api/v1/chat/completions", "key_env": "OPENROUTER_API_KEY",
-            "billing": "free model"},
+    "api": {"provider": "NVIDIA API Catalog", "endpoint": "POST https://integrate.api.nvidia.com/v1/chat/completions",
+            "key_env": "NVIDIA_API_KEY", "billing": "free trial endpoint",
+            "note": "OpenRouter nvidia/nemotron-3.5-lightning:free was tried first and hit the free-model cap of "
+                    "50 requests/day; its 54 expansions were discarded so every M2 number comes from one endpoint"},
     "gpu": False,
     "deviation_from_reference": "Portuguese legal prompt; temperature 0 instead of sampling; few-shot exemplars from dev "
                                 "queries instead of MS MARCO; BM25 not retuned.",
