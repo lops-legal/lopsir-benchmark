@@ -65,16 +65,21 @@ def publish(root):
     fig.suptitle(f'LopsIR · C1 · {len(ids)} consultas reais/derivadas de identidades reais\n341.827 entidades · 3 repetições · sem consultas fictícias',fontsize=13)
     for suffix in ('png','svg'):fig.savefig(figures/f'comparison.{suffix}',dpi=170)
     plt.close(fig)
-    fig,ax=plt.subplots(figsize=(10,5),layout='constrained')
-    for collection,marker in (('dispositivos','o'),('precedentes','s')):
+    fig,axes=plt.subplots(2,2,figsize=(12,8),layout='constrained')
+    for col,collection in enumerate(('dispositivos','precedentes')):
+        quality=[];latencies=[]
         for i,rows in enumerate(runs):
             subset=[r for r in rows if r['collection']==collection]
             times=[t for r in subset for t in r['query_ms']]
             hit=np.mean([r['metrics']['hit@1'] for r in subset])*100
-            ax.scatter(np.quantile(times,.95),hit,color=COLORS[i],marker=marker,s=65)
-            ax.annotate(f'M{i+1} {collection}',(np.quantile(times,.95),hit),xytext=(3,4),textcoords='offset points',fontsize=8)
-    ax.set_xscale('log');ax.set_xlabel('p95 local (ms, log)');ax.set_ylabel('Hit@1 (%)')
-    ax.set_title('C1 por coleção · os custos e a dificuldade diferem');ax.grid(alpha=.2)
+            quality.append(hit);latencies.append(np.quantile(times,.95))
+        for row,values in enumerate((quality,latencies)):
+            ax=axes[row,col];ax.bar(x,values,color=COLORS);ax.set_xticks(x,[f'M{i}' for i in range(1,6)])
+            ax.grid(axis='y',alpha=.15)
+            for i,v in enumerate(values):ax.text(i,v+(1 if row==0 else v*.08),f'{v:.2f}',ha='center',fontsize=9)
+            if row==0:ax.set_ylim(0,106);ax.set_title(f'{collection} · {len(subset)} consultas');ax.set_ylabel('Hit@1 (%)')
+            else:ax.set_yscale('log');ax.set_ylabel('p95 local (ms, log)')
+    fig.suptitle('C1 por coleção · mesmas consultas para os cinco métodos')
     for suffix in ('png','svg'):fig.savefig(figures/f'by-collection.{suffix}',dpi=170)
     plt.close(fig)
     lines=['# Resultados reais de C1 — primeira rodada','',
