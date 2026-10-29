@@ -27,7 +27,7 @@ def disagreement(lexical, dense, margin=0.1):
 
 def label_text(q):
     lab = q["labels"]
-    tags = [lab["length"]]
+    tags = [{"short": "curta", "medium": "média", "long": "longa"}[lab["length"]]]
     tags += [name for key, name in (("multi_concept_e", "conjunção"), ("unaccented_typing", "sem acento"),
                                     ("cited_reference", "referência")) if lab[key]]
     return f"{'real' if q['origin'] == 'real_keyword' else 'sintética'}; " + ", ".join(tags)
