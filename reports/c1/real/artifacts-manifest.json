@@ -16,5 +16,17 @@
     "corpus.parquet": 3448443,
     "linkage.duckdb": 69742592
   },
-  "note": "DuckDB file size reflects intermediate allocations, not a minimal immutable serving index."
+  "note": "DuckDB file size reflects intermediate allocations, not a minimal immutable serving index.",
+  "source_git_commit": "732bb6f7d66e3a7cc57d6cc81bf145531f01bfc9",
+  "source_query_dependencies": [
+    {
+      "path": "tests/consultas_referencia.json",
+      "sha256": "69776020670325a5722ed70c675c6ecb77faadc268d35f5a7883cc8a3734657c"
+    },
+    {
+      "path": "src/leis_mcp/apelidos.py",
+      "sha256": "853b6d3bd542d37e3de800452c34363ee29166a20db0b332a422b148f6b8d578"
+    }
+  ],
+  "source_snapshots_rechecked_after_experiment": true
 }
