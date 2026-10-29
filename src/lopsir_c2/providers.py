@@ -163,9 +163,13 @@ class EmbeddingStore:
 
 # Free chat models answering on 2026-10-29 (nemotron-3-super returned 404 for this account;
 # gemma-4-31b on NVIDIA answered but queued for ~4 minutes, so it is only a fallback).
+# Nemotron 3.5 Lightning is a reasoning model: with thinking on, short budgets return empty
+# content, so thinking is disabled explicitly (2.6 s per expansion on OpenRouter, cost 0).
 CHAT_MODELS = {
-    "nemotron-3.5-lightning@openrouter": {"provider": "openrouter", "model": "nvidia/nemotron-3.5-lightning:free"},
-    "nemotron-3.5-lightning": {"provider": "nvidia", "model": "nvidia/nemotron-3.5-lightning-30b-a3b"},
+    "nemotron-3.5-lightning@openrouter": {"provider": "openrouter", "model": "nvidia/nemotron-3.5-lightning:free",
+                                          "extra": {"reasoning": {"enabled": False}}},
+    "nemotron-3.5-lightning": {"provider": "nvidia", "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+                               "extra": {"chat_template_kwargs": {"enable_thinking": False}}},
     "gemma-4-31b": {"provider": "nvidia", "model": "google/gemma-4-31b-it"},
 }
 
@@ -193,7 +197,7 @@ class ChatCache:
 
 def chat(name, messages, *, max_tokens=256, temperature=0.0, cache=None):
     spec = CHAT_MODELS[name]
-    params = {"max_tokens": max_tokens, "temperature": temperature}
+    params = {"max_tokens": max_tokens, "temperature": temperature, **spec.get("extra", {})}
     key = cache.key(spec["model"], messages, params) if cache else None
     if cache and cache.get(key):
         return cache.get(key)
