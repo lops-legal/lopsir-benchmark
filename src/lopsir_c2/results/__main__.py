@@ -9,6 +9,7 @@ from ..common import REPORTS, write_json
 from ..harness import code_commit
 from .charts import render_all
 from .errors import write_errors
+from .export import export
 from .stats import MAIN, load_results, summarize
 
 ADVANTAGE = {"m1_bm25": "mais barata", "m2_query2doc": "expansão por LLM", "m2_rm3_ablation": "expansão sem LLM",
@@ -176,6 +177,7 @@ def main():
     charts = render_all(summary, load_results(args.dataset), REPORTS / "charts")
     write_report(summary, charts, REPORTS)
     write_errors(args.dataset, REPORTS)
+    export(summary, args.dataset, REPORTS / "dashboard")
     for _, r in sorted(summary["methods"].items(), key=lambda x: -x[1]["test"]["ndcg_linear@10"]):
         line = f"{r['name']:<28} nDCG@10 {r['test']['ndcg_linear@10']:.4f}"
         if r["delta_vs_bm25"]:
