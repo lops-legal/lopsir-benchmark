@@ -66,8 +66,10 @@ class SpladeEncoder:
             mask[row, :len(seq)] = 1
         input_ids, mask = input_ids.to(self.device), mask.to(self.device)
         logits = self.model(input_ids=input_ids, attention_mask=mask).logits
-        weights = torch.log1p(torch.relu(logits.float())) * mask.unsqueeze(-1)
+        # in place: the (batch, 256, 29794) logits buffer is the only large allocation
+        weights = logits.relu_().log1p_().mul_(mask.unsqueeze(-1))
         values = weights.max(dim=1).values.cpu().numpy()
+        del logits, weights
         return sp.csr_matrix(values)
 
     def encode_texts(self, texts):
