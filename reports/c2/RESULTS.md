@@ -1,6 +1,6 @@
 # C2 — resultados comparativos (gerado)
 
-Gerado em 2026-10-29 10:01 UTC a partir de `reports/c2/*/result.json`, commit `cc49a789d0`.
+Gerado em 2026-10-29 10:05 UTC a partir de `reports/c2/*/result.json`, commit `438faf9469`.
 Conjunto: JurisTCU (EXCERTO, 16.045 documentos), **70 consultas C2 de teste** (35 reais + 35 sintéticas), qrels 0–3 originais.
 Configurações escolhidas só no dev (30 consultas) pela nDCG@10 e avaliadas uma vez no teste.
 IC95%: bootstrap pareado, 10,000 reamostragens de grupos de consulta, semente 42.
@@ -65,6 +65,19 @@ Itálico = ablação ou referência, não conta entre as cinco metodologias.
 Curva da fusão convexa do M5 de α=0 (só BM25) a α=1 (só denso), no dev e no teste. Não entra na seleção; mostra se o dev de 30 consultas tinha sinal para escolher α. Dados: [m5_hybrid/fusion_sensitivity.json](m5_hybrid/fusion_sensitivity.json).
 
 ![Sensibilidade da fusão](charts/fusion_sensitivity.png)
+
+### Validação cruzada exploratória do α (5 folds × 10 repetições, 100 consultas)
+
+Cada fold escolhe α nos outros quatro e é pontuado com esse α. Usa consultas de teste dentro da validação: evidência para o próximo ciclo, não substitui o M5 congelado. Dados: [m5_hybrid/fusion_crossval.json](m5_hybrid/fusion_crossval.json).
+
+| Medida (100 consultas) | nDCG@10 |
+|---|---|
+| Híbrido com α por validação cruzada | 0.385 ± 0.005 |
+| BM25 (α=0) | 0.357 |
+| Nemotron denso (α=1) | 0.382 |
+
+α escolhidos nos folds: α=0.5: 4, α=0.6: 2, α=0.8: 38, α=0.9: 6. IC95 da diferença contra o BM25 acima de zero em 7 de 10 repetições.
+
 
 ## Consulta a consulta
 
