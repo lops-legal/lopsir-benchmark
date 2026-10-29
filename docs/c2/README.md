@@ -59,6 +59,8 @@ Cada método grava `reports/c2/<método>/result.json` (configuração, grade do 
 | M3 SPLADE-PT-BR | esparso aprendido | 0,230 | −0,111 [−0,160; −0,062] | inferior | 23 ms (GPU local) |
 | *ablação* RM3 | expansão sem LLM | 0,348 | +0,007 [−0,007; +0,022] | inconclusivo | 6 ms |
 | *referência* Nemotron denso puro | ramo denso | 0,386 | +0,044 [+0,002; +0,085] | superior | ~0,9 s (API) |
+| *ablação* híbrido com Nemotron 1B | encoder 8× menor | 0,357 | +0,016 [+0,007; +0,025] | superior | ~0,74 s (API) |
+| *referência* Nemotron 1B denso puro | ramo denso 1B | 0,348 | +0,007 [−0,043; +0,053] | inconclusivo | ~0,74 s (API) |
 
 Latência p50 ponta a ponta: 1º passe para métodos com API (varia com a fila do provedor gratuito) e rodadas aquecidas para os locais. Detalhes, gráficos e fichas: [reports/c2/RESULTS.md](../../reports/c2/RESULTS.md); análise de erros: [reports/c2/ERRORS.md](../../reports/c2/ERRORS.md).
 
@@ -69,7 +71,8 @@ Latência p50 ponta a ponta: 1º passe para métodos com API (varia com a fila d
 3. **O dev de 30 consultas não tem sinal para escolher o peso da fusão.** Na curva pós-hoc, o dev fica plano (0,375–0,396) de α=0 a α=1, enquanto o teste cresce até α≈0,8 (0,395). A escolha α=0,2 seguiu o protocolo, mas é frágil. Uma validação cruzada exploratória (5 folds × 10 sementes, as 100 consultas) escolhe **α=0,8 em 38 de 50 folds** e dá **0,385 ± 0,005 contra 0,357 do BM25** e 0,382 do denso puro nas mesmas consultas, com IC95 contra o BM25 acima de zero em 7 de 10 repetições. Isso usa consultas de teste dentro da validação e não substitui o resultado congelado; é a configuração a congelar no próximo ciclo (H11 continua exploratória: convexa 0,396 × RRF 0,395 no dev).
 4. **Expansão por LLM atrapalha C2 (H5 rejeitada para Query2doc).** O pseudodocumento gerado pelo Nemotron Lightning dilui os termos exatos: −0,035, com perdas maiores nas consultas reais e curtas. O RM3, sem LLM, fica neutro. Em C2 a expressão do usuário deve ser preservada.
 5. **Os checkpoints esparsos/multilíngues testados não servem para C2 neste corpus sem adaptação (H7 rejeitada).** O SPLADE-PT-BR (domínio geral, mMARCO) dá peso a pontuação e stopwords e perde 0,11; o BGE-M3, truncado em 512 tokens pela GPU de 4 GB, perde 0,06. As duas falhas são, em parte, da configuração possível nesta máquina (checkpoint não jurídico; truncamento), não necessariamente dos métodos.
-6. **Consultas reais são o caso difícil.** Em todos os métodos as palavras-chave reais de usuários rendem cerca de metade das sintéticas (BM25 0,19 × 0,49), porque as sintéticas foram geradas dos resumos e herdam o vocabulário dos documentos. Resultados só em consultas sintéticas superestimam a qualidade em produção.
+6. **O encoder grande importa, mas o híbrido protege.** Com o Nemotron 3.5 Embed 1B (8× menor, corpus codificado em 12 min contra 48 min), o denso puro cai para 0,348 (inconclusivo contra o BM25), mas o híbrido continua superior (0,357, +0,016). O 8B vale ~+0,04 no ramo denso.
+7. **Consultas reais são o caso difícil.** Em todos os métodos as palavras-chave reais de usuários rendem cerca de metade das sintéticas (BM25 0,19 × 0,49), porque as sintéticas foram geradas dos resumos e herdam o vocabulário dos documentos. Resultados só em consultas sintéticas superestimam a qualidade em produção.
 
 ### Recomendação por perfil (C2, este corpus)
 
@@ -83,7 +86,7 @@ Latência p50 ponta a ponta: 1º passe para métodos com API (varia com a fila d
 
 - Congelar α=0,8 e confirmar em consultas C2 novas (o teste atual já foi visto pela validação cruzada); testar o roteamento por tipo de consulta (H12), já que o BM25 vence nas referências exatas.
 - Repetir no acervo de 370 mil jurisprudências quando ele tiver local: mesmos cinco módulos, formato canônico.
-- Testar Nemotron 3.5 Embed 1B (mais barato) no ramo denso e BGE-M3 com documentos inteiros em passagens.
+- Testar BGE-M3 com documentos inteiros em passagens (MaxP), em vez de truncar em 512 tokens.
 - Coletar mais consultas reais C2 com julgamento jurídico; o teste com 35 reais ainda dá intervalos largos.
 
 ## Critérios
