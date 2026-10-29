@@ -38,4 +38,4 @@ A fixture é ilustrativa e usa IDs fictícios `demo-*`. O avaliador do kit adota
 
 Destino: [lops-legal/lopsir-benchmark](https://github.com/lops-legal/lopsir-benchmark). Projeto **LopsIR Benchmark**, com histórico organizado por entregas: base do projeto, metodologia, configuração de experimentos, avaliação de rankings e diagnóstico local.
 
-Email de autoria dos commits: `lucascardososilva@usp.br`. Dados, índices, credenciais e PDF não fazem parte do repositório. A escolha de licença do projeto permanece pendente; as licenças dos datasets e modelos devem ser registradas separadamente na ingestão. Veja [os avisos de fontes](NOTICE.md).
+Dados, índices, credenciais e PDF não fazem parte do repositório. A escolha de licença do projeto permanece pendente; as licenças dos datasets e modelos devem ser registradas separadamente na ingestão. Veja [os avisos de fontes](NOTICE.md).
