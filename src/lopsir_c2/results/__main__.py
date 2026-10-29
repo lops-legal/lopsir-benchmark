@@ -3,6 +3,7 @@
 Usage: python -m lopsir_c2.results --dataset juristcu
 """
 import argparse
+import json
 from datetime import datetime, timezone
 
 from ..common import REPORTS, write_json
@@ -92,6 +93,24 @@ def hypotheses(summary):
     return "\n".join(out)
 
 
+def crossval_section():
+    path = REPORTS / "m5_hybrid" / "fusion_crossval.json"
+    if not path.exists():
+        return ""
+    d = json.loads(path.read_text(encoding="utf-8"))
+    above = sum(1 for r in d["repeats_detail"] if r["delta_vs_bm25"]["ci95"][0] > 0)
+    picks = ", ".join(f"α={a}: {n}" for a, n in d["alpha_pick_counts"].items())
+    return (f"### Validação cruzada exploratória do α ({d['folds']} folds × {d['repeats']} repetições, {d['queries']} consultas)\n\n"
+            f"Cada fold escolhe α nos outros quatro e é pontuado com esse α. Usa consultas de teste dentro da validação: "
+            f"evidência para o próximo ciclo, não substitui o M5 congelado. Dados: "
+            f"[m5_hybrid/fusion_crossval.json](m5_hybrid/fusion_crossval.json).\n\n"
+            f"| Medida (100 consultas) | nDCG@10 |\n|---|---|\n"
+            f"| Híbrido com α por validação cruzada | {d['cv_ndcg10_mean']:.3f} ± {d['cv_ndcg10_sd']:.3f} |\n"
+            f"| BM25 (α=0) | {d['bm25_ndcg10_all']:.3f} |\n"
+            f"| Nemotron denso (α=1) | {d['dense_ndcg10_all']:.3f} |\n\n"
+            f"α escolhidos nos folds: {picks}. IC95 da diferença contra o BM25 acima de zero em {above} de {d['repeats']} repetições.\n")
+
+
 def cards(summary):
     rows = summary["methods"]
     parts = []
@@ -158,6 +177,8 @@ Itálico = ablação ou referência, não conta entre as cinco metodologias.
 Curva da fusão convexa do M5 de α=0 (só BM25) a α=1 (só denso), no dev e no teste. Não entra na seleção; mostra se o dev de 30 consultas tinha sinal para escolher α. Dados: [m5_hybrid/fusion_sensitivity.json](m5_hybrid/fusion_sensitivity.json).
 
 ![Sensibilidade da fusão](charts/fusion_sensitivity.png)
+
+{crossval_section()}
 
 ## Consulta a consulta
 
