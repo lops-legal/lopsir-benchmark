@@ -14,10 +14,10 @@ import shutil
 import time
 
 import bm25s
-import numpy as np
 
 from ..common import ARTIFACTS, Analyzer, dir_bytes, load_corpus, peak_rss_bytes
 from ..harness import finalize, tune
+from .bm25 import BM25Search
 
 METHOD_ID = "m1_bm25"
 CARD = {
@@ -34,27 +34,6 @@ CARD = {
 ANALYZERS = [dict(fold=f, stem=s, stopwords=True) for f, s in itertools.product((True, False), repeat=2)]
 K1 = [0.6, 0.9, 1.2, 1.5, 1.8]
 B = [0.2, 0.4, 0.6, 0.75, 0.9, 1.0]
-
-
-class BM25Search:
-    def __init__(self, doc_ids, tokens, analyzer, k1, b):
-        self.doc_ids = np.asarray(doc_ids)
-        self.analyzer = analyzer
-        started = time.perf_counter()
-        self.index = bm25s.BM25(method="lucene", k1=k1, b=b)
-        self.index.index(tokens, show_progress=False)
-        self.index_seconds = time.perf_counter() - started
-
-    def __call__(self, text, timer):
-        with timer.stage("analyze"):
-            query = self.analyzer(text)
-        with timer.stage("score"):
-            scores = self.index.get_scores(query)
-        with timer.stage("rank"):
-            top = np.argpartition(-scores, 100)[:100]
-            top = top[np.argsort(-scores[top], kind="stable")]
-            hits = [(self.doc_ids[i], float(scores[i])) for i in top if scores[i] > 0]
-        return hits
 
 
 def main():
