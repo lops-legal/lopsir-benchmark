@@ -52,15 +52,15 @@ Cada método grava `reports/c2/<método>/result.json` (configuração, grade do 
 
 | Metodologia | Vantagem testada | nDCG@10 | Δ vs BM25 [IC95] | Veredito | p50 por consulta |
 |---|---|---|---|---|---|
-| **M5 Híbrido** BM25 + Nemotron 8B | junta tudo | **0,364** | +0,023 [+0,010; +0,036] | **superior** | ~2,7 s (embedding da consulta na API) |
+| **M5 Híbrido** BM25 + Nemotron 8B | junta tudo | **0,364** | +0,023 [+0,010; +0,036] | **superior** | ~0,9 s (embedding da consulta na API; 2,7 s na 1ª rodada) |
 | M1 BM25 ajustado | mais barata | 0,341 | baseline | — | 0,25 ms |
 | M2 Query2doc | expansão por LLM | 0,306 | −0,035 [−0,060; −0,011] | inferior | ~2,2 s (LLM) |
-| M4 BGE-M3 | modelo único multilíngue | 0,283 | −0,058 [−0,112; −0,004] | inferior | 48 ms (GPU local) |
-| M3 SPLADE-PT-BR | esparso aprendido | 0,230 | −0,111 [−0,160; −0,062] | inferior | 22 ms (GPU local) |
+| M4 BGE-M3 | modelo único multilíngue | 0,283 | −0,058 [−0,112; −0,004] | inferior | 52 ms (GPU local) |
+| M3 SPLADE-PT-BR | esparso aprendido | 0,230 | −0,111 [−0,160; −0,062] | inferior | 23 ms (GPU local) |
 | *ablação* RM3 | expansão sem LLM | 0,348 | +0,007 [−0,007; +0,022] | inconclusivo | 6 ms |
-| *referência* Nemotron denso puro | ramo denso | 0,386 | +0,044 [+0,002; +0,085] | superior | ~2,0 s |
+| *referência* Nemotron denso puro | ramo denso | 0,386 | +0,044 [+0,002; +0,085] | superior | ~0,9 s (API) |
 
-Detalhes, gráficos e fichas: [reports/c2/RESULTS.md](../../reports/c2/RESULTS.md); análise de erros: [reports/c2/ERRORS.md](../../reports/c2/ERRORS.md).
+Latência p50 ponta a ponta: 1º passe para métodos com API (varia com a fila do provedor gratuito) e rodadas aquecidas para os locais. Detalhes, gráficos e fichas: [reports/c2/RESULTS.md](../../reports/c2/RESULTS.md); análise de erros: [reports/c2/ERRORS.md](../../reports/c2/ERRORS.md).
 
 ## Conclusões
 
