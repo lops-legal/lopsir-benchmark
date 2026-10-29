@@ -79,10 +79,12 @@ def encode_corpus(model, corpus, max_length, batch_size, out_dir):
     dense = np.zeros((len(corpus), MODEL["dense_dim"]), dtype=np.float32)
     lexical_rows = [None] * len(corpus)
     for start in range(0, len(order), shard_size):
-        block = np.load(shards / f"{start:08d}.npz")
+        # close each npz explicitly: Windows refuses to delete a file NpzFile still holds open
+        with np.load(shards / f"{start:08d}.npz") as block:
+            ids, vectors = block["ids"], block["dense"]
         lex = sp.load_npz(shards / f"{start:08d}.lex.npz").tocsr()
-        dense[block["ids"]] = block["dense"]
-        for k, i in enumerate(block["ids"]):
+        dense[ids] = vectors
+        for k, i in enumerate(ids):
             lexical_rows[i] = lex[k]
     lexical = sp.vstack(lexical_rows).tocsr()
     info = {"max_length": max_length, "batch_size": batch_size, "encode_seconds": time.perf_counter() - started,
