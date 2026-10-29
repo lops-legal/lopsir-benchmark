@@ -8,8 +8,10 @@ The paper's hybrid retrieval scores s = w_dense * s_dense + w_sparse * s_lex (+ 
 Dense, sparse and dense+sparse (w_sparse grid) are compared on dev and the best is frozen.
 The multi-vector (ColBERT) head is not used: storing token vectors for the corpus would need
 tens of GB, beyond the machine budget; this is recorded as a deviation.
+Documents are truncated to 512 tokens by default: XLM-R large on this GPU encodes roughly
+2k tokens/s, so 1024 tokens (~13.6M corpus tokens) would take ~2 h versus ~1 h at 512.
 
-Usage: python -m lopsir_c2.m4_bgem3 --dataset juristcu --max-length 1024
+Usage: python -m lopsir_c2.m4_bgem3 --dataset juristcu --max-length 512
 """
 import argparse
 import json
@@ -138,7 +140,7 @@ class Uncached:
 def main():
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--dataset", default="juristcu")
-    parser.add_argument("--max-length", type=int, default=1024)
+    parser.add_argument("--max-length", type=int, default=512)
     parser.add_argument("--batch-size", type=int, default=4)
     args = parser.parse_args()
     device = "cuda:0" if torch.cuda.is_available() else "cpu"
