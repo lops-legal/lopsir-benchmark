@@ -48,6 +48,44 @@ copy .env.example .env   # preencher OPENROUTER_API_KEY e NVIDIA_API_KEY
 
 Cada método grava `reports/c2/<método>/result.json` (configuração, grade do dev, métricas por consulta, latência por etapa, recursos e uso de API) e os runs de dev e teste em TSV.
 
+## Resultado (teste, 70 consultas C2)
+
+| Metodologia | Vantagem testada | nDCG@10 | Δ vs BM25 [IC95] | Veredito | p50 por consulta |
+|---|---|---|---|---|---|
+| **M5 Híbrido** BM25 + Nemotron 8B | junta tudo | **0,364** | +0,023 [+0,010; +0,036] | **superior** | ~2,7 s (embedding da consulta na API) |
+| M1 BM25 ajustado | mais barata | 0,341 | baseline | — | 0,25 ms |
+| M2 Query2doc | expansão por LLM | 0,306 | −0,035 [−0,060; −0,011] | inferior | ~2,2 s (LLM) |
+| M4 BGE-M3 | modelo único multilíngue | 0,283 | −0,058 [−0,112; −0,004] | inferior | 48 ms (GPU local) |
+| M3 SPLADE-PT-BR | esparso aprendido | 0,230 | −0,111 [−0,160; −0,062] | inferior | 22 ms (GPU local) |
+| *ablação* RM3 | expansão sem LLM | 0,348 | +0,007 [−0,007; +0,022] | inconclusivo | 6 ms |
+| *referência* Nemotron denso puro | ramo denso | 0,386 | +0,044 [+0,002; +0,085] | superior | ~2,0 s |
+
+Detalhes, gráficos e fichas: [reports/c2/RESULTS.md](../../reports/c2/RESULTS.md); análise de erros: [reports/c2/ERRORS.md](../../reports/c2/ERRORS.md).
+
+## Conclusões
+
+1. **O BM25 ajustado é um baseline duro, mas superável em C2 (H2 rejeitada em parte).** Só o híbrido com o embedding Nemotron 3.5 Embed 8B o supera com IC95 fora de zero; três das quatro alternativas ficam significativamente abaixo. Ajustar o BM25 importou: sem stemmer, k1=1,2 e b=0,75, o dev subiu de 0,336 (default do Anserini) para 0,394.
+2. **O sinal semântico de um embedding forte ajuda até em consultas de expressão jurídica.** O ramo denso puro (referência) foi o melhor no teste (0,386), e o híbrido aumentou a cobertura (R@100 +0,039, IC fora de zero; H3 apoiada). Na matriz de desacordo, o denso vence o BM25 em 33% das consultas e perde em 20%; o BM25 ganha em referências exatas e termos técnicos (`decreto-lei 4.657/1942`, `patrimônio líquido mínimo`, `mera participação e epp`).
+3. **O dev de 30 consultas não tem sinal para escolher o peso da fusão.** Na curva pós-hoc, o dev fica plano (0,375–0,396) de α=0 a α=1, enquanto o teste cresce até α≈0,8 (0,395). A escolha α=0,2 seguiu o protocolo, mas é frágil; o próximo ciclo deve usar validação cruzada no conjunto inteiro ou mais consultas de dev antes de congelar a fusão (H11 continua exploratória: convexa 0,396 × RRF 0,395 no dev).
+4. **Expansão por LLM atrapalha C2 (H5 rejeitada para Query2doc).** O pseudodocumento gerado pelo Nemotron Lightning dilui os termos exatos: −0,035, com perdas maiores nas consultas reais e curtas. O RM3, sem LLM, fica neutro. Em C2 a expressão do usuário deve ser preservada.
+5. **Os checkpoints esparsos/multilíngues testados não servem para C2 neste corpus sem adaptação (H7 rejeitada).** O SPLADE-PT-BR (domínio geral, mMARCO) dá peso a pontuação e stopwords e perde 0,11; o BGE-M3, truncado em 512 tokens pela GPU de 4 GB, perde 0,06. As duas falhas são, em parte, da configuração possível nesta máquina (checkpoint não jurídico; truncamento), não necessariamente dos métodos.
+6. **Consultas reais são o caso difícil.** Em todos os métodos as palavras-chave reais de usuários rendem cerca de metade das sintéticas (BM25 0,19 × 0,49), porque as sintéticas foram geradas dos resumos e herdam o vocabulário dos documentos. Resultados só em consultas sintéticas superestimam a qualidade em produção.
+
+### Recomendação por perfil (C2, este corpus)
+
+| Perfil | Escolha | Por quê |
+|---|---|---|
+| econômico | M1 BM25 ajustado | 0,341 em 0,25 ms por consulta, CPU, sem modelo nem chave |
+| qualidade | M5 híbrido BM25 + Nemotron 8B, com α revisto por validação cruzada | único superior ao BM25 com IC fora de zero; custo dominado por um embedding de consulta por API (gratuito nesta rodada) |
+| a evitar em C2 | Query2doc, SPLADE-PT-BR, BGE-M3 truncado | inferiores ao BM25 com IC fora de zero |
+
+### Próximos passos sugeridos
+
+- Validação cruzada da fusão (e do roteamento por tipo de consulta, H12) usando as 100 consultas, antes de abrir um novo teste.
+- Repetir no acervo de 370 mil jurisprudências quando ele tiver local: mesmos cinco módulos, formato canônico.
+- Testar Nemotron 3.5 Embed 1B (mais barato) no ramo denso e BGE-M3 com documentos inteiros em passagens.
+- Coletar mais consultas reais C2 com julgamento jurídico; o teste com 35 reais ainda dá intervalos largos.
+
 ## Critérios
 
 Principais: nDCG@10 e Precision@10/20. Complementares: MRR@10, Hit@1, Recall@1/10/20/100, Judged@10, quebras por origem (real/sintética), tamanho, conjunção e digitação sem acento. Latência p50/p95/p99 por etapa, QPS sequencial, RAM/VRAM de pico, bytes de índice, tempo de construção, requisições e tokens de API, custo faturado.
