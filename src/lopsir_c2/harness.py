@@ -75,11 +75,14 @@ def finalize(method_id, card, dataset, search, config, *, dev_grid=None, build_i
              latency_rounds=5, usage=None, extra=None, depth=DEPTH):
     """Run the frozen configuration on dev (kept) and once on test, then write result.json."""
     out = REPORTS / method_id
-    runs = {}
+    runs, first_pass = {}, None
     for split in ("dev", "test"):
         path = out / "runs" / f"{split}.tsv"
-        run_split(search, dataset, split, path, depth=depth)
+        _, timer = run_split(search, dataset, split, path, depth=depth)
         runs[split] = evaluate_run(dataset, path, split)
+        if split == "test":
+            # for API-backed methods this is the only pass that pays the remote call (later passes hit caches)
+            first_pass = timer.summary()
     latency = measure_latency(search, dataset, latency_rounds) if latency_rounds else None
     payload = {
         "kind": "c2_method_result", "method_id": method_id, **card,
@@ -88,7 +91,8 @@ def finalize(method_id, card, dataset, search, config, *, dev_grid=None, build_i
         "selection": {"metric": SELECTION_METRIC, "split": "dev", "configs_tried": len(dev_grid or [])},
         "config_selected": config, "dev_grid": dev_grid,
         "dev": runs["dev"], "test": runs["test"],
-        "latency": latency, "resources": {"peak_rss_bytes": peak_rss_bytes(), **(build_info or {})},
+        "latency": latency, "latency_first_pass_test": first_pass,
+        "resources": {"peak_rss_bytes": peak_rss_bytes(), **(build_info or {})},
         "usage": usage, **(extra or {}),
     }
     write_json(out / "result.json", payload)
