@@ -1,0 +1,39 @@
+{
+  "created_at_utc": "2026-10-29T05:48:32.700882+00:00",
+  "kind": "environment_inventory_not_a_benchmark",
+  "python": "3.12.14",
+  "platform": "Windows-11-10.0.22000-SP0",
+  "logical_processors": 12,
+  "processor": "Intel64 Family 6 Model 165 Stepping 2, GenuineIntel",
+  "memory": {
+    "status": "detected",
+    "total_bytes": 8412778496,
+    "available_bytes": 498032640
+  },
+  "gpu": {
+    "status": "detected",
+    "inventory": "NVIDIA GeForce GTX 1650, 4096 MiB, 596.49"
+  },
+  "disk": {
+    "total_bytes": 510745636864,
+    "free_bytes": 376980566016
+  },
+  "commands_in_path": {
+    "docker": false,
+    "wsl": true,
+    "git": true,
+    "uv": false
+  },
+  "modules_in_current_interpreter": {
+    "torch": false,
+    "transformers": false,
+    "sentence_transformers": false,
+    "duckdb": false,
+    "pyarrow": false,
+    "ir_measures": false
+  },
+  "notes": [
+    "PATH and modules describe this interpreter/session only.",
+    "No API requests, installs or credential inspection performed."
+  ]
+}
