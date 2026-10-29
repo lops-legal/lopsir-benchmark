@@ -182,5 +182,5 @@ Critério: ambos falham se os dois < 0.1; ambos acertam se os dois ≥ 0.5; venc
 | 95 | `Banco de Preços em Saúde referência medicamentos` | sintética; média | 0.79 | 0.73 | 0.74 | 0.80 | 0.82 | 0.79 | **0.92** | M5r |
 | 96 | `alteração contratual serviços já previstos no edital` | sintética; média | 0.34 | 0.28 | **0.44** | 0.07 | 0.43 | 0.41 | 0.40 | M3 |
 | 97 | `licitação princípio da legalidade estrita afastado` | sintética; média | **0.39** | **0.39** | 0.00 | 0.12 | **0.39** | **0.39** | **0.39** | M1/M2/M5/M2a/M5r |
-| 98 | `renovação de contrato serviços de natureza continuada pesquisa de preços` | sintética; longa | 0.50 | 0.49 | 0.51 | 0.35 | 0.58 | **0.58** | 0.55 | M2a |
+| 98 | `renovação de contrato serviços de natureza continuada pesquisa de preços` | sintética; longa | 0.50 | 0.49 | 0.51 | 0.35 | 0.58 | 0.58 | **0.59** | M5r |
 | 99 | `contratações de software cartas de exclusividade` | sintética; média | 0.45 | 0.41 | 0.16 | 0.49 | 0.41 | 0.45 | **0.56** | M5r |

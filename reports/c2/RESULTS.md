@@ -1,6 +1,6 @@
 # C2 — resultados comparativos (gerado)
 
-Gerado em 2026-10-29 09:50 UTC a partir de `reports/c2/*/result.json`, commit `c54bfbe65d`.
+Gerado em 2026-10-29 10:01 UTC a partir de `reports/c2/*/result.json`, commit `cc49a789d0`.
 Conjunto: JurisTCU (EXCERTO, 16.045 documentos), **70 consultas C2 de teste** (35 reais + 35 sintéticas), qrels 0–3 originais.
 Configurações escolhidas só no dev (30 consultas) pela nDCG@10 e avaliadas uma vez no teste.
 IC95%: bootstrap pareado, 10,000 reamostragens de grupos de consulta, semente 42.
@@ -11,8 +11,8 @@ Itálico = ablação ou referência, não conta entre as cinco metodologias.
 
 | Metodologia | Vantagem testada | nDCG@10 [IC95] | Δ vs BM25 [IC95] | Veredito | P@10 | R@20 | R@100 | MRR@10 | p50 ponta a ponta (ms) | RAM pico (MiB) | Tokens API |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| *M5r Nemotron denso (ref.)* | ramo denso isolado | 0.385 [0.333, 0.436] | +0.044 [+0.002, +0.085] | superior | 0.326 | 0.364 | 0.643 | 0.674 | 1984.4 | 1,020 | 2,088 |
-| M5 Híbrido | junta tudo | 0.364 [0.308, 0.418] | +0.023 [+0.010, +0.036] | superior | 0.296 | 0.369 | 0.630 | 0.648 | 2713.1 | 1,020 | 2,088 |
+| *M5r Nemotron denso (ref.)* | ramo denso isolado | 0.386 [0.334, 0.437] | +0.044 [+0.002, +0.085] | superior | 0.326 | 0.364 | 0.643 | 0.674 | 868.3 | 1,020 | 2,088 |
+| M5 Híbrido | junta tudo | 0.364 [0.308, 0.418] | +0.023 [+0.010, +0.036] | superior | 0.296 | 0.369 | 0.630 | 0.648 | 923.7 | 1,020 | 2,088 |
 | *M2a RM3 (ablação)* | expansão sem LLM | 0.348 [0.294, 0.401] | +0.007 [-0.007, +0.021] | inconclusivo | 0.290 | 0.341 | 0.604 | 0.612 | 6.2 | 762 | 0 |
 | M1 BM25 | mais barata | 0.341 [0.285, 0.396] | — | baseline | 0.280 | 0.342 | 0.591 | 0.614 | 0.2 | 802 | 0 |
 | M2 Query2doc | expansão por LLM | 0.306 [0.250, 0.361] | -0.035 [-0.060, -0.011] | inferior | 0.254 | 0.328 | 0.573 | 0.541 | 2197.0 | 762 | 26,249 |
@@ -28,7 +28,7 @@ Itálico = ablação ou referência, não conta entre as cinco metodologias.
 | H5 — expansão sem LLM (RM3) | Δ nDCG@10 +0.007 [-0.007, +0.021] | inconclusivo contra o BM25 |
 | H7 — SPLADE entra na fronteira qualidade/custo | Δ nDCG@10 -0.111 [-0.160, -0.062]; p50 23.3 ms | inferior contra o BM25 |
 | H3 — híbrido aumenta cobertura | Δ R@100 +0.039 [+0.026, +0.054]; Δ nDCG@10 +0.023 [+0.010, +0.036] | cobertura superior, ranking superior |
-| H11 — fusão ajustada supera RRF | dev: melhor convexa 0.396 × melhor RRF 0.395 | exploratório (só dev, 30 consultas); configuração congelada `{'fusion': 'convex', 'depth': 1000, 'param': 0.2}` |
+| H11 — fusão ajustada supera RRF | dev: melhor convexa 0.396 × melhor RRF 0.396 | exploratório (só dev, 30 consultas); configuração congelada `{'fusion': 'convex', 'depth': 1000, 'param': 0.2}` |
 
 ![nDCG@10 com IC95%](charts/ndcg10_ci.png)
 
@@ -46,7 +46,7 @@ Itálico = ablação ou referência, não conta entre as cinco metodologias.
 
 | Metodologia | Reais (n) | Sintéticas (n) |
 |---|---|---|
-| M5r Nemotron denso (ref.) | 0.248 (35) | 0.522 (35) |
+| M5r Nemotron denso (ref.) | 0.248 (35) | 0.523 (35) |
 | M5 Híbrido | 0.213 (35) | 0.515 (35) |
 | M2a RM3 (ablação) | 0.213 (35) | 0.484 (35) |
 | M1 BM25 | 0.195 (35) | 0.487 (35) |
@@ -59,6 +59,12 @@ Itálico = ablação ou referência, não conta entre as cinco metodologias.
 ## Por tipo de consulta
 
 ![Por etiqueta](charts/by_label.png)
+
+## Sensibilidade da fusão (diagnóstico pós-hoc)
+
+Curva da fusão convexa do M5 de α=0 (só BM25) a α=1 (só denso), no dev e no teste. Não entra na seleção; mostra se o dev de 30 consultas tinha sinal para escolher α. Dados: [m5_hybrid/fusion_sensitivity.json](m5_hybrid/fusion_sensitivity.json).
+
+![Sensibilidade da fusão](charts/fusion_sensitivity.png)
 
 ## Consulta a consulta
 
@@ -117,7 +123,7 @@ Desacordo lexical × denso, maiores ganhos e perdas contra o BM25 e a tabela con
 - **Artigo:** https://arxiv.org/abs/2210.11934 · **Código:** https://github.com/AmenRa/ranx
 - **Configuração congelada no dev:** `{'fusion': 'convex', 'depth': 1000, 'param': 0.2}` (15 configurações testadas; dev nDCG@10 0.396)
 - **Teste:** nDCG@10 0.364, nDCG@20 0.417, P@20 0.221, Hit@1 0.529, Judged@10 0.296
-- **Latência p50 por etapa (1º passe, ms):** lexical 0.9, encode_query 2690.2, dense 19.9, fuse 2.1
+- **Latência p50 por etapa (1º passe, ms):** lexical 0.9, encode_query 901.0, dense 19.6, fuse 2.2
 - **Recursos:** pico RAM 1,020 MiB; índice — MiB; VRAM — MiB; requisições API 200; custo faturado US$ 0.00
 
 ### M2a RM3 (ablação)
@@ -136,7 +142,7 @@ Desacordo lexical × denso, maiores ganhos e perdas contra o BM25 e a tabela con
 - **Hipótese de vantagem:** controle: mede o ramo semântico isolado para atribuir o ganho da fusão
 - **Artigo:** https://arxiv.org/abs/2210.11934 · **Código:** https://github.com/AmenRa/ranx
 - **Configuração congelada no dev:** `{'fusion': 'dense_only', 'depth': 100, 'param': None}` (0 configurações testadas; dev nDCG@10 0.375)
-- **Teste:** nDCG@10 0.385, nDCG@20 0.419, P@20 0.221, Hit@1 0.557, Judged@10 0.326
-- **Latência p50 por etapa (1º passe, ms):** lexical 0.0, encode_query 1964.7, dense 19.5, fuse 0.0
+- **Teste:** nDCG@10 0.386, nDCG@20 0.420, P@20 0.221, Hit@1 0.557, Judged@10 0.326
+- **Latência p50 por etapa (1º passe, ms):** lexical 0.0, encode_query 848.7, dense 19.2, fuse 0.0
 - **Recursos:** pico RAM 1,020 MiB; índice — MiB; VRAM — MiB; requisições API 200; custo faturado US$ 0.00
 
