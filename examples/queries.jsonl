@@ -1,0 +1,4 @@
+{"query_id":"demo-c1","text":"Referência fictícia para demonstração","case_type":"C1","origin":"synthetic_fixture","group_id":"demo-1"}
+{"query_id":"demo-c2","text":"Expressão jurídica fictícia","case_type":"C2","origin":"synthetic_fixture","group_id":"demo-2"}
+{"query_id":"demo-c3","text":"Pergunta fictícia em linguagem natural","case_type":"C3","origin":"synthetic_fixture","group_id":"demo-3"}
+{"query_id":"demo-missing","text":"Consulta com positivo e sem resultados","case_type":"C3","origin":"synthetic_fixture","group_id":"demo-4"}

@@ -1,0 +1,9 @@
+query_id	doc_id	relevance
+demo-c1	demo-doc1	1
+demo-c2	demo-doc2	3
+demo-c2	demo-doc3	1
+demo-c2	demo-doc4	0
+demo-c3	demo-doc5	2
+demo-c3	demo-doc6	1
+demo-c3	demo-doc7	0
+demo-missing	demo-doc9	1
