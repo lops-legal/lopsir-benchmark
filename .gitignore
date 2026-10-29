@@ -1,0 +1,13 @@
+.venv/
+.env
+.env.*
+!.env.example
+__pycache__/
+*.pyc
+data/
+artifacts/
+cache/
+*.pdf
+reports/local-*
+work/
+*.zip
