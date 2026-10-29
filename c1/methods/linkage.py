@@ -57,7 +57,7 @@ class Linkage:
     def search(self,query,k=20):
         name="query_"+hashlib.sha256(query.query_id.encode()).hexdigest()[:16]
         table=self.api.register(pa.Table.from_pylist([to_record("query:"+query.query_id,query.fields)],schema=ARROW_SCHEMA),table_name=name,dataset_display_name=name)
-        predictions=self.linker.inference.predict_between(self.corpus,table,warning_mode="suppress")
+        predictions=self.linker.inference.predict_between(self.corpus,table,warning_mode="auto")
         # Use SQL LIMIT before materializing Python records; include linkage time in search.
         rows=self.duck.execute(f'''SELECT entity_id_l,entity_id_r,match_probability
             FROM "{predictions.physical_name}" ORDER BY match_probability DESC,entity_id_l,entity_id_r LIMIT ?''',[k]).fetchall()

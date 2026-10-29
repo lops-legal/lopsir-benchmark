@@ -1,0 +1,45 @@
+{
+  "kind": "real_corpus_import",
+  "source_repository": "https://github.com/lops-legal/leis-mcp",
+  "source_modified": false,
+  "snapshots": [
+    {
+      "filename": "precedentes.jsonl",
+      "sha256": "0b7a53680bceb5dbbdd096269a94be9ecb9ce8d624844c879aa3b050bdcf9ee4",
+      "rows": 11253,
+      "bytes": 33877652
+    },
+    {
+      "filename": "dispositivos.jsonl",
+      "sha256": "1073f84440b85a254367f07c648427d6e9d8f493e92ebd4bfcc0517c99b58f23",
+      "rows": 347195,
+      "bytes": 578345150
+    }
+  ],
+  "elapsed_seconds": 24.85465050000039,
+  "database": {
+    "server": "PostgreSQL 18.0 on x86_64-windows, compiled by msvc-19.44.35215, 64-bit",
+    "records_by_collection": [
+      {
+        "collection": "dispositivos",
+        "rows": 347195
+      },
+      {
+        "collection": "precedentes",
+        "rows": 11253
+      }
+    ],
+    "entities_by_collection": [
+      {
+        "collection": "dispositivos",
+        "rows": 330574
+      },
+      {
+        "collection": "precedentes",
+        "rows": 11253
+      }
+    ],
+    "database_bytes": 561977023,
+    "entities_bytes": 169009152
+  }
+}
