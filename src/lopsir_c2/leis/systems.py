@@ -55,27 +55,36 @@ def collapse(task, rows):
 
 # ---------------------------------------------------------------- M0: the leis system
 
+def _leis_call(task, query, limite, max_por_norma=3):
+    if task == "dispositivo":
+        result = busca.buscar_dispositivos(consulta=query["text"], limite=limite, max_por_norma=max_por_norma)
+        return result, result["resultados"]
+    if task == "norma":
+        result = busca.normas_candidatas(consulta=query["text"], limite=limite)
+        return result, result["normas"]
+    result = busca.buscar_precedentes(consulta=query["text"], tribunais=query.get("tribunais"), limite=limite)
+    return result, result["resultados"]
+
+
+def _response_size(timer, task, query, max_por_norma=3):
+    """What the agent receives in normal use (limite=10, as in the leis benchmark), measured untimed."""
+    result, _ = _leis_call(task, query, 10, max_por_norma)
+    timer.samples.setdefault("response_chars", []).append(len(json.dumps(result, ensure_ascii=False)))
+
+
 def leis_system(task, query, timer):
     with timer.stage("search"):
-        if task == "dispositivo":
-            result = busca.buscar_dispositivos(consulta=query["text"], limite=DEPTH, max_por_norma=3)
-            rows = result["resultados"]
-        elif task == "norma":
-            result = busca.normas_candidatas(consulta=query["text"], limite=DEPTH)
-            rows = result["normas"]
-        else:
-            result = busca.buscar_precedentes(consulta=query["text"], tribunais=query.get("tribunais"), limite=DEPTH)
-            rows = result["resultados"]
-    timer.samples.setdefault("response_chars", []).append(len(json.dumps(result, ensure_ascii=False)))
+        _, rows = _leis_call(task, query, DEPTH)
+    _response_size(timer, task, query)
     return [(key, 1.0 / rank) for rank, (key, _) in enumerate(collapse(task, rows), 1)]
 
 
 def leis_system_norma_by_articles(query, timer):
     """The second norm mode of the leis benchmark: articles search with one article per norm."""
     with timer.stage("search"):
-        result = busca.buscar_dispositivos(consulta=query["text"], limite=DEPTH, max_por_norma=1)
-    timer.samples.setdefault("response_chars", []).append(len(json.dumps(result, ensure_ascii=False)))
-    return [(key, 1.0 / rank) for rank, (key, _) in enumerate(collapse("norma", result["resultados"]), 1)]
+        _, rows = _leis_call("dispositivo", query, DEPTH, max_por_norma=1)
+    _response_size(timer, "dispositivo", query, max_por_norma=1)
+    return [(key, 1.0 / rank) for rank, (key, _) in enumerate(collapse("norma", rows), 1)]
 
 
 # ---------------------------------------------------------------- M1/M2: BM25 on the same index
