@@ -127,6 +127,35 @@ class BM25:
         return [(key, float(row["relevancia"])) for key, row in self.candidates(task, query, timer)]
 
 
+class LeisCandidates:
+    """First stage = the leis system itself (M0), so a reranker keeps its candidates and adds a dense signal.
+    The first-stage score is the rank (DEPTH - rank), because leis items do not expose their weight."""
+
+    def candidates(self, task, query, timer):
+        with timer.stage("search"):
+            _, rows = _leis_call(task, query, DEPTH)
+        pairs = collapse(task, rows)
+        with timer.stage("fetch_text"):
+            if task == "dispositivo" and pairs:
+                wanted = {(row["urn"], row["artigo"]) for _, row in pairs}
+                urns = ", ".join(quote(u) for u in {u for u, _ in wanted})
+                found = {}
+                for r in manticore.sql(f"SELECT urn, artigo, titulo, rotulo, texto FROM dispositivos WHERE urn IN ({urns}) "
+                                       f"ORDER BY ordem ASC LIMIT 20000 OPTION max_matches=20000"):
+                    found.setdefault((r["urn"], r["artigo"]), r)
+        out = []
+        for rank, (key, row) in enumerate(pairs, 1):
+            if task == "dispositivo":
+                full = found.get((row["urn"], row["artigo"]), {})
+                text_row = {"titulo": row["norma"], "rotulo": row["rotulo"], "texto": full.get("texto", row.get("trecho", ""))}
+            elif task == "norma":
+                text_row = {"titulo": row["norma"], "rotulo": row.get("melhor_artigo", ""), "texto": row.get("ementa", "")}
+            else:
+                text_row = {"titulo": row["titulo"], "enunciado": row.get("enunciado", ""), "texto": ""}
+            out.append((key, {**text_row, "relevancia": DEPTH - rank + 1}))
+        return out
+
+
 # ---------------------------------------------------------------- rerankers over M1 candidates
 
 class VectorCache:

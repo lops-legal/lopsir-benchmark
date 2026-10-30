@@ -15,10 +15,11 @@ from ..harness import code_commit
 from .charts import INK, INK2, SEQUENTIAL, SERIES, SURFACE, ABLATION, footnote, save, style
 from .stats import paired_bootstrap, verdict
 
-SYSTEMS = ["m0_leis", "m1_bm25", "m2_query2doc", "m3_splade", "m4_bgem3", "m5_hybrid", "m5_hybrid_cv", "m5_dense_reference"]
+SYSTEMS = ["m0_leis", "m1_bm25", "m2_query2doc", "m3_splade", "m4_bgem3", "m5_hybrid", "m5_hybrid_cv", "m5_dense_reference", "m0_m5_hybrid", "m0_m5_hybrid_02"]
 NAMES = {"m0_leis": "M0 leis-mcp", "m1_bm25": "M1 BM25", "m2_query2doc": "M2 Query2doc", "m3_splade": "M3 SPLADE-PT-BR",
          "m4_bgem3": "M4 BGE-M3", "m5_hybrid": "M5 Híbrido (α 0,2)", "m5_hybrid_cv": "M5 Híbrido (α 0,8, CV)",
-         "m5_dense_reference": "M5r Nemotron denso"}
+         "m5_dense_reference": "M5r Nemotron denso", "m0_m5_hybrid": "M0 leis + Nemotron (α 0,8)",
+         "m0_m5_hybrid_02": "M0 leis + Nemotron (α 0,2)"}
 TASK_NAMES = {"dispositivo": "Dispositivo (artigo)", "norma": "Norma", "precedente": "Precedente"}
 COLUMNS = [("ndcg_linear@10", "nDCG@10"), ("mrr@10", "MRR@10"), ("ap_at_k_minrel@10", "MAP@10"), ("recall@10", "R@10"),
            ("hit@1", "acerto@1"), ("hit@3", "acerto@3"), ("hit@10", "acerto@10"), ("recall@100", "R@100"),

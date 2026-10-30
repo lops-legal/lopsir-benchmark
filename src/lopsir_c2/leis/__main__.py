@@ -14,7 +14,7 @@ from ..harness import code_commit
 from ..providers import LEDGER, ChatCache, chat
 from . import LEIS_REFERENCE
 from .gold import TASKS, build
-from .systems import (BM25, DEPTH, Rerank, VectorCache, bgem3_scorer, busca, leis_system,
+from .systems import (BM25, DEPTH, LeisCandidates, Rerank, VectorCache, bgem3_scorer, busca, leis_system,
                       leis_system_norma_by_articles, nemotron_scorer, splade_scorer)
 
 CUTOFFS = [1, 3, 10, 100]
@@ -32,6 +32,8 @@ CARDS = {
     "m5_hybrid": "Híbrido convexo M1 + Nemotron 8B, alfa 0,2 congelado no dev do JurisTCU, sobre os 100 primeiros do M1",
     "m5_hybrid_cv": "Híbrido convexo M1 + Nemotron 8B, alfa 0,8 indicado pela validação cruzada no JurisTCU",
     "m5_dense_reference": "Nemotron 8B denso puro reordenando os 100 primeiros do M1",
+    "m0_m5_hybrid": "M0 leis + Nemotron 8B: fusão convexa (alfa 0,8 da validação cruzada) sobre os 100 primeiros do próprio leis",
+    "m0_m5_hybrid_02": "M0 leis + Nemotron 8B: fusão convexa (alfa 0,2 congelado no dev) sobre os 100 primeiros do leis",
 }
 
 
@@ -56,8 +58,9 @@ def build_system(name):
     if name == "m4_bgem3":
         return Rerank(BM25(), bgem3_scorer())
     cache = VectorCache("nemotron-3.5-embed-8b")
-    alpha = {"m5_hybrid": 0.2, "m5_hybrid_cv": 0.8, "m5_dense_reference": None}[name]
-    system = Rerank(BM25(), nemotron_scorer(cache), alpha=alpha)
+    alpha = {"m5_hybrid": 0.2, "m5_hybrid_cv": 0.8, "m5_dense_reference": None, "m0_m5_hybrid": 0.8, "m0_m5_hybrid_02": 0.2}[name]
+    first = LeisCandidates() if name.startswith("m0_") else BM25()
+    system = Rerank(first, nemotron_scorer(cache), alpha=alpha)
     system.cache = cache
     return system
 
