@@ -1,0 +1,109 @@
+query_id	doc_id	rank	score
+precedente-01	STJ|súmula|385	1	1.000000
+precedente-01	STJ|súmula|479	2	0.500000
+precedente-02	STJ|súmula|359	1	1.000000
+precedente-02	STJ|tema repetitivo|37	2	0.500000
+precedente-03	STJ|súmula|404	1	1.000000
+precedente-03	STJ|tema repetitivo|37	2	0.500000
+precedente-03	STJ|tema repetitivo|379	3	0.333333
+precedente-03	STJ|súmula|429	4	0.250000
+precedente-03	STJ|tema repetitivo|601	5	0.200000
+precedente-04	STJ|súmula|323	1	1.000000
+precedente-04	STJ|tema repetitivo|639	2	0.500000
+precedente-04	STJ|súmula|467	3	0.333333
+precedente-04	STJ|tema repetitivo|244	4	0.250000
+precedente-04	STJ|tema repetitivo|735	5	0.200000
+precedente-04	STJ|súmula|359	6	0.166667
+precedente-04	STJ|súmula|210	7	0.142857
+precedente-04	STJ|súmula|572	8	0.125000
+precedente-04	STJ|tema repetitivo|266	9	0.111111
+precedente-04	STJ|tema repetitivo|37	10	0.100000
+precedente-04	STJ|tema repetitivo|710	11	0.090909
+precedente-05	STJ|tema repetitivo|735	1	1.000000
+precedente-05	STJ|súmula|548	2	0.500000
+precedente-05	STJ|tema repetitivo|722	3	0.333333
+precedente-06	STJ|súmula|550	1	1.000000
+precedente-06	STJ|tema repetitivo|710	2	0.500000
+precedente-07	STJ|súmula|479	1	1.000000
+precedente-07	STJ|súmula|638	2	0.500000
+precedente-08	STJ|súmula|227	1	1.000000
+precedente-08	STJ|súmula|642	2	0.500000
+precedente-08	STJ|súmula|403	3	0.333333
+precedente-09	STJ|súmula|608	1	1.000000
+precedente-09	STJ|tema repetitivo|1067	2	0.500000
+precedente-09	STJ|tema repetitivo|990	3	0.333333
+precedente-09	STJ|tema repetitivo|952	4	0.250000
+precedente-09	STJ|tema repetitivo|1032	5	0.200000
+precedente-09	STJ|tema repetitivo|989	6	0.166667
+precedente-09	STJ|tema repetitivo|1047	7	0.142857
+precedente-09	STJ|tema repetitivo|1034	8	0.125000
+precedente-09	STJ|tema repetitivo|577	9	0.111111
+precedente-09	STJ|tema repetitivo|1122	10	0.100000
+precedente-09	STJ|tema repetitivo|1095	11	0.090909
+precedente-09	STJ|tema repetitivo|1420	12	0.083333
+precedente-09	STJ|tema repetitivo|836	13	0.076923
+precedente-09	STJ|tema repetitivo|735	14	0.071429
+precedente-09	STJ|súmula|563	15	0.066667
+precedente-09	STJ|súmula|602	16	0.062500
+precedente-09	STJ|súmula|285	17	0.058824
+precedente-09	STJ|súmula|297	18	0.055556
+precedente-09	STJ|súmula|543	19	0.052632
+precedente-09	STJ|súmula|550	20	0.050000
+precedente-09	STJ|súmula|302	21	0.047619
+precedente-09	STJ|súmula|597	22	0.045455
+precedente-09	STJ|tema repetitivo|710	23	0.043478
+precedente-09	STJ|tema repetitivo|954	24	0.041667
+precedente-09	STJ|tema repetitivo|1280	25	0.040000
+precedente-09	STJ|súmula|532	26	0.038462
+precedente-09	STJ|tema repetitivo|1045	27	0.037037
+precedente-09	STJ|súmula|323	28	0.035714
+precedente-09	STJ|súmula|409	29	0.034483
+precedente-10	STF|tema de repercussão geral|1002	1	1.000000
+precedente-10	STF|tema de repercussão geral|1064	2	0.500000
+precedente-10	STF|tema de repercussão geral|134	3	0.333333
+precedente-10	STF|adi|3396	4	0.250000
+precedente-11	STF|tema de repercussão geral|1000	1	1.000000
+precedente-11	STF|súmula vinculante|13	2	0.500000
+precedente-11	STF|tema de repercussão geral|1001	3	0.333333
+precedente-12	STF|súmula vinculante|11	1	1.000000
+precedente-12	STF|tema de repercussão geral|912	2	0.500000
+precedente-12	STF|tema de repercussão geral|203	3	0.333333
+precedente-12	STF|tema de repercussão geral|636	4	0.250000
+precedente-12	STF|tema de repercussão geral|261	5	0.200000
+precedente-12	STF|tema de repercussão geral|1210	6	0.166667
+precedente-12	STF|tema de repercussão geral|1209	7	0.142857
+precedente-12	STF|tema de repercussão geral|31	8	0.125000
+precedente-12	STF|tema de repercussão geral|590	9	0.111111
+precedente-12	STF|tema de repercussão geral|1245	10	0.100000
+precedente-12	STF|tema de repercussão geral|1252	11	0.090909
+precedente-12	STF|adi|5576	12	0.083333
+precedente-12	STF|adi|5679	13	0.076923
+precedente-12	STF|súmula|175	14	0.071429
+precedente-12	STF|adi|5659	15	0.066667
+precedente-12	STF|adi|7008	16	0.062500
+precedente-12	STF|adpf|1201	17	0.058824
+precedente-12	STF|adi|4274	18	0.055556
+precedente-12	STF|súmula vinculante|36	19	0.052632
+precedente-12	STF|adi|7611	20	0.050000
+precedente-12	STF|adi|5783	21	0.047619
+precedente-12	STF|adi|4650	22	0.045455
+precedente-12	STF|tema de repercussão geral|956	23	0.043478
+precedente-12	STF|tema de repercussão geral|643	24	0.041667
+precedente-12	STF|tema de repercussão geral|183	25	0.040000
+precedente-12	STF|tema de repercussão geral|1205	26	0.038462
+precedente-12	STF|tema de repercussão geral|650	27	0.037037
+precedente-12	STF|tema de repercussão geral|633	28	0.035714
+precedente-12	STF|tema de repercussão geral|967	29	0.034483
+precedente-12	STF|tema de repercussão geral|647	30	0.033333
+precedente-12	STF|tema de repercussão geral|346	31	0.032258
+precedente-12	STF|tema de repercussão geral|506	32	0.031250
+precedente-12	STF|tema de repercussão geral|1235	33	0.030303
+precedente-13	TST|súmula|331	1	1.000000
+precedente-13	TST|orientação jurisprudencial|SDI1T-66	2	0.500000
+precedente-13	TST|orientação jurisprudencial|SDI1-225	3	0.333333
+precedente-13	TST|orientação jurisprudencial|SDI1-383	4	0.250000
+precedente-14	TST|súmula|446	1	1.000000
+precedente-14	TST|súmula|437	2	0.500000
+precedente-15	STF|tema de repercussão geral|1127	1	1.000000
+precedente-15	STF|tema de repercussão geral|295	2	0.500000
+precedente-15	STF|tema de repercussão geral|1452	3	0.333333
