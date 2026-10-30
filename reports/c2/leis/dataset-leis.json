@@ -1,0 +1,23 @@
+{
+  "kind": "leis_gold_manifest",
+  "source": "github.com/lops-legal/leis-mcp tests/consultas_referencia.json",
+  "reference_sha256": "f578670b18314326af0ed9a78e97020f497be7fa39194e25b0d8aa40a0eb5de9",
+  "relevance": "binary (gold items = 1)",
+  "split": "test only; no tuning on this corpus",
+  "tasks": {
+    "dispositivo": {
+      "queries": 21,
+      "qrels": 25
+    },
+    "norma": {
+      "queries": 17,
+      "qrels": 19
+    },
+    "precedente": {
+      "queries": 15,
+      "qrels": 15
+    }
+  },
+  "direct_lookups": 8,
+  "note": "consulta_direta (8 identity lookups) is C1 and is scored only for the leis system itself"
+}

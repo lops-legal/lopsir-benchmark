@@ -4,6 +4,8 @@ Estudo reprodutível de arquiteturas de recuperação de informação jurídica.
 
 **Versão:** 0.1 — 29/10/2026. **Estado:** especificação e kit inicial; experimentos reais ainda não executados. **Repositório do projeto:** `lops-legal/lopsir-benchmark`.
 
+**Atualização operacional de 29/10/2026:** o usuário determinou C1 → C2 → C3, cinco métodos publicados por caso e uso do acervo próprio de aproximadamente 370 mil jurisprudências reais. A localização desse acervo ainda precisa ser configurada. O [pipeline atual](docs/PIPELINE.md) prevalece sobre a ordem de execução e sugestões de importação deste SDD amplo. Não gerar dados fictícios nem importar novas coleções. As fixtures existentes são somente testes unitários históricos. As branches de trabalho são `c1`, `c2`, `c3` e `jua`.
+
 SDD significa aqui desenvolvimento guiado por especificação: perguntas, contratos de dados, experimentos, critérios de aceitação e evidências precisam estar definidos antes da implementação dos adaptadores. A finalidade é encontrar arquiteturas adequadas a cada uso, sem escolher antecipadamente um banco ou um modelo vencedor.
 
 ## 1. Pergunta central e limites da pesquisa

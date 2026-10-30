@@ -1,0 +1,352 @@
+<meta name="dash-one-writer">
+<style>
+  .c2 { font-family: var(--font-anthropic-sans); display: grid; gap: var(--cds-gap-lg); max-width: 76rem; margin-inline: auto; }
+  .c2 h1 { font-family: var(--font-anthropic-serif); font-weight: 400; font-size: var(--cds-font-size-title); margin: 0; text-wrap: balance; }
+  .c2 h2 { font-size: var(--cds-font-size-heading); font-weight: var(--cds-font-weight-medium); margin: 0; }
+  .c2 p { margin: 0; }
+  .c2 .lede { color: var(--color-fg-muted); max-width: 68ch; }
+  .c2 .lede b, .c2 .tile b { font-weight: 600; }
+  .c2 .tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 12rem), 1fr)); gap: var(--cds-gap-md); }
+  .c2 .tile { background: var(--color-panel); border: 1px solid var(--color-border-line); border-radius: var(--cds-radius); padding: var(--cds-pad-md) var(--cds-pad-lg); display: grid; gap: var(--cds-gap-xs); }
+  .c2 .tile .label { font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); }
+  .c2 .tile .value { font-family: var(--font-anthropic-serif); font-weight: 400; font-size: var(--cds-font-size-title); font-variant-numeric: tabular-nums; }
+  .c2 .tile .note { font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); font-variant-numeric: tabular-nums; }
+  .c2 .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 26rem), 1fr)); gap: var(--cds-gap-md); }
+  .c2 .card { background: var(--color-panel); border: 1px solid var(--color-border-line); border-radius: var(--cds-radius); padding: var(--cds-pad-lg); display: grid; gap: var(--cds-gap-sm); min-width: 0; align-content: start; }
+  .c2 .card .note { font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); }
+  .c2 .chart { position: relative; min-height: 15rem; }
+  .c2 .chart svg { display: block; overflow: visible; }
+  .c2 .chart text { fill: var(--color-fg-muted); font-size: 11px; font-family: var(--font-anthropic-sans); }
+  .c2 .chart text.strong { fill: var(--color-fg); }
+  .c2 .tip { position: absolute; pointer-events: none; background: var(--cds-surface-popover); border: 1px solid var(--cds-border); border-radius: var(--cds-radius); box-shadow: var(--cds-shadow-popover); padding: var(--cds-pad-xs) var(--cds-pad-sm); font-size: var(--cds-font-size-caption); white-space: nowrap; font-variant-numeric: tabular-nums; z-index: 2; }
+  .c2 .tip .k { color: var(--cds-text-secondary); }
+  .c2 .legend { display: flex; flex-wrap: wrap; gap: var(--cds-gap-md); font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); }
+  .c2 .legend span::before { content: ""; display: inline-block; width: .7rem; height: .7rem; border-radius: 2px; margin-right: .35rem; vertical-align: -1px; background: var(--sw); }
+  .c2 .scroll { overflow: auto; max-height: 30rem; }
+  .c2 table { border-collapse: collapse; width: 100%; font-size: var(--cds-font-size-caption); font-variant-numeric: tabular-nums; }
+  .c2 th, .c2 td { padding: var(--cds-pad-xs) var(--cds-pad-sm); text-align: right; border-bottom: 1px solid var(--color-border-line); }
+  .c2 th:first-child, .c2 td:first-child, .c2 .text { text-align: left; }
+  .c2 th { position: sticky; top: 0; background: var(--color-panel); font-weight: var(--cds-font-weight-medium); }
+  .c2 th button { all: unset; cursor: pointer; }
+  .c2 th button:focus-visible { outline: 2px solid currentColor; }
+  .c2 input[type=search] { font: inherit; padding: var(--cds-pad-xs) var(--cds-pad-sm); border: 1px solid var(--color-border-line); border-radius: var(--cds-radius); background: var(--color-bg); color: var(--color-fg); max-width: 20rem; }
+  .c2 td.best { font-weight: 600; color: var(--color-fg); }
+  .c2 .pill { display: inline-block; padding: 0 .45rem; border-radius: 999px; border: 1px solid var(--color-border-line); }
+  .c2 .pill.sup { color: var(--color-ok); } .c2 .pill.inf { color: var(--color-bad); }
+  [data-dash-source-state=empty] { color: transparent; }
+  [data-dash-source-state=refreshing] { opacity: .5; transition: opacity var(--cds-dur-slow); }
+</style>
+
+<div class="c2">
+  <header style="display:grid;gap:var(--cds-gap-sm)">
+    <h1 id="top">C2 — busca por expressão jurídica no JurisTCU</h1>
+    <p class="lede">Melhor metodologia no teste: <b data-draw="best-name" data-source="best" data-field="method">—</b>, com nDCG@10 de <b data-draw="best-ndcg" data-source="best" data-field="ndcg10">—</b> contra <b data-draw="bm25-ndcg" data-source="methods" data-field="ndcg10" data-where="method_id=m1_bm25">—</b> do BM25. A diferença é <b data-draw="best-verdict" data-source="best" data-field="verdict">—</b> pelo intervalo de 95%. 70 consultas de teste (35 reais, 35 sintéticas), 16.045 documentos, configurações escolhidas só no dev.</p>
+  </header>
+
+  <section class="tiles" aria-label="Destaques">
+    <div class="tile"><span class="label">BM25 ajustado (baseline)</span><span class="value" data-draw="t-bm25" data-source="methods" data-field="ndcg10" data-where="method_id=m1_bm25">—</span><span class="note">nDCG@10 no teste</span></div>
+    <div class="tile"><span class="label">Melhor metodologia</span><span class="value" data-draw="t-best" data-source="best" data-field="ndcg10">—</span><span class="note" data-draw="t-best-name" data-source="best" data-field="method">—</span></div>
+    <div class="tile"><span class="label">Ganho do melhor sobre o BM25</span><span class="value" data-draw="t-delta" data-source="best" data-field="delta">—</span><span class="note" data-draw="t-delta-ci" data-source="best" data-field="delta_ci">—</span></div>
+    <div class="tile"><span class="label">Consultas reais × sintéticas (BM25)</span><span class="value" data-draw="t-real" data-source="methods" data-field="real_ndcg10" data-where="method_id=m1_bm25">—</span><span class="note">nDCG@10 das reais; sintéticas: <b data-draw="t-syn" data-source="methods" data-field="synthetic_ndcg10" data-where="method_id=m1_bm25">—</b></span></div>
+  </section>
+
+  <section class="grid">
+    <article class="card" id="ndcg">
+      <h2>Qualidade de ranking por metodologia</h2>
+      <p class="note">nDCG@10 no teste com intervalo de 95% (bootstrap pareado por grupo de consulta). Tracejado: BM25.</p>
+      <div class="legend"><span style="--sw:var(--c2-main)">metodologia</span><span style="--sw:var(--cds-chart-muted)">ablação ou referência</span></div>
+      <div class="chart" data-draw="ndcg-chart" data-source="methods"></div>
+    </article>
+    <article class="card" id="delta">
+      <h2>Diferença contra o BM25</h2>
+      <p class="note">Média da diferença por consulta e intervalo de 95%. À direita de zero é melhor; um intervalo que cruza zero é inconclusivo.</p>
+      <div class="chart" data-draw="delta-chart" data-source="methods"></div>
+    </article>
+    <article class="card" id="pareto">
+      <h2>Qualidade × latência</h2>
+      <p class="note">Latência p50 ponta a ponta por consulta no 1º passe (inclui chamada de API), escala log. Máquina com GPU de 4 GB.</p>
+      <div class="chart" data-draw="pareto-chart" data-source="methods"></div>
+    </article>
+    <article class="card" id="origem">
+      <h2>Consultas reais × sintéticas</h2>
+      <p class="note">nDCG@10 por origem. As sintéticas vieram dos resumos (ENUNCIADO) e herdam o vocabulário dos documentos.</p>
+      <div class="legend"><span style="--sw:var(--c2-s0)">reais de usuários (35)</span><span style="--sw:var(--c2-s1)">sintéticas (35)</span></div>
+      <div class="chart" data-draw="origin-chart" data-source="methods"></div>
+    </article>
+  </section>
+
+  <article class="card" id="metodos">
+    <h2>Todas as métricas</h2>
+    <p class="note">Teste, 70 consultas. Clique no cabeçalho para ordenar.</p>
+    <div class="scroll">
+      <table data-source="methods" data-row-key="method_id">
+        <thead><tr>
+          <th class="text" data-field="method"><button data-sort="method">Metodologia</button></th>
+          <th class="text" data-field="advantage"><button data-sort="advantage">Vantagem testada</button></th>
+          <th data-field="ndcg10"><button data-sort="ndcg10">nDCG@10</button></th>
+          <th data-field="delta"><button data-sort="delta">Δ vs BM25</button></th>
+          <th class="text" data-field="verdict"><button data-sort="verdict">Veredito</button></th>
+          <th data-field="p10"><button data-sort="p10">P@10</button></th>
+          <th data-field="r20"><button data-sort="r20">R@20</button></th>
+          <th data-field="r100"><button data-sort="r100">R@100</button></th>
+          <th data-field="mrr10"><button data-sort="mrr10">MRR@10</button></th>
+          <th data-field="hit1"><button data-sort="hit1">Hit@1</button></th>
+          <th data-field="p50_ms"><button data-sort="p50_ms">p50 ms</button></th>
+          <th data-field="ram_mib"><button data-sort="ram_mib">RAM MiB</button></th>
+          <th data-field="api_tokens"><button data-sort="api_tokens">Tokens API</button></th>
+        </tr></thead>
+        <tbody data-draw="methods-body"></tbody>
+      </table>
+    </div>
+  </article>
+
+  <article class="card" id="consultas">
+    <h2>Consulta a consulta</h2>
+    <p class="note">nDCG@10 de cada consulta de teste; em negrito o melhor da linha. M2a e M5r são ablação e referência.</p>
+    <input type="search" id="q-search" placeholder="Filtrar consultas" aria-label="Filtrar consultas">
+    <div class="scroll">
+      <table data-source="per_query" data-row-key="query_id">
+        <thead><tr>
+          <th data-field="query_id">Id</th><th class="text" data-field="query">Consulta</th><th class="text" data-field="origin">Origem</th>
+          <th data-field="M1">M1</th><th data-field="M2">M2</th><th data-field="M3">M3</th><th data-field="M4">M4</th><th data-field="M5">M5</th><th data-field="M2a">M2a</th><th data-field="M5r">M5r</th>
+        </tr></thead>
+        <tbody data-draw="query-body"></tbody>
+      </table>
+    </div>
+  </article>
+</div>
+
+<script>
+  const root = document.getElementById('dash-root');
+  const cs = getComputedStyle(root);
+  root.style.setProperty('--c2-main', dash.colors[0]);
+  root.style.setProperty('--c2-s0', dash.colors[0]);
+  root.style.setProperty('--c2-s1', dash.colors[1]);
+
+  const f3 = d3.format('.3f');
+  const signed = d3.format('+.3f');
+  const rowsOf = (id) => { const d = dash.data(id); return d.status === 'ok' ? (Array.isArray(d.data) ? d.data : d.data.rows || []) : null; };
+  window.c2 = { f3, signed, rowsOf };
+
+  dash.calc('best', {
+    inputs: ['methods'],
+    title: 'Melhor metodologia principal',
+    description: 'A metodologia principal (não ablação) com maior nDCG@10 no teste, com sua diferença pareada contra o BM25.',
+    fn: (methods) => {
+      const main = methods.filter((m) => m.role === 'principal');
+      const best = main.reduce((a, b) => (Number(b.ndcg10) > Number(a.ndcg10) ? b : a), main[0]);
+      const sign = (v) => `${v >= 0 ? '+' : ''}${Number(v).toFixed(3)}`;
+      return [{ method: best.method, ndcg10: Number(best.ndcg10), delta: Number(best.delta), verdict: best.verdict,
+                delta_ci: `IC95 ${sign(best.delta_low)} a ${sign(best.delta_high)}` }];
+    },
+  });
+
+  const text = (name, source, pick) => dash.draw(name, (el) => {
+    const rows = rowsOf(source);
+    el.textContent = rows && rows.length ? pick(rows) : '—';
+  });
+  const bm = (rows) => rows.find((r) => r.method_id === 'm1_bm25');
+  text('best-name', 'best', (r) => r[0].method);
+  text('best-ndcg', 'best', (r) => f3(r[0].ndcg10));
+  text('best-verdict', 'best', (r) => (r[0].verdict === 'superior' ? 'significativa (superior)' : r[0].verdict === 'inferior' ? 'significativa (inferior)' : 'inconclusiva'));
+  text('bm25-ndcg', 'methods', (r) => f3(bm(r).ndcg10));
+  text('t-bm25', 'methods', (r) => f3(bm(r).ndcg10));
+  text('t-best', 'best', (r) => f3(r[0].ndcg10));
+  text('t-best-name', 'best', (r) => r[0].method);
+  text('t-delta', 'best', (r) => signed(r[0].delta));
+  text('t-delta-ci', 'best', (r) => r[0].delta_ci);
+  text('t-real', 'methods', (r) => f3(bm(r).real_ndcg10));
+  text('t-syn', 'methods', (r) => f3(bm(r).synthetic_ndcg10));
+
+  function tooltip(el) {
+    let tip = el.querySelector('.tip');
+    if (!tip) { tip = document.createElement('div'); tip.className = 'tip'; tip.hidden = true; el.appendChild(tip); }
+    return {
+      show(event, lines) {
+        tip.replaceChildren(...lines.map(([k, v], i) => { const d = document.createElement('div'); if (i === 0) { d.className = 'k'; d.textContent = k; } else { d.textContent = `${k}: ${v}`; } return d; }));
+        tip.hidden = false;
+        const box = el.getBoundingClientRect();
+        const x = event.clientX - box.left, y = event.clientY - box.top;
+        const w = tip.offsetWidth;
+        tip.style.left = `${Math.min(Math.max(0, x + 12), box.width - w)}px`;
+        tip.style.top = `${Math.max(0, y - 10 - tip.offsetHeight)}px`;
+      },
+      hide() { tip.hidden = true; },
+    };
+  }
+  window.c2.tooltip = tooltip;
+
+  function measure(svg, labels) {
+    const t = svg.append('text').attr('class', 'strong');
+    const w = d3.max(labels, (s) => { t.text(s); return t.node().getComputedTextLength(); }) || 0;
+    t.remove();
+    return w;
+  }
+  window.c2.measure = measure;
+  const muted = () => getComputedStyle(root).getPropertyValue('--cds-chart-muted').trim() || '#999';
+
+  dash.draw('ndcg-chart', (el) => {
+    const rows = rowsOf('methods');
+    el.replaceChildren();
+    if (!rows) { el.textContent = '—'; return; }
+    const data = [...rows].sort((a, b) => b.ndcg10 - a.ndcg10);
+    const width = el.clientWidth || 400, barH = 22, gap = 12;
+    const svg = d3.select(el).append('svg').attr('width', '100%');
+    const left = measure(svg, data.map((d) => d.method)) + 12;
+    const valueW = 46, right = valueW + 8;
+    const height = data.length * (barH + gap) + 24;
+    svg.attr('viewBox', `0 0 ${width} ${height}`);
+    const x = d3.scaleLinear([0, Math.max(0.6, d3.max(data, (d) => d.ndcg10_high))], [left, width - right]);
+    const y = (i) => i * (barH + gap);
+    svg.append('g').selectAll('line').data(x.ticks(5)).join('line').attr('x1', x).attr('x2', x).attr('y1', 0).attr('y2', height - 20).attr('stroke', 'var(--cds-chart-grid)');
+    svg.append('g').selectAll('text').data(x.ticks(5)).join('text').attr('x', x).attr('y', height - 4).attr('text-anchor', 'middle').text(d3.format('.1f'));
+    const bmRow = bm(rows);
+    const tip = tooltip(el);
+    const g = svg.append('g').selectAll('g').data(data).join('g').attr('transform', (d, i) => `translate(0,${y(i)})`);
+    g.append('text').attr('class', 'strong').attr('x', left - 12).attr('y', barH / 2).attr('dy', '0.35em').attr('text-anchor', 'end').text((d) => d.method);
+    g.append('rect').attr('x', x(0)).attr('y', 0).attr('height', barH).attr('rx', 4).attr('width', (d) => x(d.ndcg10) - x(0))
+      .attr('fill', (d) => (d.role === 'principal' ? dash.colors[0] : muted()));
+    g.append('line').attr('x1', (d) => x(d.ndcg10_low)).attr('x2', (d) => x(d.ndcg10_high)).attr('y1', barH / 2).attr('y2', barH / 2).attr('stroke', 'var(--color-fg)').attr('stroke-width', 1.5);
+    g.append('text').attr('class', 'strong').attr('x', (d) => x(d.ndcg10_high) + 6).attr('y', barH / 2).attr('dy', '0.35em').text((d) => f3(d.ndcg10));
+    if (bmRow) svg.append('line').attr('x1', x(bmRow.ndcg10)).attr('x2', x(bmRow.ndcg10)).attr('y1', -4).attr('y2', height - 20).attr('stroke', 'var(--cds-chart-reference)').attr('stroke-dasharray', '4 3');
+    g.append('rect').attr('x', 0).attr('y', -gap / 2).attr('width', width).attr('height', barH + gap).attr('fill', 'transparent')
+      .on('mousemove', (event, d) => tip.show(event, [[d.method], ['nDCG@10', f3(d.ndcg10)], ['IC95', `${f3(d.ndcg10_low)} a ${f3(d.ndcg10_high)}`], ['P@10', f3(d.p10)], ['R@100', f3(d.r100)]]))
+      .on('mouseleave', () => tip.hide());
+  });
+
+  dash.draw('delta-chart', (el) => {
+    const rows = rowsOf('methods');
+    el.replaceChildren();
+    if (!rows) { el.textContent = '—'; return; }
+    const data = rows.filter((d) => d.method_id !== 'm1_bm25').sort((a, b) => b.delta - a.delta);
+    const width = el.clientWidth || 400, rowH = 34;
+    const svg = d3.select(el).append('svg').attr('width', '100%');
+    const left = measure(svg, data.map((d) => d.method)) + 12;
+    const height = data.length * rowH + 24;
+    svg.attr('viewBox', `0 0 ${width} ${height}`);
+    const lo = Math.min(-0.05, d3.min(data, (d) => d.delta_low)), hi = Math.max(0.05, d3.max(data, (d) => d.delta_high));
+    const x = d3.scaleLinear([lo, hi], [left, width - 56]).nice();
+    svg.append('g').selectAll('line').data(x.ticks(5)).join('line').attr('x1', x).attr('x2', x).attr('y1', 0).attr('y2', height - 20).attr('stroke', 'var(--cds-chart-grid)');
+    svg.append('g').selectAll('text').data(x.ticks(5)).join('text').attr('x', x).attr('y', height - 4).attr('text-anchor', 'middle').text(d3.format('+.2f'));
+    svg.append('line').attr('x1', x(0)).attr('x2', x(0)).attr('y1', 0).attr('y2', height - 20).attr('stroke', 'var(--cds-chart-axis)').attr('stroke-width', 1.5);
+    const color = (d) => (d.verdict === 'superior' ? dash.colors[0] : d.verdict === 'inferior' ? getComputedStyle(root).getPropertyValue('--cds-chart-status-critical').trim() : muted());
+    const tip = tooltip(el);
+    const g = svg.append('g').selectAll('g').data(data).join('g').attr('transform', (d, i) => `translate(0,${i * rowH + rowH / 2})`);
+    g.append('text').attr('class', 'strong').attr('x', left - 12).attr('dy', '0.35em').attr('text-anchor', 'end').text((d) => d.method);
+    g.append('line').attr('x1', (d) => x(d.delta_low)).attr('x2', (d) => x(d.delta_high)).attr('stroke', color).attr('stroke-width', 3).attr('stroke-linecap', 'round');
+    g.append('circle').attr('cx', (d) => x(d.delta)).attr('r', 5).attr('fill', color).attr('stroke', 'var(--color-panel)').attr('stroke-width', 2);
+    g.append('text').attr('class', 'strong').attr('x', (d) => x(d.delta_high) + 8).attr('dy', '0.35em').text((d) => signed(d.delta));
+    g.append('rect').attr('x', 0).attr('y', -rowH / 2).attr('width', width).attr('height', rowH).attr('fill', 'transparent')
+      .on('mousemove', (event, d) => tip.show(event, [[d.method], ['Δ nDCG@10', signed(d.delta)], ['IC95', `${signed(d.delta_low)} a ${signed(d.delta_high)}`], ['Veredito', d.verdict], ['Vitórias / derrotas', `${d.wins} / ${d.losses}`]]))
+      .on('mouseleave', () => tip.hide());
+  });
+
+  dash.draw('pareto-chart', (el) => {
+    const rows = rowsOf('methods');
+    el.replaceChildren();
+    if (!rows) { el.textContent = '—'; return; }
+    const data = rows.filter((d) => d.p50_ms > 0);
+    const width = el.clientWidth || 400, height = 260, m = { t: 12, r: 16, b: 34, l: 44 };
+    const svg = d3.select(el).append('svg').attr('width', '100%').attr('viewBox', `0 0 ${width} ${height}`);
+    const x = d3.scaleLog([d3.min(data, (d) => d.p50_ms) / 2, d3.max(data, (d) => d.p50_ms) * 3], [m.l, width - m.r]);
+    const y = d3.scaleLinear([d3.min(data, (d) => d.ndcg10) - 0.03, d3.max(data, (d) => d.ndcg10) + 0.03], [height - m.b, m.t]).nice();
+    svg.append('g').selectAll('line').data(y.ticks(4)).join('line').attr('x1', m.l).attr('x2', width - m.r).attr('y1', y).attr('y2', y).attr('stroke', 'var(--cds-chart-grid)');
+    svg.append('g').selectAll('text').data(y.ticks(4)).join('text').attr('x', m.l - 6).attr('y', y).attr('dy', '0.35em').attr('text-anchor', 'end').text(d3.format('.2f'));
+    const xt = x.ticks(4).filter((t) => [1, 10, 100, 1000, 10000, 0.1].includes(t));
+    svg.append('g').selectAll('text').data(xt).join('text').attr('x', x).attr('y', height - m.b + 16).attr('text-anchor', 'middle').text((t) => `${d3.format('~')(t)} ms`);
+    const sorted = [...data].sort((a, b) => a.p50_ms - b.p50_ms);
+    const front = []; let best = -1;
+    sorted.forEach((d) => { if (d.ndcg10 > best) { front.push(d); best = d.ndcg10; } });
+    svg.append('path').datum(front).attr('fill', 'none').attr('stroke', 'var(--cds-chart-reference)').attr('stroke-dasharray', '4 3')
+      .attr('d', d3.line().x((d) => x(d.p50_ms)).y((d) => y(d.ndcg10)));
+    const tip = tooltip(el);
+    const g = svg.append('g').selectAll('g').data(data).join('g').attr('transform', (d) => `translate(${x(d.p50_ms)},${y(d.ndcg10)})`);
+    g.append('circle').attr('r', 6).attr('fill', (d) => (d.role === 'principal' ? dash.colors[0] : muted())).attr('stroke', 'var(--color-panel)').attr('stroke-width', 2)
+      .on('mousemove', (event, d) => tip.show(event, [[d.method], ['nDCG@10', f3(d.ndcg10)], ['p50', `${d3.format(',.1f')(d.p50_ms)} ms`], ['p95', `${d3.format(',.1f')(d.p95_ms)} ms`]]))
+      .on('mouseleave', () => tip.hide());
+    g.append('text').attr('class', 'strong').attr('x', 9).attr('dy', '-0.4em').text((d) => d.method.split(' ')[0]);
+  });
+
+  dash.draw('origin-chart', (el) => {
+    const rows = rowsOf('methods');
+    el.replaceChildren();
+    if (!rows) { el.textContent = '—'; return; }
+    const data = [...rows].sort((a, b) => b.ndcg10 - a.ndcg10);
+    const width = el.clientWidth || 400, bar = 11, rowH = 32;
+    const svg = d3.select(el).append('svg').attr('width', '100%');
+    const left = measure(svg, data.map((d) => d.method)) + 12;
+    const height = data.length * rowH + 24;
+    svg.attr('viewBox', `0 0 ${width} ${height}`);
+    const x = d3.scaleLinear([0, Math.max(0.7, d3.max(data, (d) => Math.max(d.real_ndcg10, d.synthetic_ndcg10)))], [left, width - 48]);
+    svg.append('g').selectAll('line').data(x.ticks(5)).join('line').attr('x1', x).attr('x2', x).attr('y1', 0).attr('y2', height - 20).attr('stroke', 'var(--cds-chart-grid)');
+    svg.append('g').selectAll('text').data(x.ticks(5)).join('text').attr('x', x).attr('y', height - 4).attr('text-anchor', 'middle').text(d3.format('.1f'));
+    const tip = tooltip(el);
+    const g = svg.append('g').selectAll('g').data(data).join('g').attr('transform', (d, i) => `translate(0,${i * rowH})`);
+    g.append('text').attr('class', 'strong').attr('x', left - 12).attr('y', bar + 1).attr('dy', '0.35em').attr('text-anchor', 'end').text((d) => d.method);
+    [['real_ndcg10', 0], ['synthetic_ndcg10', 1]].forEach(([field, k]) => {
+      g.append('rect').attr('x', x(0)).attr('y', k * (bar + 2)).attr('height', bar).attr('rx', 3).attr('width', (d) => x(d[field]) - x(0)).attr('fill', dash.colors[k]);
+      g.append('text').attr('x', (d) => x(d[field]) + 5).attr('y', k * (bar + 2) + bar / 2).attr('dy', '0.35em').text((d) => f3(d[field]));
+    });
+    g.append('rect').attr('x', 0).attr('y', -4).attr('width', width).attr('height', rowH).attr('fill', 'transparent')
+      .on('mousemove', (event, d) => tip.show(event, [[d.method], ['Reais', f3(d.real_ndcg10)], ['Sintéticas', f3(d.synthetic_ndcg10)]]))
+      .on('mouseleave', () => tip.hide());
+  });
+
+  let sortKey = 'ndcg10', sortDir = -1;
+  dash.draw('methods-body', (tbody) => {
+    const rows = rowsOf('methods');
+    tbody.replaceChildren();
+    if (!rows) return;
+    const data = [...rows].sort((a, b) => (typeof a[sortKey] === 'string' ? a[sortKey].localeCompare(b[sortKey]) : a[sortKey] - b[sortKey]) * sortDir);
+    const fmt = { ndcg10: f3, delta: signed, p10: f3, r20: f3, r100: f3, mrr10: f3, hit1: f3, p50_ms: d3.format(',.1f'), ram_mib: d3.format(','), api_tokens: d3.format(',') };
+    for (const r of data) {
+      const tr = document.createElement('tr');
+      tr.dataset.key = r.method_id;
+      for (const key of ['method', 'advantage', 'ndcg10', 'delta', 'verdict', 'p10', 'r20', 'r100', 'mrr10', 'hit1', 'p50_ms', 'ram_mib', 'api_tokens']) {
+        const td = document.createElement('td');
+        if (key === 'verdict') {
+          const s = document.createElement('span');
+          s.className = `pill ${r.verdict === 'superior' ? 'sup' : r.verdict === 'inferior' ? 'inf' : ''}`;
+          s.textContent = r.verdict;
+          td.className = 'text'; td.appendChild(s);
+        } else {
+          if (key === 'method' || key === 'advantage') td.className = 'text';
+          td.textContent = fmt[key] ? (r[key] == null ? '—' : fmt[key](r[key])) : r[key];
+        }
+        tr.appendChild(td);
+      }
+      tbody.appendChild(tr);
+    }
+  });
+  document.querySelectorAll('[data-sort]').forEach((b) => b.addEventListener('click', () => {
+    const k = b.dataset.sort;
+    sortDir = sortKey === k ? -sortDir : (k === 'method' || k === 'advantage' || k === 'verdict' ? 1 : -1);
+    sortKey = k;
+    document.querySelectorAll('[data-sort]').forEach((x) => x.closest('th').setAttribute('aria-sort', x.dataset.sort === k ? (sortDir > 0 ? 'ascending' : 'descending') : 'none'));
+    dash.draw('methods-body');
+  }));
+
+  let filter = '';
+  dash.draw('query-body', (tbody) => {
+    const rows = rowsOf('per_query');
+    tbody.replaceChildren();
+    if (!rows) return;
+    const cols = ['M1', 'M2', 'M3', 'M4', 'M5', 'M2a', 'M5r'];
+    for (const r of rows) {
+      if (filter && !`${r.query} ${r.origin}`.toLowerCase().includes(filter)) continue;
+      const tr = document.createElement('tr');
+      tr.dataset.key = r.query_id;
+      const best = d3.max(cols, (c) => (r[c] == null ? -1 : r[c]));
+      for (const key of ['query_id', 'query', 'origin', ...cols]) {
+        const td = document.createElement('td');
+        if (key === 'query' || key === 'origin') td.className = 'text';
+        const v = r[key];
+        td.textContent = cols.includes(key) ? (v == null ? '—' : d3.format('.2f')(v)) : v;
+        if (cols.includes(key) && v != null && v === best && best > 0) td.classList.add('best');
+        tr.appendChild(td);
+      }
+      tbody.appendChild(tr);
+    }
+  });
+  document.querySelectorAll('#q-search').forEach((input) => input.addEventListener('input', () => { filter = input.value.trim().toLowerCase(); dash.draw('query-body'); }));
+</script>
