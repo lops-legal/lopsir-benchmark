@@ -1,6 +1,6 @@
 # C2 — resultados comparativos (gerado)
 
-Gerado em 2026-10-29 10:25 UTC a partir de `reports/c2/*/result.json`, commit `a704f8b7c1`.
+Gerado em 2026-10-30 05:37 UTC a partir de `reports/c2/*/result.json`, commit `3531f54e47`.
 Conjunto: JurisTCU (EXCERTO, 16.045 documentos), **70 consultas C2 de teste** (35 reais + 35 sintéticas), qrels 0–3 originais.
 Configurações escolhidas só no dev (30 consultas) pela nDCG@10 e avaliadas uma vez no teste.
 IC95%: bootstrap pareado, 10,000 reamostragens de grupos de consulta, semente 42.
@@ -19,13 +19,14 @@ Itálico = ablação ou referência, não conta entre as cinco metodologias.
 | M1 BM25 | mais barata | 0.341 [0.285, 0.396] | — | baseline | 0.280 | 0.342 | 0.591 | 0.614 | 0.2 | 802 | 0 |
 | M2 Query2doc | expansão por LLM | 0.306 [0.250, 0.361] | -0.035 [-0.060, -0.011] | inferior | 0.254 | 0.328 | 0.573 | 0.541 | 2197.0 | 762 | 26,249 |
 | M4 BGE-M3 | modelo único multilíngue | 0.283 [0.236, 0.332] | -0.058 [-0.112, -0.004] | inferior | 0.220 | 0.267 | 0.466 | 0.588 | 52.1 | 3,364 | 0 |
+| M0 leis-mcp | sistema do usuário | 0.264 [0.210, 0.319] | -0.077 [-0.116, -0.039] | inferior | 0.197 | 0.235 | 0.370 | 0.549 | 3.9 | 126 | 0 |
 | M3 SPLADE-PT-BR | esparso aprendido | 0.230 [0.183, 0.278] | -0.111 [-0.160, -0.062] | inferior | 0.197 | 0.255 | 0.476 | 0.423 | 23.3 | 2,787 | 0 |
 
 ## Hipóteses
 
 | Hipótese (SDD §8) | Evidência no teste | Leitura |
 |---|---|---|
-| H2 — BM25 ajustado é difícil de superar em C2 | M2 Query2doc -0.035 [-0.060, -0.011]; M3 SPLADE-PT-BR -0.111 [-0.160, -0.062]; M4 BGE-M3 -0.058 [-0.112, -0.004]; M5 Híbrido +0.023 [+0.010, +0.036] | rejeitada em parte: superam o BM25 M5 Híbrido; inferiores ao BM25: M2 Query2doc, M3 SPLADE-PT-BR, M4 BGE-M3 |
+| H2 — BM25 ajustado é difícil de superar em C2 | M0 leis-mcp -0.077 [-0.116, -0.039]; M2 Query2doc -0.035 [-0.060, -0.011]; M3 SPLADE-PT-BR -0.111 [-0.160, -0.062]; M4 BGE-M3 -0.058 [-0.112, -0.004]; M5 Híbrido +0.023 [+0.010, +0.036] | rejeitada em parte: superam o BM25 M5 Híbrido; inferiores ao BM25: M0 leis-mcp, M2 Query2doc, M3 SPLADE-PT-BR, M4 BGE-M3 |
 | H5 — expansão controlada ajuda C2 (LLM) | Δ nDCG@10 -0.035 [-0.060, -0.011] | inferior contra o BM25 |
 | H5 — expansão sem LLM (RM3) | Δ nDCG@10 +0.007 [-0.007, +0.021] | inconclusivo contra o BM25 |
 | H7 — SPLADE entra na fronteira qualidade/custo | Δ nDCG@10 -0.111 [-0.160, -0.062]; p50 23.3 ms | inferior contra o BM25 |
@@ -56,6 +57,7 @@ Itálico = ablação ou referência, não conta entre as cinco metodologias.
 | M1 BM25 | 0.195 (35) | 0.487 (35) |
 | M2 Query2doc | 0.156 (35) | 0.456 (35) |
 | M4 BGE-M3 | 0.202 (35) | 0.365 (35) |
+| M0 leis-mcp | 0.180 (35) | 0.348 (35) |
 | M3 SPLADE-PT-BR | 0.172 (35) | 0.288 (35) |
 
 ![Por origem](charts/by_origin.png)
@@ -92,6 +94,16 @@ Cada fold escolhe α nos outros quatro e é pontuado com esse α. Usa consultas 
 Desacordo lexical × denso, maiores ganhos e perdas contra o BM25 e a tabela consulta × método: [ERRORS.md](ERRORS.md).
 
 ## Fichas resumidas
+
+### M0 leis-mcp
+
+- **Método:** M0 leis-mcp: Manticore BM25F + proximidade, sintaxe e busca relaxada do leis
+- **Hipótese de vantagem:** o sistema de busca já em produção do usuário, medido no mesmo protocolo dos cinco métodos
+- **Artigo:** https://doi.org/10.1561/1500000019 · **Código:** https://github.com/lops-legal/leis-mcp
+- **Configuração congelada no dev:** `{'ranker': "expr('10000*bm25f(1.2, 0.3) + 1000*sum(lcs*user_weight)')", 'field_weights': 'titulo=1, texto=1', 'relaxed_quorum': 0.6, 'min_strict_results': 3, 'vocabulary_expansion': True}` (0 configurações testadas; dev nDCG@10 0.264)
+- **Teste:** nDCG@10 0.264, nDCG@20 0.292, P@20 0.139, Hit@1 0.457, Judged@10 0.197
+- **Latência p50 por etapa (1º passe, ms):** translate 0.1, search 3.8
+- **Recursos:** pico RAM 126 MiB; índice 117 MiB; VRAM — MiB; requisições API 0; custo faturado US$ 0.00
 
 ### M1 BM25
 

@@ -224,7 +224,8 @@ def charts(results, pooled_rows):
         spine.set_visible(False)
     fig.colorbar(image, ax=ax, label="nDCG@10", shrink=0.8)
     ax.set_title("Benchmark central — acervo leis-mcp, nDCG@10 por tarefa")
-    footnote(fig, "Gabarito do leis-mcp (53 consultas). M3–M5 reordenam os 100 primeiros do BM25; configurações congeladas no JurisTCU.")
+    footnote(fig, "Gabarito do leis-mcp (53 consultas). M3–M5 reordenam os 100 primeiros do BM25; “M0 leis + Nemotron” reordena os "
+                  "100 primeiros do próprio leis. Configurações congeladas no JurisTCU.")
     save(fig, out / "leis_ndcg_heatmap.png")
 
     fig, ax = plt.subplots(figsize=(8, 0.5 * len(pooled_rows) + 1.4))

@@ -7,6 +7,155 @@
     "unit": "query group"
   },
   "methods": {
+    "m0_leis": {
+      "name": "M0 leis-mcp",
+      "role": "main",
+      "method_name": "M0 leis-mcp: Manticore BM25F + proximidade, sintaxe e busca relaxada do leis",
+      "advantage_hypothesis": "o sistema de busca já em produção do usuário, medido no mesmo protocolo dos cinco métodos",
+      "paper": "https://doi.org/10.1561/1500000019",
+      "code": "https://github.com/lops-legal/leis-mcp",
+      "config": {
+        "ranker": "expr('10000*bm25f(1.2, 0.3) + 1000*sum(lcs*user_weight)')",
+        "field_weights": "titulo=1, texto=1",
+        "relaxed_quorum": 0.6,
+        "min_strict_results": 3,
+        "vocabulary_expansion": true
+      },
+      "configs_tried": 0,
+      "dev_ndcg10": 0.26406182073631246,
+      "test": {
+        "ndcg_linear@10": 0.26421281384703976,
+        "ndcg_linear@20": 0.2916578918298222,
+        "precision@10": 0.19714285714285715,
+        "precision@20": 0.1392857142857143,
+        "recall@1": 0.03862875220018077,
+        "recall@10": 0.16795030366458938,
+        "recall@20": 0.2354929990644276,
+        "recall@100": 0.37045367331081613,
+        "mrr@10": 0.5489455782312925,
+        "hit@1": 0.45714285714285713,
+        "ap_at_k_minrel@10": 0.13583824640967498,
+        "judged_fraction@10": 0.19714285714285715
+      },
+      "test_queries": 70,
+      "ndcg10_ci": {
+        "mean": 0.2642128138470398,
+        "ci95": [
+          0.20987648641427947,
+          0.31891632493644945
+        ],
+        "n": 70,
+        "groups": 69,
+        "resamples": 10000
+      },
+      "delta_vs_bm25": {
+        "mean": -0.07693905255236323,
+        "ci95": [
+          -0.11607574518999976,
+          -0.03904733149599489
+        ],
+        "n": 70,
+        "groups": 69,
+        "resamples": 10000
+      },
+      "verdict_vs_bm25": "inferior",
+      "delta_recall100_vs_bm25": {
+        "mean": -0.22086231229088374,
+        "ci95": [
+          -0.2766989095273256,
+          -0.16555638710840573
+        ],
+        "n": 70,
+        "groups": 69,
+        "resamples": 10000
+      },
+      "verdict_recall100_vs_bm25": "inferior",
+      "dev_grid_top": [],
+      "wins_ties_losses_vs_bm25": [
+        15,
+        8,
+        47
+      ],
+      "by_origin": {
+        "real_keyword": {
+          "n": 35,
+          "ndcg10": 0.18005172449963033
+        },
+        "synthetic_keyword": {
+          "n": 35,
+          "ndcg10": 0.3483739031944492
+        }
+      },
+      "by_label": {
+        "cited_reference": {
+          "n": 1,
+          "ndcg10": 0.10484411539105797
+        },
+        "length_long": {
+          "n": 9,
+          "ndcg10": 0.30680274809703145
+        },
+        "length_medium": {
+          "n": 37,
+          "ndcg10": 0.27703939769500774
+        },
+        "length_short": {
+          "n": 24,
+          "ndcg10": 0.22846727173767556
+        },
+        "multi_concept_e": {
+          "n": 24,
+          "ndcg10": 0.1780775525819637
+        },
+        "unaccented_typing": {
+          "n": 3,
+          "ndcg10": 0.13724860596077096
+        }
+      },
+      "latency_end_to_end_first_pass": {
+        "n": 70,
+        "mean_ms": 4.886297142836936,
+        "p50_ms": 3.942800000004354,
+        "p95_ms": 11.95616000003383,
+        "p99_ms": 14.686220999906258
+      },
+      "latency_stages_first_pass": {
+        "translate": {
+          "n": 70,
+          "mean_ms": 0.11476999999818613,
+          "p50_ms": 0.10559999998349667,
+          "p95_ms": 0.20753999987164207,
+          "p99_ms": 0.23361199994724308
+        },
+        "search": {
+          "n": 70,
+          "mean_ms": 4.704064285725248,
+          "p50_ms": 3.7718500000210042,
+          "p95_ms": 11.78691999997454,
+          "p99_ms": 14.494139000000818
+        }
+      },
+      "latency_repeated": {
+        "n": 350,
+        "mean_ms": 4.512331714278973,
+        "p50_ms": 3.661400000055437,
+        "p95_ms": 10.102555000094071,
+        "p99_ms": 16.517783000088
+      },
+      "qps_sequential": 221.61491293637977,
+      "resources": {
+        "peak_rss_bytes": 131866624,
+        "index_build_seconds": 27.456357600000047,
+        "index_bytes": 122528127,
+        "index_ram_bytes": 10392,
+        "documents": 16045,
+        "leis_src": "C:\\Users\\boml4\\leis-mcp\\src",
+        "manticore_url": "http://127.0.0.1:9318"
+      },
+      "api_prompt_tokens": 0,
+      "api_requests": 0,
+      "billed_usd": 0.0
+    },
     "m1_bm25": {
       "name": "M1 BM25",
       "role": "main",
@@ -32,6 +181,7 @@
         "recall@100": 0.5913159856017,
         "mrr@10": 0.6139795918367347,
         "hit@1": 0.5,
+        "ap_at_k_minrel@10": 0.18400321239606954,
         "judged_fraction@10": 0.28
       },
       "test_queries": 70,
@@ -645,6 +795,7 @@
         "recall@100": 0.5731053073910216,
         "mrr@10": 0.5411054421768707,
         "hit@1": 0.4142857142857143,
+        "ap_at_k_minrel@10": 0.16415230536659106,
         "judged_fraction@10": 0.2542857142857143
       },
       "test_queries": 70,
@@ -820,6 +971,7 @@
         "recall@100": 0.4756430870716585,
         "mrr@10": 0.42301020408163265,
         "hit@1": 0.2571428571428571,
+        "ap_at_k_minrel@10": 0.11460903250188965,
         "judged_fraction@10": 0.19714285714285715
       },
       "test_queries": 70,
@@ -986,6 +1138,7 @@
         "recall@100": 0.46640494426208706,
         "mrr@10": 0.5877154195011338,
         "hit@1": 0.45714285714285713,
+        "ap_at_k_minrel@10": 0.1443042328042328,
         "judged_fraction@10": 0.22
       },
       "test_queries": 70,
@@ -1170,6 +1323,7 @@
         "recall@100": 0.6304937126365697,
         "mrr@10": 0.6482142857142857,
         "hit@1": 0.5285714285714286,
+        "ap_at_k_minrel@10": 0.2003246409674981,
         "judged_fraction@10": 0.2957142857142857
       },
       "test_queries": 70,
@@ -1396,6 +1550,7 @@
         "recall@100": 0.6039752311180883,
         "mrr@10": 0.611859410430839,
         "hit@1": 0.5,
+        "ap_at_k_minrel@10": 0.18877097505668936,
         "judged_fraction@10": 0.29000000000000004
       },
       "test_queries": 70,
@@ -1672,6 +1827,7 @@
         "recall@100": 0.6427121291407006,
         "mrr@10": 0.6737301587301587,
         "hit@1": 0.5571428571428572,
+        "ap_at_k_minrel@10": 0.20980706727135298,
         "judged_fraction@10": 0.32571428571428573
       },
       "test_queries": 70,
@@ -1837,6 +1993,7 @@
         "recall@100": 0.6064686900401186,
         "mrr@10": 0.6517233560090703,
         "hit@1": 0.5285714285714286,
+        "ap_at_k_minrel@10": 0.19465230536659106,
         "judged_fraction@10": 0.2914285714285714
       },
       "test_queries": 70,
@@ -2063,6 +2220,7 @@
         "recall@100": 0.5967645846217275,
         "mrr@10": 0.6293707482993197,
         "hit@1": 0.5,
+        "ap_at_k_minrel@10": 0.18214436885865457,
         "judged_fraction@10": 0.29000000000000004
       },
       "test_queries": 70,
