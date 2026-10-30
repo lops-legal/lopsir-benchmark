@@ -17,7 +17,7 @@ SERIES = ["#2a78d6", "#eb6834", "#1baf7a", "#eda100", "#e87ba4", "#008300", "#62
 ABLATION = "#b4b2a9"
 POSITIVE, NEGATIVE = "#2a78d6", "#e34948"
 SEQUENTIAL = ["#cde2fb", "#9ec5f4", "#6da7ec", "#3987e5", "#256abf", "#184f95", "#0d366b"]
-METHOD_ORDER = ["m1_bm25", "m2_query2doc", "m3_splade", "m4_bgem3", "m5_hybrid"]
+METHOD_ORDER = ["m1_bm25", "m2_query2doc", "m3_splade", "m4_bgem3", "m5_hybrid", "m0_leis"]
 
 
 def style():

@@ -2,7 +2,7 @@
 from ..common import write_json
 from .stats import MAIN, SHORT, load_results, per_query, query_table
 
-ADVANTAGE = {"m1_bm25": "mais barata", "m2_query2doc": "expansão por LLM", "m2_rm3_ablation": "expansão sem LLM",
+ADVANTAGE = {"m0_leis": "sistema do usuário", "m1_bm25": "mais barata", "m2_query2doc": "expansão por LLM", "m2_rm3_ablation": "expansão sem LLM",
              "m3_splade": "esparso aprendido", "m4_bgem3": "modelo único multilíngue", "m5_hybrid": "junta tudo",
              "m5_dense_reference": "ramo denso isolado", "m5_hybrid_1b_ablation": "encoder 8x menor",
              "m5_dense_1b_reference": "ramo denso 1B isolado"}

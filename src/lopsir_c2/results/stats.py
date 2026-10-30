@@ -5,14 +5,14 @@ import numpy as np
 
 from ..common import REPORTS, dataset_dir, read_jsonl
 
-MAIN = ["m1_bm25", "m2_query2doc", "m3_splade", "m4_bgem3", "m5_hybrid"]
+MAIN = ["m0_leis", "m1_bm25", "m2_query2doc", "m3_splade", "m4_bgem3", "m5_hybrid"]
 ABLATIONS = ["m2_rm3_ablation", "m5_dense_reference", "m5_hybrid_1b_ablation", "m5_dense_1b_reference"]
-SHORT = {"m1_bm25": "M1 BM25", "m2_query2doc": "M2 Query2doc", "m2_rm3_ablation": "M2a RM3 (ablação)",
+SHORT = {"m0_leis": "M0 leis-mcp", "m1_bm25": "M1 BM25", "m2_query2doc": "M2 Query2doc", "m2_rm3_ablation": "M2a RM3 (ablação)",
          "m3_splade": "M3 SPLADE-PT-BR", "m4_bgem3": "M4 BGE-M3", "m5_hybrid": "M5 Híbrido",
          "m5_dense_reference": "M5r Nemotron denso (ref.)", "m5_hybrid_1b_ablation": "M5b Híbrido c/ Nemotron 1B (ablação)",
          "m5_dense_1b_reference": "M5br Nemotron 1B denso (ref.)"}
 METRICS = ["ndcg_linear@10", "ndcg_linear@20", "precision@10", "precision@20", "recall@1", "recall@10", "recall@20",
-           "recall@100", "mrr@10", "hit@1", "judged_fraction@10"]
+           "recall@100", "mrr@10", "hit@1", "ap_at_k_minrel@10", "judged_fraction@10"]
 BOOTSTRAP = 10_000
 SEED = 42
 
