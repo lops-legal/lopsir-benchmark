@@ -66,6 +66,10 @@ def main():
     for stale in (DB, Path(str(DB) + ".wal")):
         stale.unlink(missing_ok=True)
     con = duckdb.connect(str(DB))
+    # the machine has ~8 GB and other jobs running: cap DuckDB and let it spill to disk
+    spill = ARTIFACTS / "duckdb" / "spill"
+    spill.mkdir(parents=True, exist_ok=True)
+    con.execute(f"SET memory_limit = '2GB'; SET temp_directory = '{spill.as_posix()}'; SET threads = 4")
     con.install_extension("fts")
     con.load_extension("fts")
     timings = build(con)

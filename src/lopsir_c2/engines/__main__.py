@@ -15,6 +15,7 @@ Usage: python -m lopsir_c2.engines --dataset juristcu
 import argparse
 import os
 import time
+from pathlib import Path
 
 import numpy as np
 
@@ -57,7 +58,8 @@ def overlap(approx, exact, k):
 # ---------------------------------------------------------------- Manticore
 
 def manticore_bm25(corpus):
-    stopfile = ARTIFACTS / "manticore" / "stopwords_pt.txt"
+    # Manticore splits the stopwords path on spaces, so the file lives in TEMP (no spaces) instead of artifacts/
+    stopfile = Path(os.environ.get("TEMP", "/tmp")) / "lopsir_stopwords_pt.txt"
     stopfile.write_text("\n".join(sorted(portuguese_stopwords())), encoding="utf-8")
     table = "bench_juristcu_bm25"
     manticore.sql(f"DROP TABLE IF EXISTS {table}")
