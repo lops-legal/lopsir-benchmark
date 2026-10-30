@@ -1,6 +1,39 @@
 # C2 — expressões jurídicas e palavras-chave
 
-Estado (29/10/2026): **executado** na branch `c2` pelo Claude, sobre dados reais do JurisTCU, com as cinco metodologias, as ablações e o módulo de resultados. Seguir [o pipeline comum](../PIPELINE.md). Fichas: [METODOLOGIAS.md](METODOLOGIAS.md). Resultados: [reports/c2/RESULTS.md](../../reports/c2/RESULTS.md).
+Estado (30/10/2026): **benchmark central no acervo do leis-mcp**, JurisTCU como auxiliar nas lacunas. Relatório central: [reports/c2/BENCHMARK.md](../../reports/c2/BENCHMARK.md). Auxiliar (JurisTCU): [reports/c2/RESULTS.md](../../reports/c2/RESULTS.md). Fichas: [METODOLOGIAS.md](METODOLOGIAS.md). Pipeline comum: [PIPELINE.md](../PIPELINE.md).
+
+## Benchmark central — acervo leis-mcp (decisão do usuário em 30/10/2026)
+
+O acervo do [leis-mcp](https://github.com/lops-legal/leis-mcp) (347.195 dispositivos de legislação federal e 11.253 precedentes) é o benchmark central, com o gabarito conferido do próprio repositório (`tests/consultas_referencia.json`: 53 consultas C2 em dispositivo, norma e precedente, mais 8 consultas diretas C1). O JurisTCU cobre só o que o leis não mede: relevância graduada, consultas reais de usuários, busca densa no corpus inteiro, ajuste em dev e busca vetorial em banco.
+
+| Sistema (nDCG@10, 53 consultas) | Agregado | Dispositivo | Norma | Precedente | Δ vs M0 [IC95] |
+|---|---:|---:|---:|---:|---|
+| **M0 leis + Nemotron 8B (α 0,2)** — reordena os 100 do leis | **0,926** | 0,893 | **0,967** | 0,926 | +0,024 [−0,014; +0,067] inconclusivo |
+| **M0 leis-mcp** como servido | 0,902 | **0,918** | 0,862 | 0,926 | referência |
+| M0 leis + Nemotron 8B (α 0,8) | 0,899 | 0,797 | **0,967** | **0,967** | −0,003, inconclusivo |
+| M5 híbrido BM25 + Nemotron (α 0,8) | 0,797 | 0,647 | 0,823 | 0,975 | inferior |
+| M5 híbrido (α 0,2) | 0,770 | 0,604 | 0,881 | 0,877 | inferior |
+| M2 Query2doc | 0,757 | 0,629 | 0,871 | 0,805 | inferior |
+| M1 BM25 (pesos uniformes) | 0,752 | 0,599 | 0,881 | 0,819 | inferior |
+| M5r Nemotron denso puro | 0,726 | 0,639 | 0,614 | 0,975 | inferior |
+| M4 BGE-M3 | 0,661 | 0,592 | 0,524 | 0,913 | inferior |
+| M3 SPLADE-PT-BR | 0,638 | 0,536 | 0,522 | 0,913 | inferior |
+
+Consultas diretas (C1): o leis acerta 8 de 8, entre 1 e 24 ms.
+
+### Conclusões do benchmark central
+
+1. **O leis-mcp é o sistema a bater, e nenhum método partindo do BM25 o alcança.** Todos os que geram candidatos com BM25 de pesos uniformes ficam significativamente abaixo (−0,11 a −0,26). O que faz o leis vencer é o ranking ajustado: pesos por campo, proximidade e bônus de códigos (dispositivo 0,918 contra 0,599 do BM25 no mesmo índice).
+2. **O ganho real vem de reordenar os candidatos do próprio leis com um embedding forte.** Com α 0,2, o leis + Nemotron 8B leva a norma de 0,862 para 0,967 (acerto@1 de 82% para 100%) e mantém precedente e quase todo o dispositivo; o agregado sobe para 0,926. Com 53 consultas o +0,024 ainda é inconclusivo; o ganho na norma é o sinal mais claro.
+3. **O peso do denso depende da tarefa.** α 0,8 ganha nos precedentes (0,967; acerto@1 93%) e perde artigos (0,797); α 0,2 protege os artigos. Uma escolha por tipo de consulta (roteamento, H12) é o próximo passo natural.
+4. **O banco importa para custo, não para qualidade, quando a configuração é a mesma.** O mesmo BM25 no DuckDB FTS fica pior que no Manticore nos dispositivos (0,438 × 0,599, tokenização diferente) e é 5–10× mais lento (≈340 ms × 38 ms). No JurisTCU, DuckDB FTS e bm25s empatam em qualidade (0,342 × 0,341), mas o bm25s responde em 0,6 ms contra 94 ms. Busca vetorial no DuckDB (exata ou HNSW) dá a mesma qualidade do numpy a ~400 ms contra 22 ms; o HNSW é usado (EXPLAIN), mas não ajuda com 16 mil vetores. O híbrido inteiro numa consulta SQL do DuckDB reproduz o M5 (0,364).
+5. **Lacunas cobertas pelo JurisTCU mostram o limite do leis fora do seu domínio.** Em jurisprudência longa com palavras-chave, o AND estrito do leis derruba a cobertura (nDCG@10 0,264 contra 0,341 do BM25; R@100 0,37 × 0,59), e consultas reais de usuários são o caso difícil para todos.
+
+Reproduzir o central: `python -m lopsir_c2.leis` (sistemas), `python -m lopsir_c2.leis.engines` (DuckDB), `python -m lopsir_c2.results.benchmark` (relatório). Precisa do Manticore do leis-mcp no ar (porta 9308) e do clone em `~/leis-mcp`.
+
+## Auxiliar — JurisTCU
+
+O texto abaixo é a rodada inicial no JurisTCU, que agora cobre as lacunas do benchmark central.
 
 ## Intenção
 

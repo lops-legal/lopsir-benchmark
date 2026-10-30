@@ -1,6 +1,6 @@
 # Benchmark C2 — central no acervo leis-mcp, JurisTCU nas lacunas (gerado)
 
-Commit `3531f54e47`. **Benchmark central:** o acervo do leis-mcp (347.195 dispositivos de legislação federal e
+Commit `f44dfecaa0`. **Benchmark central:** o acervo do leis-mcp (347.195 dispositivos de legislação federal e
 11.253 precedentes qualificados), com o gabarito conferido do próprio leis-mcp (`tests/consultas_referencia.json`):
 53 consultas C2 em três tarefas, mais 8 consultas diretas (C1). **Auxiliar:** o JurisTCU entra só onde o leis não
 consegue medir (relevância graduada, consultas reais, denso no corpus inteiro, ajuste em dev, busca vetorial em banco).
@@ -126,7 +126,7 @@ Acerto@1: **100%** em 8 consultas diretas.
 | Norma | 0,881 | 0,784 | 24 | 343 |
 | Precedente | 0,819 | 0,844 | 31 | 77 |
 
-DuckDB 2.0.0: base de 234 MiB; carga 11 s e índice FTS 58 s para 347,195 dispositivos e 11,253 precedentes. Manticore do leis: índice de 641 MB e ~150 MB de RAM (docs do leis-mcp).
+DuckDB 2.0.0: base de 234 MiB; carga 11 s e índice FTS 58 s para 347.195 dispositivos e 11.253 precedentes. Manticore do leis: índice de 641 MB e ~150 MB de RAM (docs do leis-mcp).
 
 ## Lacunas do leis cobertas pelo JurisTCU
 

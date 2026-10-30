@@ -147,7 +147,7 @@ def engines_table(results):
     lines += ["", f"DuckDB {duck.get('duckdb_version')}: base de {duck['database_bytes'] / 2**20:,.0f} MiB; carga "
               f"{b['dispositivos_load_seconds'] + b['precedentes_load_seconds']:.0f} s e índice FTS "
               f"{b['dispositivos_fts_seconds'] + b['precedentes_fts_seconds']:.0f} s para "
-              f"{b['dispositivos_rows']:,} dispositivos e {b['precedentes_rows']:,} precedentes. Manticore do leis: índice de 641 MB "
+              f"{b['dispositivos_rows']:,} dispositivos e {b['precedentes_rows']:,} precedentes".replace(',', '.') + f". Manticore do leis: índice de 641 MB "
               "e ~150 MB de RAM (docs do leis-mcp)."]
     return "\n".join(lines)
 
