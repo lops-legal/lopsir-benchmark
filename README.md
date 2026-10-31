@@ -4,9 +4,15 @@ Estudo de arquiteturas de recuperação jurídica por tipo de consulta: **C1 ref
 
 Leia [a especificação completa](SDD-PESQUISA.md): escopo, leitura integral do JUÁ v2, métricas explicadas, hipóteses H1–H16, benchmarks reais, parâmetros, arquitetura, controles de custo e backlog.
 
+**Plano operacional atual:** [C1 → C2 → C3](docs/PIPELINE.md), com cinco metodologias publicadas por caso. O acervo real foi localizado em [leis-mcp](https://github.com/lops-legal/leis-mcp): 347.195 dispositivos legais e 11.253 precedentes. Não usar informações fictícias nos experimentos nem importar novos conjuntos. A [reprodução do JUÁ](docs/jua/README.md) é uma trilha separada.
+
 ## Estado da entrega
 
-Documentação e kit mínimo executável. **Nenhum banco, modelo ou benchmark real foi executado.** Adaptadores, importadores e interface do hub estão especificados para implementação incremental. `reports/fixture-metrics.json` é apenas uma demonstração com quatro consultas artificiais; não entra no leaderboard científico.
+**C1 executado sobre o acervo real:** PostgreSQL 18, 341.827 identidades distintas, cinco métodos, 305 consultas de teste por método e três repetições. [Resultados, gráficos e limites](reports/c1/real/README.md) · [reprodução local](docs/c1/EXECUCAO.md). As consultas são sete chamadas existentes na fonte e 298 referências derivadas de metadados reais, sem histórias ou referências fictícias. Este teste mede identidade íntegra; não mede relevância semântica nem robustez a erros de digitação.
+
+![Comparação real de C1](reports/c1/real/figures/comparison.png)
+
+Os exemplos antigos e `reports/fixture-metrics.json` são somente testes históricos do avaliador; não entram no estudo real. C2 pertence a outra frente de trabalho; esta branch implementa exclusivamente C1.
 
 ## Começar sem dependências externas
 
@@ -26,11 +32,11 @@ A fixture é ilustrativa e usa IDs fictícios `demo-*`. O avaliador do kit adota
 
 ## Próximo ciclo implementável
 
-1. Criar `.venv` própria e fixar dependências; consultar a seção operacional única do SDD.
-2. Importar BR-TaxQA e JurisTCU em revisões fixadas e verificar corpus, queries e qrels.
-3. Implementar BM25 de referência e suíte C1 com metadados reais.
-4. Adicionar um embedding, scoring exato, um motor vetorial e fusão.
-5. Medir por caso e coleção; só então ampliar bancos e modelos.
+1. Revisar o inventário e os hashes reais em [corpus-manifest.json](reports/c1/real/corpus-manifest.json).
+2. Revisar [C1](docs/c1/README.md): cinco métodos implementados e resultados por consulta.
+3. Ampliar C1 com consultas reais difíceis quando disponíveis; coordenar a revisão com a frente [C2](docs/c2/README.md).
+4. Executar e revisar C2 antes dos experimentos [C3](docs/c3/README.md).
+5. Preservar a trilha JUÁ separadamente, usando apenas os artefatos disponibilizados/indicados no projeto.
 
 `configs/experiment.example.json` demonstra o contrato de planejamento. Não é configuração de um runner já implementado. Seu campo `status: planned` e os campos nulos impedem confundir exemplo com experimento reproduzido.
 

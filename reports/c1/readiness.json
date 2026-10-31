@@ -1,0 +1,21 @@
+{
+  "kind": "study_readiness_not_a_benchmark",
+  "case_type": "C1",
+  "status": "preflight_checks_passed",
+  "source_repository": "https://github.com/lops-legal/leis-mcp",
+  "user_reported_count": 370000,
+  "verified_record_count": 358448,
+  "methods": [
+    "C1-M1",
+    "C1-M2",
+    "C1-M3",
+    "C1-M4",
+    "C1-M5"
+  ],
+  "issues": [],
+  "research_metrics": null,
+  "notes": [
+    "This preflight command does not download a corpus, provision a database or execute a research run; see measured reports separately.",
+    "Passing config checks does not certify data quality or legal relevance."
+  ]
+}

@@ -1,0 +1,116 @@
+{
+  "kind": "real_c1_retrieval_measurement",
+  "method_id": "C1-M5",
+  "name": "Splink Fellegi-Sunter with training-only linked pairs",
+  "input_mode": "structured_identity_reference",
+  "query_parsing_included": false,
+  "split": "test",
+  "origin_filter": "all",
+  "top_k": 100,
+  "repetitions": 3,
+  "prepare_seconds": 3.985111300000426,
+  "elapsed_seconds": 6.126949699999841,
+  "peak_python_rss_bytes": 306384896,
+  "database": {
+    "server": "PostgreSQL 18.0 on x86_64-windows, compiled by msvc-19.44.35215, 64-bit",
+    "records_by_collection": [
+      {
+        "collection": "dispositivos",
+        "rows": 347195
+      },
+      {
+        "collection": "precedentes",
+        "rows": 11253
+      }
+    ],
+    "entities_by_collection": [
+      {
+        "collection": "dispositivos",
+        "rows": 330574
+      },
+      {
+        "collection": "precedentes",
+        "rows": 11253
+      }
+    ],
+    "database_bytes": 616642239,
+    "entities_bytes": 221880320
+  },
+  "parameters": {
+    "engine": "Splink/DuckDB",
+    "training_queries": 95,
+    "test_labels_used": false,
+    "blocking": "same collection and exact reference number",
+    "u_max_pairs": 100000,
+    "m_source": "linked training identity pairs",
+    "calibration_claimed": false,
+    "limitations": "Training lookups are clean. Unobserved disagreement levels may retain library defaults; inspect trained model."
+  },
+  "overall": {
+    "queries": 2,
+    "failures": 0,
+    "quality": {
+      "hit@1": 1.0,
+      "mrr@10": 1.0,
+      "recall@10": 1.0,
+      "precision@10": 0.1,
+      "recall@20": 1.0,
+      "precision@20": 0.05,
+      "recall@100": 1.0,
+      "precision@100": 0.01,
+      "ndcg@10": 1.0
+    },
+    "latency_ms": {
+      "p50": 196.51370000019597,
+      "p95": 236.43107499981397,
+      "p99": 242.56157499983146
+    },
+    "measured_successful_calls": 6,
+    "serial_lookup_qps": 5.029176347480399
+  },
+  "groups": {
+    "existing_reference_test/dispositivos": {
+      "queries": 2,
+      "failures": 0,
+      "quality": {
+        "hit@1": 1.0,
+        "mrr@10": 1.0,
+        "recall@10": 1.0,
+        "precision@10": 0.1,
+        "recall@20": 1.0,
+        "precision@20": 0.05,
+        "recall@100": 1.0,
+        "precision@100": 0.01,
+        "ndcg@10": 1.0
+      },
+      "latency_ms": {
+        "p50": 196.51370000019597,
+        "p95": 236.43107499981397,
+        "p99": 242.56157499983146
+      },
+      "measured_successful_calls": 6,
+      "serial_lookup_qps": 5.029176347480399
+    }
+  },
+  "api_calls": 0,
+  "api_cost_usd": 0,
+  "local_monetary_cost": null,
+  "absent_queries": 0,
+  "artificial_typo_queries": 0,
+  "limitations": [
+    "Existing reference tests plus explicitly labeled clean real-identity lookups, not user search logs.",
+    "No absent-target or typo robustness claims; corpus is legislation plus precedents, not general case law.",
+    "Latency is in-process lookup including database calls; structured query preparation is excluded.",
+    "Python RSS excludes PostgreSQL server and operating-system caches."
+  ],
+  "code_commit": "596ffeaa676577cb660f5f1ac7c35fcedba9b37e",
+  "versions": {
+    "psycopg": "3.3.6",
+    "bm25s": "0.3.16",
+    "rapidfuzz": "3.14.6",
+    "splink": "5.0.0",
+    "duckdb": "2.0.0",
+    "pyarrow": "26.0.0",
+    "numpy": "2.5.4"
+  }
+}

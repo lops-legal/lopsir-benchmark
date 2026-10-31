@@ -1,0 +1,7 @@
+<!doctype html><html lang="pt-BR"><meta charset="utf-8"><title>LopsIR C1</title>
+    <style>body{font:17px system-ui;max-width:1100px;margin:40px auto;padding:20px;color:#18332e}img{width:100%}td,th{padding:12px;border-bottom:1px solid #ccc}table{border-collapse:collapse}</style>
+    <h1>LopsIR Benchmark · C1</h1><p>305 consultas · 341.827 entidades reais · 5 métodos · 3 repetições</p>
+    <p>Referências estruturadas e íntegras. Não mede busca semântica, erros de digitação ou capacidade concorrente.</p>
+    <table><tr><th>Método</th><th>Hit@1</th><th>p95 ms</th></tr><tr><td>M1 · Exata</td><td>100.00%</td><td>1.269</td></tr><tr><td>M2 · BM25S</td><td>99.02%</td><td>14.055</td></tr><tr><td>M3 · Trigramas</td><td>98.69%</td><td>106.745</td></tr><tr><td>M4 · Levenshtein</td><td>99.67%</td><td>117.717</td></tr><tr><td>M5 · Splink</td><td>100.00%</td><td>228.732</td></tr></table>
+    <img src="figures/comparison.svg" alt="Qualidade, latência e memória"><img src="figures/by-collection.svg" alt="Resultados por coleção">
+    <p>Dados, limitações e reprodução: <a href="README.md">relatório completo</a>.</p></html>

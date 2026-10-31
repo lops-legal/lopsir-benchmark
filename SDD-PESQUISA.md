@@ -2,7 +2,9 @@
 
 Estudo reprodutível de arquiteturas de recuperação de informação jurídica.
 
-**Versão:** 0.1 — 29/10/2026. **Estado:** especificação e kit inicial; experimentos reais ainda não executados. **Repositório do projeto:** `lops-legal/lopsir-benchmark`.
+**Versão:** 0.2 — 29/10/2026. **Estado:** primeira rodada real de C1 executada; [resultados](reports/c1/real/README.md). C2/C3 continuam em trilhas próprias. **Repositório do projeto:** `lops-legal/lopsir-benchmark`.
+
+**Atualização operacional de 29/10/2026:** cinco métodos por caso e uso exclusivo do acervo próprio. A fonte real é `leis-mcp`: 347.195 dispositivos legais e 11.253 precedentes; 341.827 identidades após deduplicação. A branch `c1` implementa e mede exclusivamente C1, enquanto C2 pertence a outra frente. O [pipeline atual](docs/PIPELINE.md) e o [protocolo executado](docs/c1/EXECUCAO.md) prevalecem sobre planejamento anterior. Não gerar dados fictícios nem importar novas coleções. As fixtures existentes são testes unitários históricos; não entram nos resultados reais.
 
 SDD significa aqui desenvolvimento guiado por especificação: perguntas, contratos de dados, experimentos, critérios de aceitação e evidências precisam estar definidos antes da implementação dos adaptadores. A finalidade é encontrar arquiteturas adequadas a cada uso, sem escolher antecipadamente um banco ou um modelo vencedor.
 

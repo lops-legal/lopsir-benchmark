@@ -1,0 +1,182 @@
+{
+  "kind": "real_c1_retrieval_measurement",
+  "method_id": "C1-M5",
+  "name": "Splink Fellegi-Sunter with training-only linked pairs",
+  "input_mode": "structured_identity_reference",
+  "query_parsing_included": false,
+  "split": "test",
+  "origin_filter": "all",
+  "top_k": 100,
+  "repetitions": 3,
+  "prepare_seconds": 5.412227000000257,
+  "elapsed_seconds": 8.8249837999997,
+  "peak_python_rss_bytes": 304230400,
+  "database": {
+    "server": "PostgreSQL 18.0 on x86_64-windows, compiled by msvc-19.44.35215, 64-bit",
+    "records_by_collection": [
+      {
+        "collection": "dispositivos",
+        "rows": 347195
+      },
+      {
+        "collection": "precedentes",
+        "rows": 11253
+      }
+    ],
+    "entities_by_collection": [
+      {
+        "collection": "dispositivos",
+        "rows": 330574
+      },
+      {
+        "collection": "precedentes",
+        "rows": 11253
+      }
+    ],
+    "database_bytes": 616560319,
+    "entities_bytes": 221880320
+  },
+  "parameters": {
+    "engine": "Splink/DuckDB",
+    "training_queries": 95,
+    "test_labels_used": false,
+    "blocking": "same collection and exact reference number",
+    "u_max_pairs": 100000,
+    "m_source": "linked training identity pairs",
+    "calibration_claimed": false,
+    "limitations": "Training lookups are clean. Unobserved disagreement levels may retain library defaults; inspect trained model."
+  },
+  "overall": {
+    "queries": 305,
+    "failures": 305,
+    "quality": {
+      "hit@1": 0.0,
+      "mrr@10": 0.0,
+      "recall@10": 0.0,
+      "precision@10": 0.0,
+      "recall@20": 0.0,
+      "precision@20": 0.0,
+      "recall@100": 0.0,
+      "precision@100": 0.0,
+      "ndcg@10": 0.0
+    },
+    "latency_ms": {
+      "p50": null,
+      "p95": null,
+      "p99": null
+    },
+    "measured_successful_calls": 0,
+    "serial_lookup_qps": null
+  },
+  "groups": {
+    "derived_real_identity_lookup/dispositivos": {
+      "queries": 152,
+      "failures": 152,
+      "quality": {
+        "hit@1": 0.0,
+        "mrr@10": 0.0,
+        "recall@10": 0.0,
+        "precision@10": 0.0,
+        "recall@20": 0.0,
+        "precision@20": 0.0,
+        "recall@100": 0.0,
+        "precision@100": 0.0,
+        "ndcg@10": 0.0
+      },
+      "latency_ms": {
+        "p50": null,
+        "p95": null,
+        "p99": null
+      },
+      "measured_successful_calls": 0,
+      "serial_lookup_qps": null
+    },
+    "derived_real_identity_lookup/precedentes": {
+      "queries": 146,
+      "failures": 146,
+      "quality": {
+        "hit@1": 0.0,
+        "mrr@10": 0.0,
+        "recall@10": 0.0,
+        "precision@10": 0.0,
+        "recall@20": 0.0,
+        "precision@20": 0.0,
+        "recall@100": 0.0,
+        "precision@100": 0.0,
+        "ndcg@10": 0.0
+      },
+      "latency_ms": {
+        "p50": null,
+        "p95": null,
+        "p99": null
+      },
+      "measured_successful_calls": 0,
+      "serial_lookup_qps": null
+    },
+    "existing_reference_test/dispositivos": {
+      "queries": 4,
+      "failures": 4,
+      "quality": {
+        "hit@1": 0.0,
+        "mrr@10": 0.0,
+        "recall@10": 0.0,
+        "precision@10": 0.0,
+        "recall@20": 0.0,
+        "precision@20": 0.0,
+        "recall@100": 0.0,
+        "precision@100": 0.0,
+        "ndcg@10": 0.0
+      },
+      "latency_ms": {
+        "p50": null,
+        "p95": null,
+        "p99": null
+      },
+      "measured_successful_calls": 0,
+      "serial_lookup_qps": null
+    },
+    "existing_reference_test/precedentes": {
+      "queries": 3,
+      "failures": 3,
+      "quality": {
+        "hit@1": 0.0,
+        "mrr@10": 0.0,
+        "recall@10": 0.0,
+        "precision@10": 0.0,
+        "recall@20": 0.0,
+        "precision@20": 0.0,
+        "recall@100": 0.0,
+        "precision@100": 0.0,
+        "ndcg@10": 0.0
+      },
+      "latency_ms": {
+        "p50": null,
+        "p95": null,
+        "p99": null
+      },
+      "measured_successful_calls": 0,
+      "serial_lookup_qps": null
+    }
+  },
+  "api_calls": 0,
+  "api_cost_usd": 0,
+  "local_monetary_cost": null,
+  "absent_queries": 0,
+  "artificial_typo_queries": 0,
+  "limitations": [
+    "Existing reference tests plus explicitly labeled clean real-identity lookups, not user search logs.",
+    "No absent-target or typo robustness claims; corpus is legislation plus precedents, not general case law.",
+    "Latency is in-process lookup including database calls; structured query preparation is excluded.",
+    "Python RSS excludes PostgreSQL server and operating-system caches."
+  ],
+  "code_commit": "7e5549fc139dd39386e922698bfbf6759cf35447",
+  "versions": {
+    "psycopg": "3.3.6",
+    "bm25s": "0.3.16",
+    "rapidfuzz": "3.14.6",
+    "splink": "5.0.0",
+    "duckdb": "2.0.0",
+    "pyarrow": "26.0.0",
+    "numpy": "2.5.4"
+  }
+}
