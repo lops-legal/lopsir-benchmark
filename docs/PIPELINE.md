@@ -1,6 +1,6 @@
 # Pipeline de pesquisa — C1 → C2 → C3
 
-Estado em 29/10/2026: planejamento de C1. O usuário informa um acervo de aproximadamente **370 mil jurisprudências reais**. A localização e o esquema desse acervo ainda precisam ser ligados ao pipeline. Não gerar dados fictícios, importar outra coleção ou declarar resultados enquanto isso não estiver resolvido.
+Estado em 29/10/2026: **primeira rodada real de C1 concluída**. O acervo de `leis-mcp` contém 358.448 registros físicos (347.195 dispositivos legais e 11.253 precedentes), representando 341.827 identidades distintas. Os cinco métodos rodaram 305 consultas de teste, três vezes cada. [Resultados e limites](../reports/c1/real/README.md), [reprodução](c1/EXECUCAO.md). A estimativa inicial de 370 mil não é a contagem verificada. Não gerar dados fictícios nem importar outra coleção.
 
 ## 1. Unidade de comparação: metodologia, no nível do JUÁ
 

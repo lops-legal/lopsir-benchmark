@@ -1,0 +1,379 @@
+{
+  "kind": "actual_database_and_query_audit",
+  "utc": "2026-10-29T08:24:35.079286+00:00",
+  "database": {
+    "server": "PostgreSQL 18.0 on x86_64-windows, compiled by msvc-19.44.35215, 64-bit",
+    "records_by_collection": [
+      {
+        "collection": "dispositivos",
+        "rows": 347195
+      },
+      {
+        "collection": "precedentes",
+        "rows": 11253
+      }
+    ],
+    "entities_by_collection": [
+      {
+        "collection": "dispositivos",
+        "rows": 330574
+      },
+      {
+        "collection": "precedentes",
+        "rows": 11253
+      }
+    ],
+    "database_bytes": 616797887,
+    "entities_bytes": 221880320
+  },
+  "queries": 507,
+  "splits": {
+    "test": 305,
+    "dev": 107,
+    "train": 95
+  },
+  "identity_leakage": {},
+  "ungrounded_gold_queries": [],
+  "source_snapshots": [
+    {
+      "filename": "dispositivos.jsonl",
+      "sha256": "1073f84440b85a254367f07c648427d6e9d8f493e92ebd4bfcc0517c99b58f23",
+      "rows": 347195
+    },
+    {
+      "filename": "precedentes.jsonl",
+      "sha256": "0b7a53680bceb5dbbdd096269a94be9ecb9ce8d624844c879aa3b050bdcf9ee4",
+      "rows": 11253
+    }
+  ],
+  "sql_audit": [
+    {
+      "method": "C1-M1",
+      "status": "ok",
+      "calls": 915
+    },
+    {
+      "method": "C1-M2",
+      "status": "ok",
+      "calls": 915
+    },
+    {
+      "method": "C1-M3",
+      "status": "ok",
+      "calls": 915
+    },
+    {
+      "method": "C1-M4",
+      "status": "ok",
+      "calls": 915
+    },
+    {
+      "method": "C1-M5",
+      "status": "ok",
+      "calls": 915
+    }
+  ],
+  "indexes": [
+    {
+      "indexrelname": "c1_identity_exact",
+      "bytes": 22749184
+    },
+    {
+      "indexrelname": "c1_norm_article",
+      "bytes": 12386304
+    },
+    {
+      "indexrelname": "c1_number",
+      "bytes": 2834432
+    },
+    {
+      "indexrelname": "c1_trigram_gist",
+      "bytes": 52862976
+    },
+    {
+      "indexrelname": "entities_pkey",
+      "bytes": 28557312
+    },
+    {
+      "indexrelname": "query_audit_pkey",
+      "bytes": 393216
+    },
+    {
+      "indexrelname": "records_pkey",
+      "bytes": 27033600
+    },
+    {
+      "indexrelname": "source_snapshots_pkey",
+      "bytes": 16384
+    }
+  ],
+  "trigram_query_plans": {
+    "precedentes": [
+      {
+        "Plan": {
+          "Node Type": "Limit",
+          "Parallel Aware": false,
+          "Async Capable": false,
+          "Startup Cost": 7.44,
+          "Total Cost": 726.64,
+          "Plan Rows": 100,
+          "Plan Width": 68,
+          "Actual Startup Time": 1281.265,
+          "Actual Total Time": 1281.583,
+          "Actual Rows": 100.0,
+          "Actual Loops": 1,
+          "Disabled": false,
+          "Shared Hit Blocks": 68,
+          "Shared Read Blocks": 6039,
+          "Shared Dirtied Blocks": 0,
+          "Shared Written Blocks": 0,
+          "Local Hit Blocks": 0,
+          "Local Read Blocks": 0,
+          "Local Dirtied Blocks": 0,
+          "Local Written Blocks": 0,
+          "Temp Read Blocks": 0,
+          "Temp Written Blocks": 0,
+          "Plans": [
+            {
+              "Node Type": "Incremental Sort",
+              "Parent Relationship": "Outer",
+              "Parallel Aware": false,
+              "Async Capable": false,
+              "Startup Cost": 7.44,
+              "Total Cost": 83268.48,
+              "Plan Rows": 11577,
+              "Plan Width": 68,
+              "Actual Startup Time": 1281.263,
+              "Actual Total Time": 1281.577,
+              "Actual Rows": 100.0,
+              "Actual Loops": 1,
+              "Disabled": false,
+              "Sort Key": [
+                "((reference <-> 'stj 385'::text))",
+                "entity_id"
+              ],
+              "Presorted Key": [
+                "((reference <-> 'stj 385'::text))"
+              ],
+              "Full-sort Groups": {
+                "Group Count": 2,
+                "Sort Methods Used": [
+                  "quicksort"
+                ],
+                "Sort Space Memory": {
+                  "Average Sort Space Used": 28,
+                  "Peak Sort Space Used": 28
+                }
+              },
+              "Shared Hit Blocks": 68,
+              "Shared Read Blocks": 6039,
+              "Shared Dirtied Blocks": 0,
+              "Shared Written Blocks": 0,
+              "Local Hit Blocks": 0,
+              "Local Read Blocks": 0,
+              "Local Dirtied Blocks": 0,
+              "Local Written Blocks": 0,
+              "Temp Read Blocks": 0,
+              "Temp Written Blocks": 0,
+              "Plans": [
+                {
+                  "Node Type": "Index Scan",
+                  "Parent Relationship": "Outer",
+                  "Parallel Aware": false,
+                  "Async Capable": false,
+                  "Scan Direction": "Forward",
+                  "Index Name": "c1_trigram_gist",
+                  "Relation Name": "entities",
+                  "Alias": "entities",
+                  "Startup Cost": 0.28,
+                  "Total Cost": 82747.65,
+                  "Plan Rows": 11577,
+                  "Plan Width": 68,
+                  "Actual Startup Time": 398.323,
+                  "Actual Total Time": 1281.487,
+                  "Actual Rows": 108.0,
+                  "Actual Loops": 1,
+                  "Disabled": false,
+                  "Order By": "(reference <-> 'stj 385'::text)",
+                  "Filter": "(collection = 'precedentes'::text)",
+                  "Rows Removed by Filter": 0,
+                  "Index Searches": 1,
+                  "Shared Hit Blocks": 65,
+                  "Shared Read Blocks": 6039,
+                  "Shared Dirtied Blocks": 0,
+                  "Shared Written Blocks": 0,
+                  "Local Hit Blocks": 0,
+                  "Local Read Blocks": 0,
+                  "Local Dirtied Blocks": 0,
+                  "Local Written Blocks": 0,
+                  "Temp Read Blocks": 0,
+                  "Temp Written Blocks": 0
+                }
+              ]
+            }
+          ]
+        },
+        "Planning": {
+          "Shared Hit Blocks": 18,
+          "Shared Read Blocks": 1,
+          "Shared Dirtied Blocks": 0,
+          "Shared Written Blocks": 0,
+          "Local Hit Blocks": 0,
+          "Local Read Blocks": 0,
+          "Local Dirtied Blocks": 0,
+          "Local Written Blocks": 0,
+          "Temp Read Blocks": 0,
+          "Temp Written Blocks": 0
+        },
+        "Planning Time": 0.716,
+        "Triggers": [],
+        "Execution Time": 1284.963
+      }
+    ],
+    "dispositivos": [
+      {
+        "Plan": {
+          "Node Type": "Limit",
+          "Parallel Aware": false,
+          "Async Capable": false,
+          "Startup Cost": 0.55,
+          "Total Cost": 30.78,
+          "Plan Rows": 100,
+          "Plan Width": 68,
+          "Actual Startup Time": 96.349,
+          "Actual Total Time": 121.164,
+          "Actual Rows": 100.0,
+          "Actual Loops": 1,
+          "Disabled": false,
+          "Shared Hit Blocks": 3729,
+          "Shared Read Blocks": 306,
+          "Shared Dirtied Blocks": 0,
+          "Shared Written Blocks": 0,
+          "Local Hit Blocks": 0,
+          "Local Read Blocks": 0,
+          "Local Dirtied Blocks": 0,
+          "Local Written Blocks": 0,
+          "Temp Read Blocks": 0,
+          "Temp Written Blocks": 0,
+          "Plans": [
+            {
+              "Node Type": "Incremental Sort",
+              "Parent Relationship": "Outer",
+              "Parallel Aware": false,
+              "Async Capable": false,
+              "Startup Cost": 0.55,
+              "Total Cost": 99815.02,
+              "Plan Rows": 330250,
+              "Plan Width": 68,
+              "Actual Startup Time": 96.348,
+              "Actual Total Time": 121.158,
+              "Actual Rows": 100.0,
+              "Actual Loops": 1,
+              "Disabled": false,
+              "Sort Key": [
+                "((reference <-> 'federal lei 8078 1990 51'::text))",
+                "entity_id"
+              ],
+              "Presorted Key": [
+                "((reference <-> 'federal lei 8078 1990 51'::text))"
+              ],
+              "Full-sort Groups": {
+                "Group Count": 2,
+                "Sort Methods Used": [
+                  "quicksort"
+                ],
+                "Sort Space Memory": {
+                  "Average Sort Space Used": 30,
+                  "Peak Sort Space Used": 30
+                }
+              },
+              "Pre-sorted Groups": {
+                "Group Count": 2,
+                "Sort Methods Used": [
+                  "quicksort"
+                ],
+                "Sort Space Memory": {
+                  "Average Sort Space Used": 25,
+                  "Peak Sort Space Used": 25
+                }
+              },
+              "Shared Hit Blocks": 3729,
+              "Shared Read Blocks": 306,
+              "Shared Dirtied Blocks": 0,
+              "Shared Written Blocks": 0,
+              "Local Hit Blocks": 0,
+              "Local Read Blocks": 0,
+              "Local Dirtied Blocks": 0,
+              "Local Written Blocks": 0,
+              "Temp Read Blocks": 0,
+              "Temp Written Blocks": 0,
+              "Plans": [
+                {
+                  "Node Type": "Index Scan",
+                  "Parent Relationship": "Outer",
+                  "Parallel Aware": false,
+                  "Async Capable": false,
+                  "Scan Direction": "Forward",
+                  "Index Name": "c1_trigram_gist",
+                  "Relation Name": "entities",
+                  "Alias": "entities",
+                  "Startup Cost": 0.28,
+                  "Total Cost": 85137.7,
+                  "Plan Rows": 330250,
+                  "Plan Width": 68,
+                  "Actual Startup Time": 0.459,
+                  "Actual Total Time": 121.052,
+                  "Actual Rows": 132.0,
+                  "Actual Loops": 1,
+                  "Disabled": false,
+                  "Order By": "(reference <-> 'federal lei 8078 1990 51'::text)",
+                  "Filter": "(collection = 'dispositivos'::text)",
+                  "Rows Removed by Filter": 0,
+                  "Index Searches": 1,
+                  "Shared Hit Blocks": 3729,
+                  "Shared Read Blocks": 306,
+                  "Shared Dirtied Blocks": 0,
+                  "Shared Written Blocks": 0,
+                  "Local Hit Blocks": 0,
+                  "Local Read Blocks": 0,
+                  "Local Dirtied Blocks": 0,
+                  "Local Written Blocks": 0,
+                  "Temp Read Blocks": 0,
+                  "Temp Written Blocks": 0
+                }
+              ]
+            }
+          ]
+        },
+        "Planning": {
+          "Shared Hit Blocks": 0,
+          "Shared Read Blocks": 0,
+          "Shared Dirtied Blocks": 0,
+          "Shared Written Blocks": 0,
+          "Local Hit Blocks": 0,
+          "Local Read Blocks": 0,
+          "Local Dirtied Blocks": 0,
+          "Local Written Blocks": 0,
+          "Temp Read Blocks": 0,
+          "Temp Written Blocks": 0
+        },
+        "Planning Time": 0.087,
+        "Triggers": [],
+        "Execution Time": 122.888
+      }
+    ]
+  },
+  "hardware": {
+    "os": "Windows-11-10.0.22000-SP0",
+    "cpu": "Intel64 Family 6 Model 165 Stepping 2, GenuineIntel",
+    "logical_cpus": 12,
+    "physical_cpus": 6,
+    "ram_bytes": 8412778496
+  },
+  "unmeasured": {
+    "concurrent_capacity": "No load generator or isolated machine.",
+    "production_update_sla": "No production ingestion workload.",
+    "absent_target_false_acceptance": "No real absent-target labeled queries.",
+    "typo_robustness": "No real typo queries; no fabricated perturbations."
+  }
+}

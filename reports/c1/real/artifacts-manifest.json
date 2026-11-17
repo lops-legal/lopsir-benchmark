@@ -1,0 +1,32 @@
+{
+  "kind": "additional_actual_artifact_manifest",
+  "files": [
+    {
+      "path": "queries.jsonl",
+      "bytes": 193897,
+      "sha256": "08542e2a01fd820379ef03ab43674d1c648e7468136a93bd56c06b6c9cc85c26"
+    },
+    {
+      "path": "m5/trained-model.json",
+      "bytes": 8652,
+      "sha256": "54e089b88884d914f10b4d2ea28200174e8e42ddcf65080a90b9eb8b513039f0"
+    }
+  ],
+  "working_artifact_bytes": {
+    "corpus.parquet": 3448443,
+    "linkage.duckdb": 69742592
+  },
+  "note": "DuckDB file size reflects intermediate allocations, not a minimal immutable serving index.",
+  "source_git_commit": "732bb6f7d66e3a7cc57d6cc81bf145531f01bfc9",
+  "source_query_dependencies": [
+    {
+      "path": "tests/consultas_referencia.json",
+      "sha256": "69776020670325a5722ed70c675c6ecb77faadc268d35f5a7883cc8a3734657c"
+    },
+    {
+      "path": "src/leis_mcp/apelidos.py",
+      "sha256": "853b6d3bd542d37e3de800452c34363ee29166a20db0b332a422b148f6b8d578"
+    }
+  ],
+  "source_snapshots_rechecked_after_experiment": true
+}
