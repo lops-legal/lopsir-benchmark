@@ -1,0 +1,77 @@
+{
+  "kind": "c2_dataset_manifest",
+  "dataset": "juristcu",
+  "source": {
+    "repo_id": "ufca-llms/juris-tcu",
+    "revision": "05f66e126f4375962a73cfd58db2c73a2945b9ef"
+  },
+  "authorization": "User instruction 2026-10-29: base = lops-legal/lopsir-benchmark repository, then JurisTCU if easily downloadable. Repository holds no corpus yet (370k collection locator unresolved).",
+  "document_view": "EXCERTO only, as published in the JUA adaptation",
+  "files": {
+    "corpus.jsonl": {
+      "sha256": "d3ded2a228551d31079705afd2392e0adb7725bc0931e3370b6a88e0ca22e755",
+      "bytes": 73831284
+    },
+    "queries.jsonl": {
+      "sha256": "d962008620f93e513ea2f7d18ac504060ef49e9a41e006c4fafe1eb0ef646a96",
+      "bytes": 59238
+    },
+    "qrels.tsv": {
+      "sha256": "d1d5cfefeeeb52ac05c3d9ba7aa2ff7a8d97f4f046335a00138fe2b7ec530cab",
+      "bytes": 25481
+    }
+  },
+  "counts": {
+    "documents": 16045,
+    "queries": 150,
+    "c2_queries": 100,
+    "qrels": 2250,
+    "qrels_by_grade": {
+      "0": 430,
+      "1": 528,
+      "2": 513,
+      "3": 779
+    },
+    "c2_by_origin": {
+      "real_keyword": 50,
+      "synthetic_keyword": 50
+    },
+    "c2_by_split": {
+      "dev": 30,
+      "test": 70
+    },
+    "c2_by_origin_split": {
+      "real_keyword/dev": 15,
+      "real_keyword/test": 35,
+      "synthetic_keyword/dev": 15,
+      "synthetic_keyword/test": 35
+    },
+    "c2_near_duplicate_groups": 94,
+    "c2_labels": {
+      "cited_reference": 1,
+      "multi_concept_e": 33,
+      "unaccented_typing": 3
+    },
+    "c2_length": {
+      "long": 14,
+      "medium": 51,
+      "short": 35
+    }
+  },
+  "document_chars": {
+    "mean": 4387.233593019632,
+    "min": 34,
+    "max": 102480
+  },
+  "split_policy": {
+    "seed": 42,
+    "dev_fraction": 0.3,
+    "stratify": "origin",
+    "groups": "near-duplicate queries (stemmed token Jaccard >= 0.5)",
+    "note": "Positive-document overlap forms one 59-query component, so doc-overlap grouping is infeasible; only global hyperparameters are tuned on dev."
+  },
+  "relevance": {
+    "scale": "0-3 original JurisTCU grades preserved",
+    "binary_threshold": 1
+  }
+}

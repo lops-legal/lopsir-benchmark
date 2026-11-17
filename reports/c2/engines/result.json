@@ -1,0 +1,422 @@
+{
+  "kind": "engine_track",
+  "dataset": "juristcu",
+  "code_commit": "36f31288e04053218acdbc121c44bd0c032d847c",
+  "duckdb_database_bytes": 581709824,
+  "peak_rss_bytes": 1354506240,
+  "notes": [
+    "Lexical engines share k1/b and the M1 analyzer choice; tokenizers still differ (DuckDB FTS splits numbers like 4.657/1942; Manticore and bm25s keep their own rules).",
+    "Dense timings use stored query vectors (vectors-ready timing); query encoding is reported in M5.",
+    "No configuration was tuned in this track.",
+    "EXPLAIN confirms the HNSW index is used (with a bound parameter and with a literal vector). At 16,045 vectors exact search is already cheap; both DuckDB vector paths spend most of their time binding the 4,096-float query vector from Python, so HNSW (466 ms) is not faster than the DuckDB scan (381 ms) and both are far slower than a numpy matrix product (22 ms). ANN-recall@10 and @100 = 1.0."
+  ],
+  "engines": {
+    "lexical_bm25s": {
+      "metrics": {
+        "recall@1": 0.04288647860076431,
+        "precision@1": 0.5,
+        "hit@1": 0.5,
+        "mrr@1": 0.5,
+        "ndcg_linear@1": 0.45714285714285713,
+        "ap_at_k_minrel@1": 0.5,
+        "judged_fraction@1": 0.5,
+        "recall@10": 0.23398070183784472,
+        "precision@10": 0.28,
+        "hit@10": 0.8857142857142857,
+        "mrr@10": 0.6139795918367347,
+        "ndcg_linear@10": 0.3411518663994029,
+        "ap_at_k_minrel@10": 0.18400321239606954,
+        "judged_fraction@10": 0.28,
+        "recall@20": 0.3422695558409844,
+        "precision@20": 0.205,
+        "hit@20": 0.9428571428571428,
+        "mrr@20": 0.618022632129775,
+        "ndcg_linear@20": 0.3885959164015215,
+        "ap_at_k_minrel@20": 0.1928276002234037,
+        "judged_fraction@20": 0.2064285714285714,
+        "recall@100": 0.5913159856017,
+        "precision@100": 0.07171428571428572,
+        "hit@100": 1.0,
+        "mrr@100": 0.619640681595872,
+        "ndcg_linear@100": 0.4909468683509317,
+        "ap_at_k_minrel@100": 0.23048663610155953,
+        "judged_fraction@100": 0.07214285714285713
+      },
+      "latency": {
+        "analyze": {
+          "n": 350,
+          "mean_ms": 0.06167971429671785,
+          "p50_ms": 0.0478500001008797,
+          "p95_ms": 0.15781499998865914,
+          "p99_ms": 0.23625500009075032
+        },
+        "score": {
+          "n": 350,
+          "mean_ms": 0.21925885714543775,
+          "p50_ms": 0.15505000010307413,
+          "p95_ms": 0.6256350000285238,
+          "p99_ms": 0.8678320001536122
+        },
+        "rank": {
+          "n": 350,
+          "mean_ms": 0.37370085715208134,
+          "p50_ms": 0.32084999998005514,
+          "p95_ms": 0.7772149997890667,
+          "p99_ms": 1.0834789999671555
+        },
+        "total": {
+          "n": 350,
+          "mean_ms": 0.6947165714388704,
+          "p50_ms": 0.5639000000883243,
+          "p95_ms": 1.58398500009298,
+          "p99_ms": 1.9598989999667535
+        },
+        "qps_sequential": 1439.4359384991178,
+        "rounds": 5,
+        "warmup": "one pass over dev queries"
+      },
+      "build": {
+        "engine": "bm25s 0.3.16 (numpy)",
+        "index_bytes": 36792313
+      }
+    },
+    "lexical_manticore": {
+      "metrics": {
+        "recall@1": 0.03706483992198278,
+        "precision@1": 0.44285714285714284,
+        "hit@1": 0.44285714285714284,
+        "mrr@1": 0.44285714285714284,
+        "ndcg_linear@1": 0.40952380952380957,
+        "ap_at_k_minrel@1": 0.44285714285714284,
+        "judged_fraction@1": 0.44285714285714284,
+        "recall@10": 0.22052748838463124,
+        "precision@10": 0.2642857142857143,
+        "hit@10": 0.8428571428571429,
+        "mrr@10": 0.5554081632653061,
+        "ndcg_linear@10": 0.31440837497254914,
+        "ap_at_k_minrel@10": 0.16818386243386244,
+        "judged_fraction@10": 0.2642857142857143,
+        "recall@20": 0.33151443794300933,
+        "precision@20": 0.19785714285714284,
+        "hit@20": 0.9142857142857143,
+        "mrr@20": 0.5608805340317945,
+        "ndcg_linear@20": 0.36409572003294344,
+        "ap_at_k_minrel@20": 0.17654097598827198,
+        "judged_fraction@20": 0.1992857142857143,
+        "recall@100": 0.5804411461554319,
+        "precision@100": 0.07042857142857142,
+        "hit@100": 1.0,
+        "mrr@100": 0.5636312615651308,
+        "ndcg_linear@100": 0.46853071841193533,
+        "ap_at_k_minrel@100": 0.21448556892120507,
+        "judged_fraction@100": 0.071
+      },
+      "latency": {
+        "search": {
+          "n": 350,
+          "mean_ms": 6.699818285709886,
+          "p50_ms": 6.189550000271993,
+          "p95_ms": 11.560460000146124,
+          "p99_ms": 15.900882999776504
+        },
+        "total": {
+          "n": 350,
+          "mean_ms": 6.780862571425002,
+          "p50_ms": 6.2567000002218265,
+          "p95_ms": 11.65481999998974,
+          "p99_ms": 15.985340000097485
+        },
+        "qps_sequential": 147.4738633126212,
+        "rounds": 5,
+        "warmup": "one pass over dev queries"
+      },
+      "build": {
+        "build_seconds": 18.192605100000037,
+        "index_bytes": 71211380,
+        "engine": "Manticore 9.3.2 RT table (HTTP SQL)"
+      },
+      "agreement_top10_vs_bm25s": 0.8300000000000001
+    },
+    "lexical_duckdb_fts": {
+      "metrics": {
+        "recall@1": 0.04383885955314527,
+        "precision@1": 0.5142857142857142,
+        "hit@1": 0.5142857142857142,
+        "mrr@1": 0.5142857142857142,
+        "ndcg_linear@1": 0.4714285714285714,
+        "ap_at_k_minrel@1": 0.5142857142857142,
+        "judged_fraction@1": 0.5142857142857142,
+        "recall@10": 0.2340722769294198,
+        "precision@10": 0.28,
+        "hit@10": 0.8857142857142857,
+        "mrr@10": 0.6186451247165533,
+        "ndcg_linear@10": 0.34177296872526924,
+        "ap_at_k_minrel@10": 0.18428231292517006,
+        "judged_fraction@10": 0.28,
+        "recall@20": 0.34369812726955584,
+        "precision@20": 0.2057142857142857,
+        "hit@20": 0.9428571428571428,
+        "mrr@20": 0.6225416448630735,
+        "ndcg_linear@20": 0.3893905103796685,
+        "ap_at_k_minrel@20": 0.1933810551469961,
+        "judged_fraction@20": 0.20714285714285716,
+        "recall@100": 0.5935268699554415,
+        "precision@100": 0.072,
+        "hit@100": 1.0,
+        "mrr@100": 0.6241850493513055,
+        "ndcg_linear@100": 0.49185307457400074,
+        "ap_at_k_minrel@100": 0.23088031808966555,
+        "judged_fraction@100": 0.07242857142857144
+      },
+      "latency": {
+        "search": {
+          "n": 350,
+          "mean_ms": 95.99624114286337,
+          "p50_ms": 94.23324999988836,
+          "p95_ms": 115.91222499998821,
+          "p99_ms": 138.06554999991926
+        },
+        "total": {
+          "n": 350,
+          "mean_ms": 96.02175228573286,
+          "p50_ms": 94.25615000009202,
+          "p95_ms": 115.93943999998828,
+          "p99_ms": 138.1138049999708
+        },
+        "qps_sequential": 10.414306927291747,
+        "rounds": 5,
+        "warmup": "one pass over dev queries"
+      },
+      "build": {
+        "engine": "DuckDB FTS match_bm25",
+        "build_seconds": 6.671429099999841
+      },
+      "agreement_top10_vs_bm25s": 0.9785714285714285
+    },
+    "dense_numpy_exact": {
+      "metrics": {
+        "recall@1": 0.04635324992467849,
+        "precision@1": 0.5571428571428572,
+        "hit@1": 0.5571428571428572,
+        "mrr@1": 0.5571428571428572,
+        "ndcg_linear@1": 0.5166666666666666,
+        "ap_at_k_minrel@1": 0.5571428571428572,
+        "judged_fraction@1": 0.5571428571428572,
+        "recall@10": 0.2682224125081268,
+        "precision@10": 0.32571428571428573,
+        "hit@10": 0.9142857142857143,
+        "mrr@10": 0.6725396825396825,
+        "ndcg_linear@10": 0.38480858460620976,
+        "ap_at_k_minrel@10": 0.2091165910808768,
+        "judged_fraction@10": 0.32571428571428573,
+        "recall@20": 0.3637871652157367,
+        "precision@20": 0.2207142857142857,
+        "hit@20": 0.9571428571428572,
+        "mrr@20": 0.6753528077897826,
+        "ndcg_linear@20": 0.4191224467603335,
+        "ap_at_k_minrel@20": 0.20760824028955302,
+        "judged_fraction@20": 0.2207142857142857,
+        "recall@100": 0.6427121291407006,
+        "precision@100": 0.07842857142857143,
+        "hit@100": 0.9857142857142858,
+        "mrr@100": 0.676512362520766,
+        "ndcg_linear@100": 0.5331740550689628,
+        "ap_at_k_minrel@100": 0.253638671346252,
+        "judged_fraction@100": 0.07885714285714286
+      },
+      "latency": {
+        "search": {
+          "n": 350,
+          "mean_ms": 22.890357428575175,
+          "p50_ms": 22.222849999934624,
+          "p95_ms": 27.317385000060316,
+          "p99_ms": 36.102355000152784
+        },
+        "total": {
+          "n": 350,
+          "mean_ms": 22.932337714285364,
+          "p50_ms": 22.267500000225482,
+          "p95_ms": 27.37636500007739,
+          "p99_ms": 36.157483000342836
+        },
+        "qps_sequential": 43.60654428078933,
+        "rounds": 5,
+        "warmup": "one pass over dev queries"
+      },
+      "build": {
+        "engine": "numpy float32 matrix",
+        "index_bytes": 262881280
+      }
+    },
+    "dense_duckdb_exact": {
+      "metrics": {
+        "recall@1": 0.04635324992467849,
+        "precision@1": 0.5571428571428572,
+        "hit@1": 0.5571428571428572,
+        "mrr@1": 0.5571428571428572,
+        "ndcg_linear@1": 0.5166666666666666,
+        "ap_at_k_minrel@1": 0.5571428571428572,
+        "judged_fraction@1": 0.5571428571428572,
+        "recall@10": 0.2682224125081268,
+        "precision@10": 0.32571428571428573,
+        "hit@10": 0.9142857142857143,
+        "mrr@10": 0.6725396825396825,
+        "ndcg_linear@10": 0.38480858460620976,
+        "ap_at_k_minrel@10": 0.2091165910808768,
+        "judged_fraction@10": 0.32571428571428573,
+        "recall@20": 0.3637871652157367,
+        "precision@20": 0.2207142857142857,
+        "hit@20": 0.9571428571428572,
+        "mrr@20": 0.6753528077897826,
+        "ndcg_linear@20": 0.4191361986288842,
+        "ap_at_k_minrel@20": 0.2076605689133102,
+        "judged_fraction@20": 0.2207142857142857,
+        "recall@100": 0.6427121291407006,
+        "precision@100": 0.07842857142857143,
+        "hit@100": 0.9857142857142858,
+        "mrr@100": 0.676512362520766,
+        "ndcg_linear@100": 0.533192529710024,
+        "ap_at_k_minrel@100": 0.25369533908716263,
+        "judged_fraction@100": 0.07885714285714286
+      },
+      "latency": {
+        "search": {
+          "n": 350,
+          "mean_ms": 388.70016228570677,
+          "p50_ms": 380.40574999990895,
+          "p95_ms": 512.2587149999619,
+          "p99_ms": 571.3056900001945
+        },
+        "total": {
+          "n": 350,
+          "mean_ms": 388.972314571421,
+          "p50_ms": 380.57660000004034,
+          "p95_ms": 512.4694999998839,
+          "p99_ms": 571.5181479997862
+        },
+        "qps_sequential": 2.5708770586971568,
+        "rounds": 5,
+        "warmup": "one pass over dev queries"
+      },
+      "build": {
+        "engine": "DuckDB array_cosine_similarity (scan)",
+        "load_seconds": 159.70856830000002
+      },
+      "agreement_top10_vs_numpy": 1.0
+    },
+    "dense_duckdb_hnsw": {
+      "metrics": {
+        "recall@1": 0.04635324992467849,
+        "precision@1": 0.5571428571428572,
+        "hit@1": 0.5571428571428572,
+        "mrr@1": 0.5571428571428572,
+        "ndcg_linear@1": 0.5166666666666666,
+        "ap_at_k_minrel@1": 0.5571428571428572,
+        "judged_fraction@1": 0.5571428571428572,
+        "recall@10": 0.2682224125081268,
+        "precision@10": 0.32571428571428573,
+        "hit@10": 0.9142857142857143,
+        "mrr@10": 0.6713492063492064,
+        "ndcg_linear@10": 0.38469133515830867,
+        "ap_at_k_minrel@10": 0.20909278155706726,
+        "judged_fraction@10": 0.32571428571428573,
+        "recall@20": 0.3637871652157367,
+        "precision@20": 0.2207142857142857,
+        "hit@20": 0.9571428571428572,
+        "mrr@20": 0.6741623315993064,
+        "ndcg_linear@20": 0.4190238104448133,
+        "ap_at_k_minrel@20": 0.2076293897749882,
+        "judged_fraction@20": 0.2207142857142857,
+        "recall@100": 0.6427121291407006,
+        "precision@100": 0.07842857142857143,
+        "hit@100": 0.9857142857142858,
+        "mrr@100": 0.6753218863302897,
+        "ndcg_linear@100": 0.5330753263747988,
+        "ap_at_k_minrel@100": 0.2536617296674543,
+        "judged_fraction@100": 0.07885714285714286
+      },
+      "latency": {
+        "search": {
+          "n": 350,
+          "mean_ms": 475.82857514285416,
+          "p50_ms": 465.87060000001657,
+          "p95_ms": 622.6103800002194,
+          "p99_ms": 711.1119579998647
+        },
+        "total": {
+          "n": 350,
+          "mean_ms": 476.21857714284744,
+          "p50_ms": 466.21394999988297,
+          "p95_ms": 623.149889999968,
+          "p99_ms": 711.5069659999697
+        },
+        "qps_sequential": 2.099876082112685,
+        "rounds": 5,
+        "warmup": "one pass over dev queries"
+      },
+      "build": {
+        "engine": "DuckDB VSS HNSW (cosine)",
+        "build_seconds": 26.676399800000127
+      },
+      "ann_recall_vs_exact": {
+        "@10": 1.0,
+        "@100": 1.0
+      }
+    },
+    "hybrid_duckdb_sql": {
+      "metrics": {
+        "recall@1": 0.04446157017585589,
+        "precision@1": 0.5285714285714286,
+        "hit@1": 0.5285714285714286,
+        "mrr@1": 0.5285714285714286,
+        "ndcg_linear@1": 0.4904761904761905,
+        "ap_at_k_minrel@1": 0.5285714285714286,
+        "judged_fraction@1": 0.5285714285714286,
+        "recall@10": 0.24791510077224363,
+        "precision@10": 0.2957142857142857,
+        "hit@10": 0.8857142857142857,
+        "mrr@10": 0.6491666666666667,
+        "ndcg_linear@10": 0.36393461896436685,
+        "ap_at_k_minrel@10": 0.20035695389266817,
+        "judged_fraction@10": 0.2957142857142857,
+        "recall@20": 0.3690009197152054,
+        "precision@20": 0.22142857142857142,
+        "hit@20": 0.9714285714285714,
+        "mrr@20": 0.6556529581529581,
+        "ndcg_linear@20": 0.41688396306396125,
+        "ap_at_k_minrel@20": 0.20917399161725703,
+        "judged_fraction@20": 0.22214285714285714,
+        "recall@100": 0.6293948115376687,
+        "precision@100": 0.07642857142857144,
+        "hit@100": 1.0,
+        "mrr@100": 0.6569284683570398,
+        "ndcg_linear@100": 0.524466766045106,
+        "ap_at_k_minrel@100": 0.251165301815187,
+        "judged_fraction@100": 0.07685714285714286
+      },
+      "latency": {
+        "search": {
+          "n": 350,
+          "mean_ms": 533.9518760000049,
+          "p50_ms": 505.4686999999376,
+          "p95_ms": 775.3675999999815,
+          "p99_ms": 904.9738000000659
+        },
+        "total": {
+          "n": 350,
+          "mean_ms": 534.2571231428715,
+          "p50_ms": 505.765049999809,
+          "p95_ms": 775.8666399997993,
+          "p99_ms": 905.2701619999468
+        },
+        "qps_sequential": 1.8717579170817706,
+        "rounds": 5,
+        "warmup": "one pass over dev queries"
+      },
+      "build": {
+        "engine": "DuckDB one SQL statement (FTS + cosine + convex fusion)",
+        "alpha": 0.2
+      }
+    }
+  }
+}

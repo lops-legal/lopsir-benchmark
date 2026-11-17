@@ -4,6 +4,8 @@ Estudo de arquiteturas de recuperação jurídica por tipo de consulta: **C1 ref
 
 Leia [a especificação completa](SDD-PESQUISA.md): escopo, leitura integral do JUÁ v2, métricas explicadas, hipóteses H1–H16, benchmarks reais, parâmetros, arquitetura, controles de custo e backlog.
 
+**Plano operacional atual:** [C1 → C2 → C3](docs/PIPELINE.md), com cinco metodologias publicadas por caso. O usuário informa um acervo próprio de aproximadamente 370 mil jurisprudências reais; sua localização ainda precisa ser configurada. Não usar informações fictícias nos experimentos nem importar novos conjuntos. A [reprodução do JUÁ](docs/jua/README.md) é uma trilha separada.
+
 ## Estado da entrega
 
 Documentação e kit mínimo executável. **Nenhum banco, modelo ou benchmark real foi executado.** Adaptadores, importadores e interface do hub estão especificados para implementação incremental. `reports/fixture-metrics.json` é apenas uma demonstração com quatro consultas artificiais; não entra no leaderboard científico.
@@ -26,11 +28,11 @@ A fixture é ilustrativa e usa IDs fictícios `demo-*`. O avaliador do kit adota
 
 ## Próximo ciclo implementável
 
-1. Criar `.venv` própria e fixar dependências; consultar a seção operacional única do SDD.
-2. Importar BR-TaxQA e JurisTCU em revisões fixadas e verificar corpus, queries e qrels.
-3. Implementar BM25 de referência e suíte C1 com metadados reais.
-4. Adicionar um embedding, scoring exato, um motor vetorial e fusão.
-5. Medir por caso e coleção; só então ampliar bancos e modelos.
+1. Localizar e inventariar o acervo real já fornecido pelo usuário.
+2. Preparar [C1](docs/c1/README.md): cinco métodos fundamentados e identidade como alvo.
+3. Executar e revisar C1 antes dos experimentos [C2](docs/c2/README.md).
+4. Executar e revisar C2 antes dos experimentos [C3](docs/c3/README.md).
+5. Preservar a trilha JUÁ separadamente, usando apenas os artefatos disponibilizados/indicados no projeto.
 
 `configs/experiment.example.json` demonstra o contrato de planejamento. Não é configuração de um runner já implementado. Seu campo `status: planned` e os campos nulos impedem confundir exemplo com experimento reproduzido.
 

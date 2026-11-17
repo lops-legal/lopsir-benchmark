@@ -1,0 +1,67 @@
+{
+  "kind": "repository_inventory_not_a_dataset_or_benchmark",
+  "inspected_at_utc": "2026-10-29T07:50:47.866139+00:00",
+  "source_repository": "https://github.com/lops-legal/lopsir-benchmark",
+  "branch": "main",
+  "revision": "3e00c1d52625158b45ea1ab2eafc92bce892b84b",
+  "truncated": false,
+  "user_reported_jurisprudence_count": 370000,
+  "verified_jurisprudence_count": null,
+  "tracked_files": [
+    {
+      "path": ".gitignore",
+      "bytes": 110
+    },
+    {
+      "path": "NOTICE.md",
+      "bytes": 1370
+    },
+    {
+      "path": "README.md",
+      "bytes": 3097
+    },
+    {
+      "path": "SDD-PESQUISA.md",
+      "bytes": 59522
+    },
+    {
+      "path": "configs/experiment.example.json",
+      "bytes": 2328
+    },
+    {
+      "path": "examples/qrels.tsv",
+      "bytes": 191
+    },
+    {
+      "path": "examples/queries.jsonl",
+      "bytes": 549
+    },
+    {
+      "path": "examples/run.tsv",
+      "bytes": 182
+    },
+    {
+      "path": "reports/environment.json",
+      "bytes": 1050
+    },
+    {
+      "path": "reports/fixture-metrics.json",
+      "bytes": 6943
+    },
+    {
+      "path": "scripts/doctor.py",
+      "bytes": 3307
+    },
+    {
+      "path": "scripts/evaluate.py",
+      "bytes": 6701
+    },
+    {
+      "path": "tests/test_metrics.py",
+      "bytes": 2782
+    }
+  ],
+  "release_assets": [],
+  "corpus_locator": null,
+  "conclusion": "Inspected main contains documentation, scripts and historical fixtures. Real corpus location is not resolved. Do not substitute synthetic or external data."
+}

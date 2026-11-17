@@ -1,0 +1,17 @@
+{
+  "kind": "encoding_usage",
+  "dataset": "juristcu",
+  "embedder": "nemotron-3.5-embed-8b",
+  "wall_seconds_this_session": 2871.5696203999996,
+  "ledger": {
+    "nvidia:nvidia/nemotron-3.5-embed-8b": {
+      "requests": 504,
+      "failed": 0,
+      "retries": 0,
+      "prompt_tokens": 20069088,
+      "seconds": 8561.27111139999
+    }
+  },
+  "billed_usd": 0.0,
+  "billing_note": "free-tier endpoint; tokens recorded from API usage field"
+}
