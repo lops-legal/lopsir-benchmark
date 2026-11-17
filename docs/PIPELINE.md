@@ -109,7 +109,7 @@ Métrica não aplicável deve ser `null` com justificativa, nunca zero inventado
 | Branch | Responsabilidade | Escopo |
 |---|---|---|
 | `c1` | Trabalho ativo desta etapa | Protocolo, cinco fichas, contratos e futura execução de C1 |
-| `c2` | Preparação para o Claude | Especificação/implementação C2; execução após gate de C1 |
+| `c2` | Claude — executado em 29/10/2026 | Cinco metodologias implementadas e avaliadas sobre o JurisTCU por instrução do usuário (o acervo de 370 mil ainda sem local); ver [c2/README.md](c2/README.md) e `reports/c2/RESULTS.md`. Revisão pendente antes de integrar à `main` |
 | `c3` | Preparação futura | Especificação/implementação C3; execução após gate de C2 |
 | `jua` | Reprodução científica separada | Protocolo nativo JUÁ e compatibilidade dos avaliadores |
 | `main` | Base publicada | Mudanças integradas e revisadas |
